@@ -1,21 +1,22 @@
 {
     "name": "ra-data-graphql-supabase",
     "version": "5.1.4",
-    "description": "A GraphQL simple data provider for react-admin",
+    "description": "A GraphQL data provider for react-admin and supabase",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/cjs/index.d.ts",
     "sideEffects": false,
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/marmelab/react-admin.git"
+        "url": "git+https://github.com/maxschridde1494/ra-data-graphql-supabase.git"
     },
     "bugs": {
-        "url": "https://github.com/marmelab/react-admin/issues"
+        "url": "https://github.com/maxschridde1494/ra-data-graphql-supabase/issues"
     },
-    "homepage": "https://github.com/marmelab/react-admin#readme",
+    "homepage": "https://github.com/maxschridde1494/ra-data-graphql-supabase#readme",
     "authors": [
-        "Gildas Garcia"
+        "Gildas Garcia",
+        "Max Schridde"
     ],
     "keywords": [
         "reactjs",
@@ -23,7 +24,8 @@
         "react-admin",
         "admin-on-rest",
         "rest",
-        "graphql"
+        "graphql",
+        "supabase"
     ],
     "license": "MIT",
     "scripts": {
