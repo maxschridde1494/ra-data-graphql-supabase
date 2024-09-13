@@ -1,54 +1,51 @@
 import {
-    DELETE_MANY,
+    // DELETE_MANY,
     GET_LIST,
     GET_MANY,
     GET_MANY_REFERENCE,
-    UPDATE_MANY,
+    // UPDATE_MANY,
 } from 'ra-core';
 import { IntrospectionResult, IntrospectedResource } from 'ra-data-graphql';
 import { IntrospectionField } from 'graphql';
 import { ApolloQueryResult } from '@apollo/client';
 
-export default (_introspectionResults: IntrospectionResult) =>
-    (
-        raFetchMethod: string,
-        _resource: IntrospectedResource,
-        _queryType: IntrospectionField
-    ) =>
-    (response: ApolloQueryResult<any>) => {
-        const data = response.data;
-
-        if (
-            raFetchMethod === GET_LIST ||
-            raFetchMethod === GET_MANY ||
-            raFetchMethod === GET_MANY_REFERENCE
-        ) {
-            return {
-                data: response.data.items.map(sanitizeResource),
-                total: response.data.total.count,
-            };
-        } else if (
-            raFetchMethod === DELETE_MANY ||
-            raFetchMethod === UPDATE_MANY
-        ) {
-            return { data: sanitizeResource(data.data).ids };
-        }
-
-        return { data: sanitizeResource(data.data) };
-    };
-
+export default (_introspectionResults: IntrospectionResult) => (
+    raFetchMethod: string,
+    _resource: IntrospectedResource,
+    _queryType: IntrospectionField
+) => (response: ApolloQueryResult<any>) => {
+    // const data = response.data;
+  
+    if (
+        raFetchMethod === GET_LIST ||
+        raFetchMethod === GET_MANY ||
+        raFetchMethod === GET_MANY_REFERENCE
+    ) {
+        return {
+            data: response.data.items.edges.map(({ node }: { node: any }) => node).map(sanitizeResource),
+            total: response.data.items.totalCount,
+        };
+    } 
+    // else if (raFetchMethod === DELETE_MANY || raFetchMethod === UPDATE_MANY) {
+    //     return { data: sanitizeResource(data.data).ids };
+    // }
+  
+    // return { data: sanitizeResource(data.data) };
+    return { data: null }
+};
+  
 const sanitizeResource = (data: any) => {
-    const result = Object.keys(data).reduce((acc, key) => {
+    const result: { [key: string]: any } = Object.keys(data).reduce((acc, key) => {
         if (key.startsWith('_')) {
             return acc;
         }
-
+  
         const dataForKey = data[key];
-
+  
         if (dataForKey === null || dataForKey === undefined) {
             return acc;
         }
-
+  
         if (Array.isArray(dataForKey)) {
             if (
                 typeof dataForKey[0] === 'object' &&
@@ -65,7 +62,7 @@ const sanitizeResource = (data: any) => {
                 return { ...acc, [key]: dataForKey };
             }
         }
-
+  
         if (
             typeof dataForKey === 'object' &&
             dataForKey != null &&
@@ -84,9 +81,10 @@ const sanitizeResource = (data: any) => {
                     : dataForKey,
             };
         }
-
+  
         return { ...acc, [key]: dataForKey };
     }, {});
-
+  
     return result;
-};
+  };
+  
