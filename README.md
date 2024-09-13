@@ -1,6 +1,6 @@
 # ra-data-graphql-supabase
 
-A GraphQL data provider for [react-admin](https://github.com/marmelab/react-admin/) and [supabase pg_graphql](https://github.com/supabase/pg_graphql) built with [Apollo](https://www.apollodata.com/).
+A GraphQL data provider for [react-admin](https://github.com/marmelab/react-admin/) and [supabase](https://github.com/supabase/pg_graphql) built with [Apollo](https://www.apollodata.com/).
 
 - [Installation](#installation)
 - [Usage](#installation)
