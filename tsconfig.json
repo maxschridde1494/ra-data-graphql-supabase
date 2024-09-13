@@ -1,0 +1,17 @@
+{
+    "extends": "./tsconfig.ra.json",
+    "compilerOptions": {
+        "outDir": "lib",
+        "rootDir": "src",
+        "allowJs": false
+    },
+    "exclude": [
+        "**/*.spec.ts",
+        "**/*.spec.tsx",
+        "**/*.spec.js",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.test.js"
+    ],
+    "include": ["src"]
+}
