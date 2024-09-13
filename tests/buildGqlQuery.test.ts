@@ -16,7 +16,7 @@ import buildGqlQuery, {
     buildApolloArgs,
     buildArgs,
     buildFields,
-} from './buildGqlQuery';
+} from '../src/buildGqlQuery';
 
 describe('buildArgs', () => {
     it('returns an empty array when query does not have any arguments', () => {

@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { buildQueryFactory } from './buildQuery';
+import { buildQueryFactory } from '../src/buildQuery';
 
 describe('buildQuery', () => {
     const queryType = 'query_type';

@@ -1,5 +1,5 @@
 import { TypeKind } from 'graphql';
-import getFinalType from './getFinalType';
+import getFinalType from '../src/getFinalType';
 
 describe('getFinalType', () => {
     it('returns the correct type for SCALAR types', () => {

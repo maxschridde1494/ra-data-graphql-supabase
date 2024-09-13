@@ -9,7 +9,7 @@ import {
     DELETE_MANY,
     UPDATE_MANY,
 } from 'ra-core';
-import getResponseParser from './getResponseParser';
+import getResponseParser from '../src/getResponseParser';
 
 describe('getResponseParser', () => {
     it.each([[GET_LIST], [GET_MANY], [GET_MANY_REFERENCE]])(

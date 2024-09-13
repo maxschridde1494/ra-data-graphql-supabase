@@ -1,5 +1,5 @@
 import { TypeKind, print } from 'graphql';
-import { getGqlType } from './getGqlType';
+import { getGqlType } from '../src/getGqlType';
 
 describe('getGqlType', () => {
     it('returns the arg type', () => {

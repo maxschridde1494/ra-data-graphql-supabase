@@ -8,7 +8,7 @@ import {
     DELETE_MANY,
     UPDATE_MANY,
 } from 'ra-core';
-import buildVariables from './buildVariables';
+import buildVariables from '../src/buildVariables';
 
 describe('buildVariables', () => {
     const introspectionResult = {
