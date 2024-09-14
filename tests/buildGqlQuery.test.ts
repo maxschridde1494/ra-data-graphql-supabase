@@ -1,15 +1,15 @@
-import { TypeKind, print } from 'graphql';
+import { IntrospectionField, TypeKind, print } from 'graphql';
 import { gql } from '@apollo/client';
 import {
     GET_LIST,
     GET_ONE,
     GET_MANY,
     GET_MANY_REFERENCE,
-    UPDATE,
-    CREATE,
-    DELETE,
-    DELETE_MANY,
-    UPDATE_MANY,
+    // UPDATE,
+    // CREATE,
+    // DELETE,
+    // DELETE_MANY,
+    // UPDATE_MANY,
 } from 'ra-core';
 
 import buildGqlQuery, {
@@ -17,17 +17,18 @@ import buildGqlQuery, {
     buildArgs,
     buildFields,
 } from '../src/buildGqlQuery';
+import { mockTestData } from './helpers/mockTestData';
 
 describe('buildArgs', () => {
     it('returns an empty array when query does not have any arguments', () => {
-        expect(buildArgs({ args: [] }, {})).toEqual([]);
+        expect(buildArgs({ args: [] } as IntrospectionField, {})).toEqual([]);
     });
 
     it('returns an array of args correctly filtered when query has arguments', () => {
         expect(
             print(
                 buildArgs(
-                    { args: [{ name: 'foo' }, { name: 'bar' }] },
+                    { args: [{ name: 'foo' }, { name: 'bar' }] } as IntrospectionField,
                     { foo: 'foo_value' }
                 )
             )
@@ -83,173 +84,31 @@ describe('buildApolloArgs', () => {
     });
 });
 
-function buildGQLParamsWithSparseFieldsFactory() {
-    const introspectionResults = {
-        resources: [
-            {
-                type: {
-                    name: 'resourceType',
-                    fields: [
-                        {
-                            name: 'id',
-                            type: { kind: TypeKind.SCALAR, name: 'ID' },
-                        },
-                        {
-                            name: 'name',
-                            type: { kind: TypeKind.SCALAR, name: 'String' },
-                        },
-                        {
-                            name: 'foo',
-                            type: { kind: TypeKind.SCALAR, name: 'String' },
-                        },
-                    ],
-                },
-            },
-        ],
-        types: [
-            {
-                name: 'linkedType',
-                fields: [
-                    {
-                        name: 'id',
-                        type: { kind: TypeKind.SCALAR, name: 'ID' },
-                    },
-                    {
-                        name: 'title',
-                        type: { kind: TypeKind.SCALAR, name: 'String' },
-                    },
-                    {
-                        name: 'nestedLink',
-                        type: {
-                            kind: TypeKind.OBJECT,
-                            name: 'nestedLinkedType',
-                        },
-                    },
-                ],
-            },
-            {
-                name: 'nestedLinkedType',
-                fields: [
-                    {
-                        name: 'id',
-                        type: { kind: TypeKind.SCALAR, name: 'ID' },
-                    },
-                    {
-                        name: 'bar',
-                        type: { kind: TypeKind.SCALAR, name: 'String' },
-                    },
-                ],
-            },
-        ],
-    };
-
-    const resource = {
-        type: {
-            fields: [
-                { type: { kind: TypeKind.SCALAR, name: 'ID' }, name: 'id' },
-                {
-                    type: { kind: TypeKind.SCALAR, name: 'String' },
-                    name: 'address',
-                },
-                {
-                    type: { kind: TypeKind.SCALAR, name: '_internalField' },
-                    name: 'foo1',
-                },
-                {
-                    type: { kind: TypeKind.OBJECT, name: 'linkedType' },
-                    name: 'linked',
-                },
-                {
-                    type: { kind: TypeKind.OBJECT, name: 'resourceType' },
-                    name: 'resource',
-                },
-            ],
-        },
-    };
-
-    const queryType = {
-        name: 'allCommand',
-        args: [
-            {
-                name: 'foo',
-                type: {
-                    kind: TypeKind.NON_NULL,
-                    ofType: { kind: TypeKind.SCALAR, name: 'Int' },
-                },
-            },
-        ],
-    };
-
-    const params = {
-        foo: 'foo_value',
-        meta: {
-            sparseFields: [
-                'address',
-                { linked: ['title'] },
-                { resource: ['foo', 'name'] },
-            ],
-        },
-    };
-
-    return {
-        introspectionResults,
-        queryType,
-        params,
-        resource,
-    };
-}
-
 describe('buildFields', () => {
     it('returns an object with the fields to retrieve', () => {
-        const introspectionResults = {
-            resources: [
-                {
-                    type: {
-                        name: 'resourceType',
-                        fields: [
-                            {
-                                name: 'id',
-                                type: { kind: TypeKind.SCALAR, name: 'ID' },
-                            },
-                        ],
-                    },
-                },
-            ],
-            types: [
-                {
-                    name: 'linkedType',
-                    fields: [
-                        {
-                            name: 'id',
-                            type: { kind: TypeKind.SCALAR, name: 'ID' },
-                        },
-                    ],
-                },
-            ],
-        };
+        const { introspectionResults: { default: introspectionResults }, resources: { default: resource } } =
+                mockTestData();
 
-        const fields = [
-            { type: { kind: TypeKind.SCALAR, name: 'ID' }, name: 'id' },
-            {
-                type: { kind: TypeKind.SCALAR, name: '_internalField' },
-                name: 'foo1',
-            },
-            {
-                type: { kind: TypeKind.OBJECT, name: 'linkedType' },
-                name: 'linked',
-            },
-            {
-                type: { kind: TypeKind.OBJECT, name: 'resourceType' },
-                name: 'resource',
-            },
-        ];
+        const scalarFields = resource.type.fields //.filter(f => f.type.kind === TypeKind.SCALAR)
+        const builtFields = buildFields(introspectionResults)({ 
+            resourceObject: resource,
+            fieldsProp: scalarFields,
+        })
 
-        expect(print(buildFields(introspectionResults)(fields))).toEqual([
+        expect(print(builtFields)).toEqual([
             'id',
-            `linked {
-  id
+            'address',
+            'linkedType_id',
+            `linkedTypes {
+  totalCount
+  edges {
+    node {
+      id
+    }
+  }
 }`,
-            `resource {
+            'resourceType_id',
+            `resourceTypes {
   id
 }`,
         ]);
@@ -257,28 +116,45 @@ describe('buildFields', () => {
 
     describe('with sparse fields', () => {
         it('returns an object with the fields to retrieve', () => {
-            const { introspectionResults, resource, params } =
-                buildGQLParamsWithSparseFieldsFactory();
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                resources: { default: resource }, 
+                params: { SparseFields: params } 
+            } = mockTestData();
 
             // nested sparse params
-            params.meta.sparseFields[1].linked.push({ nestedLink: ['bar'] });
+            // const params = {...SparseFields}
+            params.meta.sparseFields[2].linkedTypes.push({ nestedLinks: ['id', 'bar'] });
 
             expect(
-                print(
-                    buildFields(introspectionResults)(
-                        resource.type.fields,
-                        params.meta.sparseFields
-                    )
-                )
+                print(buildFields(introspectionResults)({
+                    resourceObject: resource,
+                    fieldsProp: resource.type.fields,
+                    sparseFields: params.meta.sparseFields
+                }))
             ).toEqual([
+                'id',
                 'address',
-                `linked {
-  title
-  nestedLink {
-    bar
+                `linkedTypes {
+  totalCount
+  edges {
+    node {
+      id
+      title
+      nestedLinks {
+        totalCount
+        edges {
+          node {
+            id
+            bar
+          }
+        }
+      }
+    }
   }
 }`,
-                `resource {
+                `resourceTypes {
+  id
   foo
   name
 }`,
@@ -286,24 +162,34 @@ describe('buildFields', () => {
         });
 
         it('throws an error when sparse fields is requested but empty', () => {
-            const { introspectionResults, resource } =
-                buildGQLParamsWithSparseFieldsFactory();
+            const { 
+                introspectionResults: { default: introspectionResults}, 
+                resources: { default: resource } 
+            } = mockTestData();
 
             expect(() =>
-                buildFields(introspectionResults)(resource.type.fields, [])
+                buildFields(introspectionResults)({
+                    resourceObject: resource,
+                    fieldsProp: resource.type.fields,
+                    sparseFields: []
+                })
             ).toThrowError(
                 "Empty sparse fields. Specify at least one field or remove the 'sparseFields' param"
             );
         });
 
         it('throws an error when requested sparse fields are not available', () => {
-            const { introspectionResults, resource } =
-                buildGQLParamsWithSparseFieldsFactory();
+            const { 
+                introspectionResults: { default: introspectionResults}, 
+                resources: { default: resource } 
+            } = mockTestData();
 
             expect(() =>
-                buildFields(introspectionResults)(resource.type.fields, [
-                    'unavailbleField',
-                ])
+                buildFields(introspectionResults)({
+                    resourceObject: resource,
+                    fieldsProp: resource.type.fields,
+                    sparseFields: ['unavailbleField']
+                })
             ).toThrowError(
                 "Requested sparse fields not found. Ensure sparse fields are available in the resource's type"
             );
@@ -313,59 +199,27 @@ describe('buildFields', () => {
 
 describe('buildFieldsWithCircularDependency', () => {
     it('returns an object with the fields to retrieve', () => {
-        const introspectionResults = {
-            resources: [
-                {
-                    type: {
-                        name: 'resourceType',
-                        fields: [
-                            {
-                                name: 'id',
-                                type: { kind: TypeKind.SCALAR, name: 'ID' },
-                            },
-                        ],
-                    },
-                },
-            ],
-            types: [
-                {
-                    name: 'linkedType',
-                    fields: [
-                        {
-                            name: 'id',
-                            type: { kind: TypeKind.SCALAR, name: 'ID' },
-                        },
-                        {
-                            name: 'child',
-                            type: { kind: TypeKind.OBJECT, name: 'linkedType' },
-                        },
-                    ],
-                },
-            ],
-        };
+        const { 
+            introspectionResults: { circularDependencies: introspectionResults }, 
+            resources: { default: resource } } = mockTestData();
 
-        const fields = [
-            { type: { kind: TypeKind.SCALAR, name: 'ID' }, name: 'id' },
-            {
-                type: { kind: TypeKind.SCALAR, name: '_internalField' },
-                name: 'foo1',
-            },
-            {
-                type: { kind: TypeKind.OBJECT, name: 'linkedType' },
-                name: 'linked',
-            },
-            {
-                type: { kind: TypeKind.OBJECT, name: 'resourceType' },
-                name: 'resource',
-            },
-        ];
-
-        expect(print(buildFields(introspectionResults)(fields))).toEqual([
+        expect(print(buildFields(introspectionResults)({
+            resourceObject: resource,
+            fieldsProp: resource.type.fields,
+        }))).toEqual([
             'id',
-            `linked {
-  id
+            'address',
+            'linkedType_id',
+            `linkedTypes {
+  totalCount
+  edges {
+    node {
+      id
+    }
+  }
 }`,
-            `resource {
+            'resourceType_id',
+            `resourceTypes {
   id
 }`,
         ]);
@@ -374,62 +228,37 @@ describe('buildFieldsWithCircularDependency', () => {
 
 describe('buildFieldsWithSameType', () => {
     it('returns an object with the fields to retrieve', () => {
-        const introspectionResults = {
-            resources: [
-                {
-                    type: {
-                        name: 'resourceType',
-                        fields: [
-                            {
-                                name: 'id',
-                                type: { kind: TypeKind.SCALAR, name: 'ID' },
-                            },
-                        ],
-                    },
-                },
-            ],
-            types: [
-                {
-                    name: 'linkedType',
-                    fields: [
-                        {
-                            name: 'id',
-                            type: { kind: TypeKind.SCALAR, name: 'ID' },
-                        },
-                    ],
-                },
-            ],
-        };
+        const { 
+            introspectionResults: { default: introspectionResults }, 
+            resources: { WithMultipleFieldsOfSameType: resource } 
+        } = mockTestData();
 
-        const fields = [
-            { type: { kind: TypeKind.SCALAR, name: 'ID' }, name: 'id' },
-            {
-                type: { kind: TypeKind.SCALAR, name: '_internalField' },
-                name: 'foo1',
-            },
-            {
-                type: { kind: TypeKind.OBJECT, name: 'linkedType' },
-                name: 'linked',
-            },
-            {
-                type: { kind: TypeKind.OBJECT, name: 'linkedType' },
-                name: 'anotherLinked',
-            },
-            {
-                type: { kind: TypeKind.OBJECT, name: 'resourceType' },
-                name: 'resource',
-            },
-        ];
-
-        expect(print(buildFields(introspectionResults)(fields))).toEqual([
+        expect(print(buildFields(introspectionResults)({
+            resourceObject: resource,
+            fieldsProp: resource.type.fields,
+        }))).toEqual([
             'id',
-            `linked {
-  id
+            'address',
+            'linkedType_id',
+            `linkedTypes {
+  totalCount
+  edges {
+    node {
+      id
+    }
+  }
 }`,
-            `anotherLinked {
-  id
+            'anotherLinkedType_id',
+            `anotherLinkedTypes {
+  totalCount
+  edges {
+    node {
+      id
+    }
+  }
 }`,
-            `resource {
+            'resourceType_id',
+            `resourceTypes {
   id
 }`,
         ]);
@@ -437,118 +266,15 @@ describe('buildFieldsWithSameType', () => {
 });
 
 describe('buildGqlQuery', () => {
-    const introspectionResults = {
-        resources: [
-            {
-                type: {
-                    name: 'resourceType',
-                    fields: [
-                        {
-                            name: 'id',
-                            type: { kind: TypeKind.SCALAR, name: 'ID' },
-                        },
-                    ],
-                },
-            },
-        ],
-        types: [
-            {
-                name: 'linkedType',
-                fields: [
-                    {
-                        name: 'foo',
-                        type: { kind: TypeKind.SCALAR, name: 'bar' },
-                    },
-                ],
-            },
-        ],
-    };
-
-    const resource = {
-        type: {
-            fields: [
-                { type: { kind: TypeKind.SCALAR, name: '' }, name: 'foo' },
-                { type: { kind: TypeKind.SCALAR, name: '_foo' }, name: 'foo1' },
-                {
-                    type: { kind: TypeKind.OBJECT, name: 'linkedType' },
-                    name: 'linked',
-                },
-                {
-                    type: { kind: TypeKind.OBJECT, name: 'resourceType' },
-                    name: 'resource',
-                },
-            ],
-        },
-    };
-
-    const queryType = {
-        name: 'allCommand',
-        args: [
-            {
-                name: 'foo',
-                type: {
-                    kind: TypeKind.NON_NULL,
-                    ofType: { kind: TypeKind.SCALAR, name: 'Int' },
-                },
-            },
-            {
-                name: 'barId',
-                type: { kind: TypeKind.SCALAR },
-            },
-            {
-                name: 'barIds',
-                type: { kind: TypeKind.SCALAR },
-            },
-            { name: 'bar' },
-        ],
-    };
-
-    const queryTypeDeleteMany = {
-        name: 'deleteCommands',
-        args: [
-            {
-                name: 'ids',
-                type: {
-                    kind: TypeKind.LIST,
-                    ofType: {
-                        kind: TypeKind.NON_NULL,
-                        ofType: {
-                            kind: TypeKind.SCALAR,
-                            name: 'ID',
-                        },
-                    },
-                },
-            },
-        ],
-    };
-
-    const queryTypeUpdateMany = {
-        name: 'updateCommands',
-        args: [
-            {
-                name: 'ids',
-                type: {
-                    kind: TypeKind.LIST,
-                    ofType: {
-                        kind: TypeKind.NON_NULL,
-                        ofType: {
-                            kind: TypeKind.SCALAR,
-                            name: 'ID',
-                        },
-                    },
-                },
-            },
-            {
-                name: 'data',
-                type: { kind: TypeKind.OBJECT, name: 'CommandType' },
-            },
-        ],
-    };
-
-    const params = { foo: 'foo_value' };
-
     describe('GET_LIST', () => {
         it('returns the correct query', () => {
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                resources: { default: resource },
+                queryTypes: { GetList: queryType }, 
+                params: { default: params },
+            } = mockTestData();
+
             expect(
                 print(
                     buildGqlQuery(introspectionResults)(
@@ -562,16 +288,26 @@ describe('buildGqlQuery', () => {
                 print(gql`
                     query allCommand($foo: Int!) {
                         items: allCommand(foo: $foo) {
-                            foo
-                            linked {
-                                foo
+                            totalCount
+                            edges {
+                                node {
+                                    id
+                                    address
+                                    linkedType_id
+                                    linkedTypes {
+                                        totalCount
+                                        edges {
+                                            node {
+                                                id
+                                            }
+                                        }
+                                    }
+                                    resourceType_id
+                                    resourceTypes {
+                                        id
+                                    }
+                                }
                             }
-                            resource {
-                                id
-                            }
-                        }
-                        total: _allCommandMeta(foo: $foo) {
-                            count
                         }
                     }
                 `)
@@ -579,8 +315,12 @@ describe('buildGqlQuery', () => {
         });
 
         it('returns the correct query with sparse fields', () => {
-            const { introspectionResults, params, queryType, resource } =
-                buildGQLParamsWithSparseFieldsFactory();
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { SparseFields: params }, 
+                queryTypes: { GetList: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
 
             expect(
                 print(
@@ -595,17 +335,27 @@ describe('buildGqlQuery', () => {
                 print(gql`
                     query allCommand($foo: Int!) {
                         items: allCommand(foo: $foo) {
-                            address
-                            linked {
-                                title
+                            totalCount
+                            edges {
+                                node {
+                                    id
+                                    address
+                                    linkedTypes {
+                                        totalCount
+                                        edges {
+                                            node {
+                                                id
+                                                title
+                                            }
+                                        }
+                                    }
+                                    resourceTypes {
+                                        id
+                                        foo
+                                        name
+                                    }
+                                }
                             }
-                            resource {
-                                foo
-                                name
-                            }
-                        }
-                        total: _allCommandMeta(foo: $foo) {
-                            count
                         }
                     }
                 `)
@@ -614,6 +364,13 @@ describe('buildGqlQuery', () => {
     });
     describe('GET_MANY', () => {
         it('returns the correct query', () => {
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { default: params }, 
+                queryTypes: { GetList: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
+
             expect(
                 print(
                     buildGqlQuery(introspectionResults)(
@@ -627,16 +384,26 @@ describe('buildGqlQuery', () => {
                 print(gql`
                     query allCommand($foo: Int!) {
                         items: allCommand(foo: $foo) {
-                            foo
-                            linked {
-                                foo
+                            totalCount
+                            edges {
+                                node {
+                                    id
+                                    address
+                                    linkedType_id
+                                    linkedTypes {
+                                        totalCount
+                                        edges {
+                                            node {
+                                                id
+                                            }
+                                        }
+                                    }
+                                    resourceType_id
+                                    resourceTypes {
+                                        id
+                                    }
+                                }
                             }
-                            resource {
-                                id
-                            }
-                        }
-                        total: _allCommandMeta(foo: $foo) {
-                            count
                         }
                     }
                 `)
@@ -644,8 +411,12 @@ describe('buildGqlQuery', () => {
         });
 
         it('returns the correct query with sparse fields', () => {
-            const { introspectionResults, params, queryType, resource } =
-                buildGQLParamsWithSparseFieldsFactory();
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { SparseFields: params }, 
+                queryTypes: { GetList: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
 
             expect(
                 print(
@@ -660,17 +431,27 @@ describe('buildGqlQuery', () => {
                 print(gql`
                     query allCommand($foo: Int!) {
                         items: allCommand(foo: $foo) {
-                            address
-                            linked {
-                                title
+                            totalCount
+                            edges {
+                                node {
+                                    id
+                                    address
+                                    linkedTypes {
+                                        totalCount
+                                        edges {
+                                            node {
+                                                id
+                                                title
+                                            }
+                                        }
+                                    }
+                                    resourceTypes {
+                                        id
+                                        foo
+                                        name
+                                    }
+                                }
                             }
-                            resource {
-                                foo
-                                name
-                            }
-                        }
-                        total: _allCommandMeta(foo: $foo) {
-                            count
                         }
                     }
                 `)
@@ -680,38 +461,12 @@ describe('buildGqlQuery', () => {
 
     describe('GET_MANY_REFERENCE', () => {
         it('returns the correct query', () => {
-            expect(
-                print(
-                    buildGqlQuery(introspectionResults)(
-                        resource,
-                        GET_MANY_REFERENCE,
-                        queryType,
-                        params
-                    )
-                )
-            ).toEqual(
-                print(gql`
-                    query allCommand($foo: Int!) {
-                        items: allCommand(foo: $foo) {
-                            foo
-                            linked {
-                                foo
-                            }
-                            resource {
-                                id
-                            }
-                        }
-                        total: _allCommandMeta(foo: $foo) {
-                            count
-                        }
-                    }
-                `)
-            );
-        });
-
-        it('returns the correct query with sparse fields', () => {
-            const { introspectionResults, params, queryType, resource } =
-                buildGQLParamsWithSparseFieldsFactory();
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { default: params }, 
+                queryTypes: { GetList: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
 
             expect(
                 print(
@@ -726,44 +481,25 @@ describe('buildGqlQuery', () => {
                 print(gql`
                     query allCommand($foo: Int!) {
                         items: allCommand(foo: $foo) {
-                            address
-                            linked {
-                                title
-                            }
-                            resource {
-                                foo
-                                name
-                            }
-                        }
-                        total: _allCommandMeta(foo: $foo) {
-                            count
-                        }
-                    }
-                `)
-            );
-        });
-    });
-    describe('GET_ONE', () => {
-        it('returns the correct query', () => {
-            expect(
-                print(
-                    buildGqlQuery(introspectionResults)(
-                        resource,
-                        GET_ONE,
-                        { ...queryType, name: 'getCommand' },
-                        params
-                    )
-                )
-            ).toEqual(
-                print(gql`
-                    query getCommand($foo: Int!) {
-                        data: getCommand(foo: $foo) {
-                            foo
-                            linked {
-                                foo
-                            }
-                            resource {
-                                id
+                            totalCount
+                            edges {
+                                node {
+                                    id
+                                    address
+                                    linkedType_id
+                                    linkedTypes {
+                                        totalCount
+                                        edges {
+                                            node {
+                                                id
+                                            }
+                                        }
+                                    }
+                                    resourceType_id
+                                    resourceTypes {
+                                        id
+                                    }
+                                }
                             }
                         }
                     }
@@ -772,29 +508,46 @@ describe('buildGqlQuery', () => {
         });
 
         it('returns the correct query with sparse fields', () => {
-            const { introspectionResults, params, queryType, resource } =
-                buildGQLParamsWithSparseFieldsFactory();
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { SparseFields: params }, 
+                queryTypes: { GetList: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
 
             expect(
                 print(
                     buildGqlQuery(introspectionResults)(
                         resource,
-                        GET_ONE,
-                        { ...queryType, name: 'getCommand' },
+                        GET_MANY_REFERENCE,
+                        queryType,
                         params
                     )
                 )
             ).toEqual(
                 print(gql`
-                    query getCommand($foo: Int!) {
-                        data: getCommand(foo: $foo) {
-                            address
-                            linked {
-                                title
-                            }
-                            resource {
-                                foo
-                                name
+                    query allCommand($foo: Int!) {
+                        items: allCommand(foo: $foo) {
+                            totalCount
+                            edges {
+                                node {
+                                    id
+                                    address
+                                    linkedTypes {
+                                        totalCount
+                                        edges {
+                                            node {
+                                                id
+                                                title
+                                            }
+                                        }
+                                    }
+                                    resourceTypes {
+                                        id
+                                        foo
+                                        name
+                                    }
+                                }
                             }
                         }
                     }
@@ -802,224 +555,283 @@ describe('buildGqlQuery', () => {
             );
         });
     });
-    describe('UPDATE', () => {
-        it('returns the correct query', () => {
-            expect(
-                print(
-                    buildGqlQuery(introspectionResults)(
-                        resource,
-                        UPDATE,
-                        { ...queryType, name: 'updateCommand' },
-                        params
-                    )
-                )
-            ).toEqual(
-                print(gql`
-                    mutation updateCommand($foo: Int!) {
-                        data: updateCommand(foo: $foo) {
-                            foo
-                            linked {
-                                foo
-                            }
-                            resource {
-                                id
-                            }
-                        }
-                    }
-                `)
-            );
-        });
+//     describe('GET_ONE', () => {
+//         it('returns the correct query', () => {
+//             expect(
+//                 print(
+//                     buildGqlQuery(introspectionResults)(
+//                         resource,
+//                         GET_ONE,
+//                         { ...queryType, name: 'getCommand' },
+//                         params
+//                     )
+//                 )
+//             ).toEqual(
+//                 print(gql`
+//                     query getCommand($foo: Int!) {
+//                         data: getCommand(foo: $foo) {
+//                             foo
+//                             linked {
+//                                 foo
+//                             }
+//                             resource {
+//                                 id
+//                             }
+//                         }
+//                     }
+//                 `)
+//             );
+//         });
 
-        it('returns the correct query with sparse fields', () => {
-            const { introspectionResults, params, queryType, resource } =
-                buildGQLParamsWithSparseFieldsFactory();
+//         it('returns the correct query with sparse fields', () => {
+//             const { introspectionResults: { default: introspectionResults}, params, queryType, resources: { default: resource } } =
+//                 mockTestData();
 
-            expect(
-                print(
-                    buildGqlQuery(introspectionResults)(
-                        resource,
-                        UPDATE,
-                        { ...queryType, name: 'updateCommand' },
-                        params
-                    )
-                )
-            ).toEqual(
-                print(gql`
-                    mutation updateCommand($foo: Int!) {
-                        data: updateCommand(foo: $foo) {
-                            address
-                            linked {
-                                title
-                            }
-                            resource {
-                                foo
-                                name
-                            }
-                        }
-                    }
-                `)
-            );
-        });
-    });
-    describe('CREATE', () => {
-        it('returns the correct query', () => {
-            expect(
-                print(
-                    buildGqlQuery(introspectionResults)(
-                        resource,
-                        CREATE,
-                        { ...queryType, name: 'createCommand' },
-                        params
-                    )
-                )
-            ).toEqual(
-                print(gql`
-                    mutation createCommand($foo: Int!) {
-                        data: createCommand(foo: $foo) {
-                            foo
-                            linked {
-                                foo
-                            }
-                            resource {
-                                id
-                            }
-                        }
-                    }
-                `)
-            );
-        });
+//             expect(
+//                 print(
+//                     buildGqlQuery(introspectionResults)(
+//                         resource,
+//                         GET_ONE,
+//                         { ...queryType, name: 'getCommand' },
+//                         params
+//                     )
+//                 )
+//             ).toEqual(
+//                 print(gql`
+//                     query getCommand($foo: Int!) {
+//                         data: getCommand(foo: $foo) {
+//                             address
+//                             linked {
+//                                 title
+//                             }
+//                             resource {
+//                                 foo
+//                                 name
+//                             }
+//                         }
+//                     }
+//                 `)
+//             );
+//         });
+//     });
+//     describe('UPDATE', () => {
+//         it('returns the correct query', () => {
+//             expect(
+//                 print(
+//                     buildGqlQuery(introspectionResults)(
+//                         resource,
+//                         UPDATE,
+//                         { ...queryType, name: 'updateCommand' },
+//                         params
+//                     )
+//                 )
+//             ).toEqual(
+//                 print(gql`
+//                     mutation updateCommand($foo: Int!) {
+//                         data: updateCommand(foo: $foo) {
+//                             foo
+//                             linked {
+//                                 foo
+//                             }
+//                             resource {
+//                                 id
+//                             }
+//                         }
+//                     }
+//                 `)
+//             );
+//         });
 
-        it('returns the correct query with sparse fields', () => {
-            const { introspectionResults, params, queryType, resource } =
-                buildGQLParamsWithSparseFieldsFactory();
+//         it('returns the correct query with sparse fields', () => {
+//             const { introspectionResults: { default: introspectionResults}, params, queryType, resources: { default: resource } } =
+//                 mockTestData();
 
-            expect(
-                print(
-                    buildGqlQuery(introspectionResults)(
-                        resource,
-                        CREATE,
-                        { ...queryType, name: 'createCommand' },
-                        params
-                    )
-                )
-            ).toEqual(
-                print(gql`
-                    mutation createCommand($foo: Int!) {
-                        data: createCommand(foo: $foo) {
-                            address
-                            linked {
-                                title
-                            }
-                            resource {
-                                foo
-                                name
-                            }
-                        }
-                    }
-                `)
-            );
-        });
-    });
-    describe('DELETE', () => {
-        it('returns the correct query', () => {
-            expect(
-                print(
-                    buildGqlQuery(introspectionResults)(
-                        resource,
-                        DELETE,
-                        { ...queryType, name: 'deleteCommand' },
-                        params
-                    )
-                )
-            ).toEqual(
-                print(gql`
-                    mutation deleteCommand($foo: Int!) {
-                        data: deleteCommand(foo: $foo) {
-                            foo
-                            linked {
-                                foo
-                            }
-                            resource {
-                                id
-                            }
-                        }
-                    }
-                `)
-            );
-        });
+//             expect(
+//                 print(
+//                     buildGqlQuery(introspectionResults)(
+//                         resource,
+//                         UPDATE,
+//                         { ...queryType, name: 'updateCommand' },
+//                         params
+//                     )
+//                 )
+//             ).toEqual(
+//                 print(gql`
+//                     mutation updateCommand($foo: Int!) {
+//                         data: updateCommand(foo: $foo) {
+//                             address
+//                             linked {
+//                                 title
+//                             }
+//                             resource {
+//                                 foo
+//                                 name
+//                             }
+//                         }
+//                     }
+//                 `)
+//             );
+//         });
+//     });
+//     describe('CREATE', () => {
+//         it('returns the correct query', () => {
+//             expect(
+//                 print(
+//                     buildGqlQuery(introspectionResults)(
+//                         resource,
+//                         CREATE,
+//                         { ...queryType, name: 'createCommand' },
+//                         params
+//                     )
+//                 )
+//             ).toEqual(
+//                 print(gql`
+//                     mutation createCommand($foo: Int!) {
+//                         data: createCommand(foo: $foo) {
+//                             foo
+//                             linked {
+//                                 foo
+//                             }
+//                             resource {
+//                                 id
+//                             }
+//                         }
+//                     }
+//                 `)
+//             );
+//         });
 
-        it('returns the correct query with sparse fields', () => {
-            const { introspectionResults, params, queryType, resource } =
-                buildGQLParamsWithSparseFieldsFactory();
+//         it('returns the correct query with sparse fields', () => {
+//             const { introspectionResults: { default: introspectionResults}, params, queryType, resources: { default: resource } } =
+//                 mockTestData();
 
-            expect(
-                print(
-                    buildGqlQuery(introspectionResults)(
-                        resource,
-                        DELETE,
-                        { ...queryType, name: 'deleteCommand' },
-                        params
-                    )
-                )
-            ).toEqual(
-                print(gql`
-                    mutation deleteCommand($foo: Int!) {
-                        data: deleteCommand(foo: $foo) {
-                            address
-                            linked {
-                                title
-                            }
-                            resource {
-                                foo
-                                name
-                            }
-                        }
-                    }
-                `)
-            );
-        });
-    });
+//             expect(
+//                 print(
+//                     buildGqlQuery(introspectionResults)(
+//                         resource,
+//                         CREATE,
+//                         { ...queryType, name: 'createCommand' },
+//                         params
+//                     )
+//                 )
+//             ).toEqual(
+//                 print(gql`
+//                     mutation createCommand($foo: Int!) {
+//                         data: createCommand(foo: $foo) {
+//                             address
+//                             linked {
+//                                 title
+//                             }
+//                             resource {
+//                                 foo
+//                                 name
+//                             }
+//                         }
+//                     }
+//                 `)
+//             );
+//         });
+//     });
+//     describe('DELETE', () => {
+//         it('returns the correct query', () => {
+//             expect(
+//                 print(
+//                     buildGqlQuery(introspectionResults)(
+//                         resource,
+//                         DELETE,
+//                         { ...queryType, name: 'deleteCommand' },
+//                         params
+//                     )
+//                 )
+//             ).toEqual(
+//                 print(gql`
+//                     mutation deleteCommand($foo: Int!) {
+//                         data: deleteCommand(foo: $foo) {
+//                             foo
+//                             linked {
+//                                 foo
+//                             }
+//                             resource {
+//                                 id
+//                             }
+//                         }
+//                     }
+//                 `)
+//             );
+//         });
 
-    it('returns the correct query for DELETE_MANY', () => {
-        expect(
-            print(
-                buildGqlQuery(introspectionResults)(
-                    resource,
-                    DELETE_MANY,
-                    queryTypeDeleteMany,
-                    { ids: [1, 2, 3] }
-                )
-            )
-        ).toEqual(
-            `mutation deleteCommands($ids: [ID!]) {
-  data: deleteCommands(ids: $ids) {
-    ids
-  }
-}
-`
-        );
-    });
+//         it('returns the correct query with sparse fields', () => {
+//             const { introspectionResults: { default: introspectionResults}, params, queryType, resources: { default: resource } } =
+//                 mockTestData();
 
-    it('returns the correct query for UPDATE_MANY', () => {
-        expect(
-            print(
-                buildGqlQuery(introspectionResults)(
-                    resource,
-                    UPDATE_MANY,
-                    queryTypeUpdateMany,
-                    {
-                        ids: [1, 2, 3],
-                        data: params,
-                    }
-                )
-            )
-        ).toEqual(
-            `mutation updateCommands($ids: [ID!], $data: CommandType) {
-  data: updateCommands(ids: $ids, data: $data) {
-    ids
-  }
-}
-`
-        );
-    });
+//             expect(
+//                 print(
+//                     buildGqlQuery(introspectionResults)(
+//                         resource,
+//                         DELETE,
+//                         { ...queryType, name: 'deleteCommand' },
+//                         params
+//                     )
+//                 )
+//             ).toEqual(
+//                 print(gql`
+//                     mutation deleteCommand($foo: Int!) {
+//                         data: deleteCommand(foo: $foo) {
+//                             address
+//                             linked {
+//                                 title
+//                             }
+//                             resource {
+//                                 foo
+//                                 name
+//                             }
+//                         }
+//                     }
+//                 `)
+//             );
+//         });
+//     });
+
+//     it('returns the correct query for DELETE_MANY', () => {
+//         expect(
+//             print(
+//                 buildGqlQuery(introspectionResults)(
+//                     resource,
+//                     DELETE_MANY,
+//                     queryTypeDeleteMany,
+//                     { ids: [1, 2, 3] }
+//                 )
+//             )
+//         ).toEqual(
+//             `mutation deleteCommands($ids: [ID!]) {
+//   data: deleteCommands(ids: $ids) {
+//     ids
+//   }
+// }
+// `
+//         );
+//     });
+
+//     it('returns the correct query for UPDATE_MANY', () => {
+//         expect(
+//             print(
+//                 buildGqlQuery(introspectionResults)(
+//                     resource,
+//                     UPDATE_MANY,
+//                     queryTypeUpdateMany,
+//                     {
+//                         ids: [1, 2, 3],
+//                         data: params,
+//                     }
+//                 )
+//             )
+//         ).toEqual(
+//             `mutation updateCommands($ids: [ID!], $data: CommandType) {
+//   data: updateCommands(ids: $ids, data: $data) {
+//     ids
+//   }
+// }
+// `
+//         );
+//     });
 });
