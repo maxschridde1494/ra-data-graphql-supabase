@@ -555,65 +555,92 @@ describe('buildGqlQuery', () => {
             );
         });
     });
-//     describe('GET_ONE', () => {
-//         it('returns the correct query', () => {
-//             expect(
-//                 print(
-//                     buildGqlQuery(introspectionResults)(
-//                         resource,
-//                         GET_ONE,
-//                         { ...queryType, name: 'getCommand' },
-//                         params
-//                     )
-//                 )
-//             ).toEqual(
-//                 print(gql`
-//                     query getCommand($foo: Int!) {
-//                         data: getCommand(foo: $foo) {
-//                             foo
-//                             linked {
-//                                 foo
-//                             }
-//                             resource {
-//                                 id
-//                             }
-//                         }
-//                     }
-//                 `)
-//             );
-//         });
+    describe('GET_ONE', () => {
+        it('returns the correct query', () => {
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { GetOne: params }, 
+                queryTypes: { GetOne: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
 
-//         it('returns the correct query with sparse fields', () => {
-//             const { introspectionResults: { default: introspectionResults}, params, queryType, resources: { default: resource } } =
-//                 mockTestData();
+            expect(
+                print(
+                    buildGqlQuery(introspectionResults)(
+                        resource,
+                        GET_ONE,
+                        queryType,
+                        params
+                    )
+                )
+            ).toEqual(
+                print(gql`
+                    query commandsById($id: ID!) {
+                        data: commandsById(id: $id) {
+                            id
+                            address
+                            linkedType_id
+                            linkedTypes {
+                              totalCount
+                              edges {
+                                node {
+                                  id
+                                }
+                              }
+                            }
+                            resourceType_id
+                            resourceTypes {
+                              id
+                            }
+                        }
+                    }
+                `)
+            );
+        });
 
-//             expect(
-//                 print(
-//                     buildGqlQuery(introspectionResults)(
-//                         resource,
-//                         GET_ONE,
-//                         { ...queryType, name: 'getCommand' },
-//                         params
-//                     )
-//                 )
-//             ).toEqual(
-//                 print(gql`
-//                     query getCommand($foo: Int!) {
-//                         data: getCommand(foo: $foo) {
-//                             address
-//                             linked {
-//                                 title
-//                             }
-//                             resource {
-//                                 foo
-//                                 name
-//                             }
-//                         }
-//                     }
-//                 `)
-//             );
-//         });
-//     });
+        it('returns the correct query with sparse fields', () => {
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { GetOneSparseFields: params }, 
+                queryTypes: { GetOne: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
+
+            expect(
+                print(
+                    buildGqlQuery(introspectionResults)(
+                        resource,
+                        GET_ONE,
+                        queryType,
+                        params
+                    )
+                )
+            ).toEqual(
+                print(gql`
+                    query commandsById($id: ID!) {
+                        data: commandsById(id: $id) {
+                            id
+                            address
+                            linkedTypes {
+                              totalCount
+                              edges {
+                                node {
+                                  id
+                                  title
+                                }
+                              }
+                            }
+                            resourceTypes {
+                              id
+                              foo
+                              name
+                            }
+                        }
+                    }
+                `)
+            );
+        });
+    });
 //     describe('UPDATE', () => {
 //         it('returns the correct query', () => {
 //             expect(

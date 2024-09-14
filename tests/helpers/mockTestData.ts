@@ -1,5 +1,5 @@
 import { IntrospectionResult } from "ra-data-graphql"
-import { TypeKind } from 'graphql';
+import { TypeKind, IntrospectionObjectType } from 'graphql';
 
 export const mockTestData = (): {
   introspectionResults: {[key: string]: IntrospectionResult}
@@ -41,10 +41,17 @@ export const mockTestData = (): {
                   ],
                   __typename: 'resourceTypes',
                   enumValues: [],
-                  interfaces: [],
-                  description: null,
-                  inputFields: null,
-                  possibleTypes: null,
+                  interfaces: [
+                    {
+                        kind: "INTERFACE",
+                        name: "Node",
+                        ofType: null,
+                        __typename: "Node"
+                    }
+                ],
+                description: null,
+                inputFields: null,
+                possibleTypes: null,
               },
           },
           {
@@ -142,7 +149,14 @@ export const mockTestData = (): {
                 ],
                 __typename: 'commands',
                 enumValues: [],
-                interfaces: [],
+                interfaces: [
+                    {
+                        kind: "INTERFACE",
+                        name: "Node",
+                        ofType: null,
+                        __typename: "Node"
+                    }
+                ],
                 description: null,
                 inputFields: null,
                 possibleTypes: null,
@@ -194,7 +208,14 @@ export const mockTestData = (): {
               ],
               __typename: 'linkedTypes',
               enumValues: [],
-              interfaces: [],
+              interfaces: [
+                {
+                    kind: "INTERFACE",
+                    name: "Node",
+                    ofType: null,
+                    __typename: "Node"
+                }
+              ],
               description: null,
               inputFields: null,
               possibleTypes: null,
@@ -223,12 +244,109 @@ export const mockTestData = (): {
               ],
               __typename: 'nestedLinks',
               enumValues: [],
-              interfaces: [],
+              interfaces: [
+                {
+                    kind: "INTERFACE",
+                    name: "Node",
+                    ofType: null,
+                    __typename: "Node"
+                }
+              ],
               description: null,
               inputFields: null,
               possibleTypes: null,
           },
+          {
+            kind: "INTERFACE",
+            name: "Node",
+            fields: [
+                {
+                    args: [],
+                    name: "nodeId",
+                    type: {
+                        kind: "NON_NULL",
+                        name: null,
+                        ofType: {
+                            kind: "SCALAR",
+                            name: "ID",
+                            ofType: null,
+                            __typename: "ID"
+                        },
+                        __typename: null
+                    },
+                    __typename: "nodeId",
+                    description: "Retrieves a record by `ID`",
+                    isDeprecated: false,
+                    deprecationReason: null
+                }
+            ],
+            __typename: "Node",
+            enumValues: [],
+            interfaces: [],
+            description: null,
+            inputFields: null,
+            possibleTypes: [
+                {
+                    kind: "OBJECT",
+                    name: "linkedTypes",
+                    ofType: null,
+                    __typename: "linkedTypes"
+                },
+                {
+                    kind: "OBJECT",
+                    name: "nestedLinks",
+                    ofType: null,
+                    __typename: "nestedLinks"
+                },
+                {
+                    kind: "OBJECT",
+                    name: "commands",
+                    ofType: null,
+                    __typename: "commands"
+                },
+                {
+                    kind: "OBJECT",
+                    name: "resourceTypes",
+                    ofType: null,
+                    __typename: "resourceTypes"
+                }
+            ]
+        },
       ],
+      queries: [
+        {
+            args: [
+                {
+                    name: "nodeId",
+                    type: {
+                        kind: "NON_NULL",
+                        name: null,
+                        ofType: {
+                            kind: "SCALAR",
+                            name: "ID",
+                            ofType: null,
+                            __typename: "ID"
+                        },
+                        __typename: null
+                    },
+                    __typename: "nodeId",
+                    description: "The record's `ID`",
+                    defaultValue: null
+                }
+            ],
+            name: "node",
+            type: {
+                kind: "INTERFACE",
+                name: "Node",
+                ofType: null,
+                __typename: "Node"
+            },
+            __typename: "node",
+            description: "Retrieve a record by its `ID`",
+            isDeprecated: false,
+            deprecationReason: null
+        },
+      ]
     },
     circularDependencies: {
       resources: [
@@ -263,7 +381,14 @@ export const mockTestData = (): {
                   ],
                   __typename: 'resourceTypes',
                   enumValues: [],
-                  interfaces: [],
+                  interfaces: [
+                    {
+                        kind: "INTERFACE",
+                        name: "Node",
+                        ofType: null,
+                        __typename: "Node"
+                    }
+                  ],
                   description: null,
                   inputFields: null,
                   possibleTypes: null,
@@ -315,12 +440,109 @@ export const mockTestData = (): {
             ],
             __typename: 'linkedTypes',
             enumValues: [],
-            interfaces: [],
+            interfaces: [
+                {
+                    kind: "INTERFACE",
+                    name: "Node",
+                    ofType: null,
+                    __typename: "Node"
+                }
+            ],
             description: null,
             inputFields: null,
             possibleTypes: null,
         },
+        {
+            kind: "INTERFACE",
+            name: "Node",
+            fields: [
+                {
+                    args: [],
+                    name: "nodeId",
+                    type: {
+                        kind: "NON_NULL",
+                        name: null,
+                        ofType: {
+                            kind: "SCALAR",
+                            name: "ID",
+                            ofType: null,
+                            __typename: "ID"
+                        },
+                        __typename: null
+                    },
+                    __typename: "nodeId",
+                    description: "Retrieves a record by `ID`",
+                    isDeprecated: false,
+                    deprecationReason: null
+                }
+            ],
+            __typename: "Node",
+            enumValues: [],
+            interfaces: [],
+            description: null,
+            inputFields: null,
+            possibleTypes: [
+                {
+                    kind: "OBJECT",
+                    name: "linkedTypes",
+                    ofType: null,
+                    __typename: "linkedTypes"
+                },
+                {
+                    kind: "OBJECT",
+                    name: "nestedLinks",
+                    ofType: null,
+                    __typename: "nestedLinks"
+                },
+                {
+                    kind: "OBJECT",
+                    name: "commands",
+                    ofType: null,
+                    __typename: "commands"
+                },
+                {
+                    kind: "OBJECT",
+                    name: "resourceTypes",
+                    ofType: null,
+                    __typename: "resourceTypes"
+                }
+            ]
+        },
       ],
+      queries: [
+        {
+            args: [
+                {
+                    name: "nodeId",
+                    type: {
+                        kind: "NON_NULL",
+                        name: null,
+                        ofType: {
+                            kind: "SCALAR",
+                            name: "ID",
+                            ofType: null,
+                            __typename: "ID"
+                        },
+                        __typename: null
+                    },
+                    __typename: "nodeId",
+                    description: "The record's `ID`",
+                    defaultValue: null
+                }
+            ],
+            name: "node",
+            type: {
+                kind: "INTERFACE",
+                name: "Node",
+                ofType: null,
+                __typename: "Node"
+            },
+            __typename: "node",
+            description: "Retrieve a record by its `ID`",
+            isDeprecated: false,
+            deprecationReason: null
+        },
+      ]
     }
   }, 
   resources: {
@@ -399,7 +621,14 @@ export const mockTestData = (): {
           ],
           __typename: 'commands',
           enumValues: [],
-          interfaces: [],
+          interfaces: [
+                {
+                    kind: "INTERFACE",
+                    name: "Node",
+                    ofType: null,
+                    __typename: "Node"
+                }
+            ],
           description: null,
           inputFields: null,
           possibleTypes: null,
@@ -499,7 +728,14 @@ export const mockTestData = (): {
           ],
           __typename: 'commands',
           enumValues: [],
-          interfaces: [],
+          interfaces: [
+                {
+                    kind: "INTERFACE",
+                    name: "Node",
+                    ofType: null,
+                    __typename: "Node"
+                }
+            ],
           description: null,
           inputFields: null,
           possibleTypes: null,
@@ -568,6 +804,21 @@ export const mockTestData = (): {
           },
       ],
     },
+    GetOne: {
+        name: 'commandsById',
+        args: [
+            {
+                name: 'id',
+                type: {
+                    kind: TypeKind.NON_NULL,
+                    ofType: {
+                        kind: TypeKind.SCALAR,
+                        name: 'ID',
+                    },
+                },
+            },
+        ],
+    }
   },
   params: {
     default: { foo: 'foo_value' },
@@ -581,6 +832,20 @@ export const mockTestData = (): {
               { resourceTypes: ['id', 'foo', 'name'] },
           ],
       },
+    },
+    GetOne: {
+        id: 'foo'
+    },
+    GetOneSparseFields: {
+        id: 'foo',
+        meta: {
+            sparseFields: [
+                'id',
+                'address',
+                { linkedTypes: ['id', 'title'] },
+                { resourceTypes: ['id', 'foo', 'name'] },
+            ],
+        },
     }
   },
 })

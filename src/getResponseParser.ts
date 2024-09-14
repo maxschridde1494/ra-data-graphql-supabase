@@ -14,7 +14,7 @@ export default (_introspectionResults: IntrospectionResult) => (
     _resource: IntrospectedResource,
     _queryType: IntrospectionField
 ) => (response: ApolloQueryResult<any>) => {
-    // const data = response.data;
+    const data = response.data;
   
     if (
         raFetchMethod === GET_LIST ||
@@ -29,9 +29,8 @@ export default (_introspectionResults: IntrospectionResult) => (
     // else if (raFetchMethod === DELETE_MANY || raFetchMethod === UPDATE_MANY) {
     //     return { data: sanitizeResource(data.data).ids };
     // }
-  
-    // return { data: sanitizeResource(data.data) };
-    return { data: null }
+    
+    return { data: sanitizeResource(data.data) };
 };
   
 const sanitizeResource = (data: any) => {
@@ -84,7 +83,7 @@ const sanitizeResource = (data: any) => {
   
         return { ...acc, [key]: dataForKey };
     }, {});
-  
+
     return result;
   };
   

@@ -5,17 +5,6 @@ import { mockTestData } from './helpers/mockTestData';
 
 
 describe('buildQuery', () => {
-    // const queryType = 'query_type';
-    // const queryType = 'CREATE';
-
-    // const resource = {
-    //     type: { name: 'Post' },
-    //     GET_LIST: queryType,
-    // };
-    // const introspectionResults = {
-    //     resources: [resource],
-    // };
-
     it('throws an error if resource is unknown', () => {
         const { introspectionResults: { default: introspectionResults } } = mockTestData();
         expect(() =>

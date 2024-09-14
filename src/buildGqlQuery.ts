@@ -2,6 +2,7 @@ import {
     GET_LIST,
     GET_MANY,
     GET_MANY_REFERENCE,
+    GET_ONE,
     // DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
@@ -34,7 +35,7 @@ import {
   };
   
 function processSparseFields(
-    resourceFields: readonly IntrospectionField[],
+    resourceFields: IntrospectionField[],
     sparseFields: SparseField[]
 ): ProcessedFields & { resourceFields: readonly IntrospectionField[] } {
     if (!sparseFields || sparseFields.length === 0)
@@ -81,7 +82,7 @@ function processSparseFields(
         throw new Error(
             "Requested sparse fields not found. Ensure sparse fields are available in the resource's type"
         );
-  
+    
     return permittedSparseFields;
 }
   
@@ -104,7 +105,7 @@ export default (introspectionResults: IntrospectionResult) =>
 
         const fields = buildFields(introspectionResults)({
             resourceObject: resource,
-            fieldsProp: resource.type.fields,
+            fieldsProp: resource.type.fields as IntrospectionField[],
             sparseFields,
         });
   
@@ -138,6 +139,25 @@ export default (introspectionResults: IntrospectionResult) =>
                         //         gqlTypes.field(gqlTypes.name('count')),
                         //     ])
                         // ),
+                    ]),
+                    gqlTypes.name(queryType.name),
+                    apolloArgs
+                ),
+            ]);
+        }
+
+        if (raFetchMethod === GET_ONE) {
+            return gqlTypes.document([
+                gqlTypes.operationDefinition(
+                    'query',
+                    gqlTypes.selectionSet([
+                        gqlTypes.field(
+                            gqlTypes.name(queryType.name),
+                            gqlTypes.name('data'),
+                            args,
+                            null,
+                            gqlTypes.selectionSet(fields)
+                        ),
                     ]),
                     gqlTypes.name(queryType.name),
                     apolloArgs
@@ -212,7 +232,7 @@ const fieldsForObject = ({
     introspectionResults: IntrospectionResult, 
     resourceObject?: IntrospectedResource
     typeObject?: IntrospectionType //IntrospectionObjectType,
-    fields: readonly IntrospectionField[], 
+    fields: IntrospectionField[], 
 }) => {
     if (!(resourceObject || typeObject)) return { object: null, fields: fields }
 
@@ -224,7 +244,7 @@ const fieldsForObject = ({
                         introspectionResults.resources.find(r => r.type.name === type.name.replace('Connection', '')) as IntrospectedResource
                         : introspectionResults.types.find(t => t.name === type.name.replace('Connection', '')) as IntrospectionType
 
-    return { object, fields: resourceObject ? (object as IntrospectedResource).type.fields : (object as IntrospectionObjectType).fields }
+    return { object, fields: (resourceObject ? (object as IntrospectedResource).type.fields : (object as IntrospectionObjectType).fields) as IntrospectionField[] }
 }
   
 export const buildFields = (introspectionResults: IntrospectionResult, paths: string[] = []) =>
@@ -236,7 +256,7 @@ export const buildFields = (introspectionResults: IntrospectionResult, paths: st
     }: { 
         resourceObject?: IntrospectedResource,
         typeObject?: IntrospectionType// IntrospectionObjectType,
-        fieldsProp: readonly IntrospectionField[],
+        fieldsProp: IntrospectionField[],
         sparseFields?: SparseField[] 
     }): any => {  
         let { fields } = fieldsForObject({ introspectionResults, resourceObject, typeObject, fields: fieldsProp })
@@ -244,6 +264,9 @@ export const buildFields = (introspectionResults: IntrospectionResult, paths: st
         const { resourceFields, linkedSparseFields } = sparseFields
             ? processSparseFields(fields, sparseFields)
             : { resourceFields: fields, linkedSparseFields: [] };
+
+        const nodeIdField = fields.find(f => f.name === 'nodeId')
+        if (nodeIdField && !resourceFields.find(f => f.name === 'nodeId')) resourceFields.push(nodeIdField)
   
         return resourceFields.reduce((acc: any, field: IntrospectionField) => {
             const type = getFinalType(field.type);
@@ -269,14 +292,14 @@ export const buildFields = (introspectionResults: IntrospectionResult, paths: st
                 let { object, fields: linkedResourceFields} = fieldsForObject({ 
                     introspectionResults, 
                     resourceObject: linkedResourceObject, 
-                    fields: linkedResourceObject.type.fields 
+                    fields: linkedResourceObject.type.fields as IntrospectionField[]
                 })
 
                 const linkedResource = object as IntrospectedResource
               
                 const linkedResourceSparseFields = linkedSparseFields.find(
                     lSP => lSP.linkedType === field.name
-                )?.fields || ['id']; // default to id if no sparse fields specified for linked resource
+                )?.fields || ['id', 'nodeId']; // always include id and nodeId for linked resources
                 
                 gqlSelectionSet = gqlTypes.selectionSet(
                     buildFields(introspectionResults)({
@@ -295,7 +318,7 @@ export const buildFields = (introspectionResults: IntrospectionResult, paths: st
                 const { object, fields: linkedTypeFields } = fieldsForObject({ 
                     introspectionResults, 
                     typeObject: linkedTypeObject, 
-                    fields: linkedTypeObject?.fields 
+                    fields: linkedTypeObject?.fields as IntrospectionField[]
                 })
     
                 const linkedType = object as IntrospectionType
@@ -306,7 +329,7 @@ export const buildFields = (introspectionResults: IntrospectionResult, paths: st
                     
                     const linkedTypeSparseFields = linkedSparseFields.find(
                         lSP => lSP.linkedType === field.name
-                    )?.fields || ['id']; // default to id if no sparse fields specified for linked type
+                    )?.fields || ['id', 'nodeId']; // always include id and nodeId for linked resources
                     
                     gqlSelectionSet = gqlTypes.selectionSet([
                         gqlTypes.field(gqlTypes.name('totalCount')),
@@ -376,7 +399,7 @@ export const buildFragments = (introspectionResults: IntrospectionResult) =>
                     gqlTypes.selectionSet(
                         buildFields(introspectionResults)({
                             resourceObject: introspectionResults.resources.find(r => r.type.name === linkedType.name),
-                            fieldsProp: (linkedType as IntrospectionObjectType).fields
+                            fieldsProp: (linkedType as IntrospectionObjectType).fields as IntrospectionField[]
                         })
                     ),
                     gqlTypes.namedType(gqlTypes.name(type.name))
@@ -416,7 +439,7 @@ export const buildArgs = (
             (acc: any, arg) => [
               ...acc,
               gqlTypes.argument(
-                  gqlTypes.name(arg.name),
+                  gqlTypes.name(query.name === 'node' ? 'nodeId' : arg.name),
                   gqlTypes.variable(gqlTypes.name(arg.name))
               ),
             ],

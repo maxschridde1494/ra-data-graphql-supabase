@@ -21,6 +21,7 @@ describe('getResponseParser', () => {
                         type: {
                             name: 'User',
                             fields: [
+                                { name: 'nodeId', type: { kind: TypeKind.SCALAR } },
                                 { name: 'id', type: { kind: TypeKind.SCALAR } },
                                 {
                                     name: 'firstName',
@@ -33,6 +34,7 @@ describe('getResponseParser', () => {
                         type: {
                             name: 'Tag',
                             fields: [
+                                { name: 'nodeId', type: { kind: TypeKind.SCALAR } },
                                 { name: 'id', type: { kind: TypeKind.SCALAR } },
                                 {
                                     name: 'name',
@@ -52,13 +54,14 @@ describe('getResponseParser', () => {
                             { 
                                 node: {
                                     _typeName: 'Post',
+                                    nodeId: 'post1NodeId',
                                     id: 'post1',
                                     title: 'title1',
                                     author: { id: 'author1', firstName: 'Toto' },
                                     coauthor: null,
                                     tags: [
-                                        { id: 'tag1', name: 'tag1 name' },
-                                        { id: 'tag2', name: 'tag2 name' },
+                                        { id: 'tag1', nodeId: 'tag1NodeId', name: 'tag1 name' },
+                                        { id: 'tag2', nodeId: 'tag2NodeId', name: 'tag2 name' },
                                     ],
                                     embeddedJson: { foo: 'bar' },
                                 }
@@ -66,13 +69,14 @@ describe('getResponseParser', () => {
                             {
                                 node: {
                                     _typeName: 'Post',
+                                    nodeId: 'post2NodeId',
                                     id: 'post2',
                                     title: 'title2',
                                     author: { id: 'author1', firstName: 'Toto' },
                                     coauthor: null,
                                     tags: [
-                                        { id: 'tag1', name: 'tag1 name' },
-                                        { id: 'tag3', name: 'tag3 name' },
+                                        { id: 'tag1', nodeId: 'tag1NodeId', name: 'tag1 name' },
+                                        { id: 'tag3', nodeId: 'tag3NodeId', name: 'tag3 name' },
                                     ],
                                     embeddedJson: { foo: 'bar' },
                                 }
@@ -91,25 +95,27 @@ describe('getResponseParser', () => {
             ).toEqual({
                 data: [
                     {
+                        nodeId: 'post1NodeId',
                         id: 'post1',
                         title: 'title1',
                         'author.id': 'author1',
                         author: { id: 'author1', firstName: 'Toto' },
                         tags: [
-                            { id: 'tag1', name: 'tag1 name' },
-                            { id: 'tag2', name: 'tag2 name' },
+                            { nodeId: 'tag1NodeId', id: 'tag1', name: 'tag1 name' },
+                            { nodeId: 'tag2NodeId', id: 'tag2', name: 'tag2 name' },
                         ],
                         tagsIds: ['tag1', 'tag2'],
                         embeddedJson: { foo: 'bar' },
                     },
                     {
+                        nodeId: 'post2NodeId',
                         id: 'post2',
                         title: 'title2',
                         'author.id': 'author1',
                         author: { id: 'author1', firstName: 'Toto' },
                         tags: [
-                            { id: 'tag1', name: 'tag1 name' },
-                            { id: 'tag3', name: 'tag3 name' },
+                            { nodeId: 'tag1NodeId', id: 'tag1', name: 'tag1 name' },
+                            { nodeId: 'tag3NodeId', id: 'tag3', name: 'tag3 name' },
                         ],
                         tagsIds: ['tag1', 'tag3'],
                         embeddedJson: { foo: 'bar' },

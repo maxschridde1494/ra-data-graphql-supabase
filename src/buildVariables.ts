@@ -8,7 +8,7 @@ import {
 } from 'graphql';
 import {
     GET_LIST,
-    // GET_ONE,
+    GET_ONE,
     GET_MANY,
     GET_MANY_REFERENCE,
     // CREATE,
@@ -64,14 +64,20 @@ export default (introspectionResults: IntrospectionResult) =>
 
             return variables;
         }
-        // case GET_ONE:
+        case GET_ONE:
+            return {
+                id: preparedParams.id,
+                ...(preparedParams.meta
+                    ? { meta: preparedParams.meta }
+                    : {}),
+                };
         // case DELETE:
         //     return {
         //         id: preparedParams.id,
         //         ...(preparedParams.meta
         //             ? { meta: preparedParams.meta }
         //             : {}),
-        //     };
+        //         };
         // case DELETE_MANY:
         //     return preparedParams;
         // case CREATE:
