@@ -4,12 +4,14 @@ import {
     GET_MANY,
     GET_MANY_REFERENCE,
     // CREATE,
-    // UPDATE,
+    GET_ONE,
+    UPDATE,
     // DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
 } from 'ra-core';
 import getResponseParser from '../src/getResponseParser';
+import { mockTestData } from './helpers/mockTestData';
 
 describe('getResponseParser', () => {
     it.each([[GET_LIST], [GET_MANY], [GET_MANY_REFERENCE]])(
@@ -126,74 +128,53 @@ describe('getResponseParser', () => {
         }
     );
 
-    // describe.each([[CREATE], [UPDATE], [DELETE]])('%s', type => {
-    //     it(`returns the response expected for ${type}`, () => {
-    //         const introspectionResults = {
-    //             resources: [
-    //                 {
-    //                     type: {
-    //                         name: 'User',
-    //                         fields: [
-    //                             { name: 'id', type: { kind: TypeKind.SCALAR } },
-    //                             {
-    //                                 name: 'firstName',
-    //                                 type: { kind: TypeKind.SCALAR },
-    //                             },
-    //                         ],
-    //                     },
-    //                 },
-    //                 {
-    //                     type: {
-    //                         name: 'Tag',
-    //                         fields: [
-    //                             { name: 'id', type: { kind: TypeKind.SCALAR } },
-    //                             {
-    //                                 name: 'name',
-    //                                 type: { kind: TypeKind.SCALAR },
-    //                             },
-    //                         ],
-    //                     },
-    //                 },
-    //             ],
-    //             types: [{ name: 'User' }, { name: 'Tag' }],
-    //         };
-    //         const response = {
-    //             data: {
-    //                 data: {
-    //                     _typeName: 'Post',
-    //                     id: 'post1',
-    //                     title: 'title1',
-    //                     author: { id: 'author1', firstName: 'Toto' },
-    //                     coauthor: null,
-    //                     tags: [
-    //                         { id: 'tag1', name: 'tag1 name' },
-    //                         { id: 'tag2', name: 'tag2 name' },
-    //                     ],
-    //                     embeddedJson: { foo: 'bar' },
-    //                 },
-    //             },
-    //         };
-    //         expect(
-    //             getResponseParser(introspectionResults)(
-    //                 type,
-    //                 undefined,
-    //                 undefined
-    //             )(response)
-    //         ).toEqual({
-    //             data: {
-    //                 id: 'post1',
-    //                 title: 'title1',
-    //                 'author.id': 'author1',
-    //                 author: { id: 'author1', firstName: 'Toto' },
-    //                 tags: [
-    //                     { id: 'tag1', name: 'tag1 name' },
-    //                     { id: 'tag2', name: 'tag2 name' },
-    //                 ],
-    //                 tagsIds: ['tag1', 'tag2'],
-    //                 embeddedJson: { foo: 'bar' },
-    //             },
-    //         });
-    //     });
+    describe(GET_ONE, () => {
+        it(`returns the response expected for GET_ONE`, () => {
+            const { 
+                introspectionResults: { default: introspectionResult },
+                queryTypes: { GetOne: queryType },
+                resources: { default: { resource } },
+                responses: { GetOne: response }
+            } = mockTestData()
+    
+            expect(
+                getResponseParser(introspectionResult)(
+                    GET_ONE,
+                    resource,
+                    queryType
+                )(response)
+            ).toEqual({
+                data: response.data.data
+            });
+        });
+    })
+
+    const mutationTypes = [
+        // [CREATE], 
+        [UPDATE], 
+        // [DELETE]
+    ]
+    
+    describe.each(mutationTypes)('%s', type => {
+        it(`returns the response expected for ${type}`, () => {
+            const { 
+                introspectionResults: { default: introspectionResult },
+                queryTypes: { Update: queryType },
+                // params: { Update: params },
+                resources: { default: { resource } },
+                responses: { Update: response }
+            } = mockTestData()
+    
+            expect(
+                getResponseParser(introspectionResult)(
+                    type,
+                    resource,
+                    queryType
+                )(response)
+            ).toEqual({
+                data: response.data.data.records[0]
+            });
+        });
 
     //     it(`returns the response expected for ${type} with simple arrays of values`, () => {
     //         const introspectionResults = {
@@ -407,7 +388,7 @@ describe('getResponseParser', () => {
     //             },
     //         });
     //     });
-    // });
+    });
 
     // it('returns the response expected for DELETE_MANY', () => {
     //     const introspectionResults = {

@@ -3,6 +3,7 @@ import {
     GET_MANY,
     GET_MANY_REFERENCE,
     GET_ONE,
+    UPDATE,
     // DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
@@ -93,13 +94,15 @@ export default (introspectionResults: IntrospectionResult) =>
         queryType: IntrospectionField,
         variables: any
     ) => {
-        let { orderBy, ...metaVariables } = variables;
+        // let { orderBy, ...metaVariables } = variables;
   
-        const apolloArgs = buildApolloArgs(queryType, variables);
-        const args = buildArgs(queryType, variables);
+        const apolloArgs = buildApolloArgs(queryType, variables, raFetchMethod);
+        const args = buildArgs(queryType, variables, raFetchMethod);
   
-        const sparseFields = metaVariables.meta?.sparseFields;
-        if (sparseFields) delete metaVariables.meta.sparseFields;
+        // const sparseFields = metaVariables.meta?.sparseFields;
+        // if (sparseFields) delete metaVariables.meta.sparseFields;
+        const sparseFields = variables.meta?.sparseFields;
+        if (sparseFields) delete variables.meta.sparseFields;
   
         // const metaArgs = buildArgs(queryType, metaVariables);
 
@@ -130,15 +133,6 @@ export default (introspectionResults: IntrospectionResult) =>
                               ]))
                             ])
                         ),
-                        // gqlTypes.field(
-                        //     gqlTypes.name(`_${queryType.name}Meta`),
-                        //     gqlTypes.name('total'),
-                        //     metaArgs,
-                        //     null,
-                        //     gqlTypes.selectionSet([
-                        //         gqlTypes.field(gqlTypes.name('count')),
-                        //     ])
-                        // ),
                     ]),
                     gqlTypes.name(queryType.name),
                     apolloArgs
@@ -157,6 +151,28 @@ export default (introspectionResults: IntrospectionResult) =>
                             args,
                             null,
                             gqlTypes.selectionSet(fields)
+                        ),
+                    ]),
+                    gqlTypes.name(queryType.name),
+                    apolloArgs
+                ),
+            ]);
+        }
+
+        if (raFetchMethod === UPDATE) {
+            return gqlTypes.document([
+                gqlTypes.operationDefinition(
+                    'mutation',
+                    gqlTypes.selectionSet([
+                        gqlTypes.field(
+                            gqlTypes.name(queryType.name),
+                            gqlTypes.name('data'),
+                            args,
+                            null,
+                            gqlTypes.selectionSet([
+                                gqlTypes.field(gqlTypes.name('affectedCount')),
+                                gqlTypes.field(gqlTypes.name('records'), null, null, null, gqlTypes.selectionSet(fields))
+                            ])
                         ),
                     ]),
                     gqlTypes.name(queryType.name),
@@ -409,7 +425,8 @@ export const buildFragments = (introspectionResults: IntrospectionResult) =>
   
 export const buildArgs = (
     query: IntrospectionField,
-    variables: any
+    variables: any,
+    raFetchMethod: string
 ): ArgumentNode[] => {
     if (query.args.length === 0) {
         return [];
@@ -425,12 +442,18 @@ export const buildArgs = (
     // 'before',
     // 'after',
     // 'offset',
-  
-    const { sortField, sortOrder, page, perPage } = variables
-    if (sortField && sortOrder) validVariables.push('orderBy')
-    if (page && perPage) {
-      validVariables.push('offset')
-      validVariables.push('first')
+
+    if (raFetchMethod === UPDATE) {
+        validVariables.push('filter')
+        validVariables.push('set')
+        validVariables.push('atMost')
+    } else {
+        const { sortField, sortOrder, page, perPage } = variables
+        if (sortField && sortOrder) validVariables.push('orderBy')
+        if (page && perPage) {
+          validVariables.push('offset')
+          validVariables.push('first')
+        }
     }
   
     let args = query.args
@@ -451,7 +474,8 @@ export const buildArgs = (
   
 export const buildApolloArgs = (
     query: IntrospectionField,
-    variables: any
+    variables: any,
+    raFetchMethod: string
 ): VariableDefinitionNode[] => {
     if (query.args.length === 0) {
         return [];
@@ -467,11 +491,18 @@ export const buildApolloArgs = (
     // 'before',
     // 'after',
     // 'offset',
-    const { sortField, sortOrder, page, perPage } = variables
-    if (sortField && sortOrder) validVariables.push('orderBy')
-    if (page && perPage) {
-      validVariables.push('offset')
-      validVariables.push('first')
+
+    if (raFetchMethod === UPDATE) {
+        validVariables.push('filter')
+        validVariables.push('set')
+        validVariables.push('atMost')
+    } else {
+        const { sortField, sortOrder, page, perPage } = variables
+        if (sortField && sortOrder) validVariables.push('orderBy')
+        if (page && perPage) {
+          validVariables.push('offset')
+          validVariables.push('first')
+        }
     }
   
     let args = query.args

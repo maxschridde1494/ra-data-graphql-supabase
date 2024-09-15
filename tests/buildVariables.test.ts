@@ -3,12 +3,13 @@ import {
     GET_MANY,
     GET_MANY_REFERENCE,
     // CREATE,
-    // UPDATE,
+    UPDATE,
     // DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
 } from 'ra-core';
 import buildVariables from '../src/buildVariables';
+import { mockTestData } from './helpers/mockTestData';
 
 describe('buildVariables', () => {
     const introspectionResult = {
@@ -121,57 +122,56 @@ describe('buildVariables', () => {
     //     });
     // });
 
-    // describe('UPDATE', () => {
-    //     it('returns correct variables', () => {
-    //         const params = {
-    //             id: 'post1',
-    //             data: {
-    //                 author: { id: 'author1' },
-    //                 tags: [{ id: 'tag1' }, { id: 'tag2' }],
-    //                 title: 'Foo',
-    //             },
-    //         };
-    //         const queryType = {
-    //             args: [{ name: 'tagsIds' }, { name: 'authorId' }],
-    //         };
+    describe('UPDATE', () => {
+        it('returns correct variables', () => {
+            const { 
+                introspectionResults: { default: introspectionResult },
+                queryTypes: { Update: queryType },
+                params: { Update: params },
+                resources: { default: { resource } }
+            } = mockTestData()
 
-    //         expect(
-    //             buildVariables(introspectionResult)(
-    //                 { type: { name: 'Post' } },
-    //                 UPDATE,
-    //                 params,
-    //                 queryType
-    //             )
-    //         ).toEqual({
-    //             id: 'post1',
-    //             authorId: 'author1',
-    //             tagsIds: ['tag1', 'tag2'],
-    //             title: 'Foo',
-    //         });
-    //     });
+            expect(
+                buildVariables(introspectionResult)(
+                    resource,
+                    UPDATE,
+                    params,
+                    queryType
+                )
+            ).toEqual({
+                filter: { id: { eq: params.id } },
+                atMost: 1,
+                set: {
+                    address: params.data.address
+                }
+            });
+        });
 
-    //     it('should return correct meta', () => {
-    //         const params = {
-    //             data: {
-    //                 meta: { sparseFields: [] },
-    //             },
-    //         };
-    //         const queryType = {
-    //             args: [],
-    //         };
+        it('should return correct meta', () => {
+            const { 
+                introspectionResults: { default: introspectionResult },
+                queryTypes: { Update: queryType },
+                params: { UpdateSparseFields: params },
+                resources: { default: { resource } }
+            } = mockTestData()
 
-    //         expect(
-    //             buildVariables(introspectionResult)(
-    //                 { type: { name: 'Post' } },
-    //                 UPDATE,
-    //                 params,
-    //                 queryType
-    //             )
-    //         ).toEqual({
-    //             meta: { sparseFields: [] },
-    //         });
-    //     });
-    // });
+            expect(
+                buildVariables(introspectionResult)(
+                    resource,
+                    UPDATE,
+                    params,
+                    queryType
+                )
+            ).toEqual({
+                filter: { id: { eq: params.id } },
+                atMost: 1,
+                set: {
+                    address: params.data.address
+                },
+                meta: params.meta
+            });
+        });
+    });
 
     describe('GET_MANY', () => {
         it('returns correct variables', () => {

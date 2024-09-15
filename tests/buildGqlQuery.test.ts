@@ -5,7 +5,7 @@ import {
     GET_ONE,
     GET_MANY,
     GET_MANY_REFERENCE,
-    // UPDATE,
+    UPDATE,
     // CREATE,
     // DELETE,
     // DELETE_MANY,
@@ -641,65 +641,98 @@ describe('buildGqlQuery', () => {
             );
         });
     });
-//     describe('UPDATE', () => {
-//         it('returns the correct query', () => {
-//             expect(
-//                 print(
-//                     buildGqlQuery(introspectionResults)(
-//                         resource,
-//                         UPDATE,
-//                         { ...queryType, name: 'updateCommand' },
-//                         params
-//                     )
-//                 )
-//             ).toEqual(
-//                 print(gql`
-//                     mutation updateCommand($foo: Int!) {
-//                         data: updateCommand(foo: $foo) {
-//                             foo
-//                             linked {
-//                                 foo
-//                             }
-//                             resource {
-//                                 id
-//                             }
-//                         }
-//                     }
-//                 `)
-//             );
-//         });
+    describe('UPDATE', () => {
+        it('returns the correct query', () => {
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { Update: params }, 
+                queryTypes: { Update: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
 
-//         it('returns the correct query with sparse fields', () => {
-//             const { introspectionResults: { default: introspectionResults}, params, queryType, resources: { default: resource } } =
-//                 mockTestData();
+            expect(
+                print(
+                    buildGqlQuery(introspectionResults)(
+                        resource,
+                        UPDATE,
+                        queryType,
+                        params
+                    )
+                )
+            ).toEqual(
+                print(gql`
+                    mutation updatecommandsCollection($filter: commandsFilter, $set: commandsUpdateInput!, $atMost: Int!) {
+                        data: updatecommandsCollection(filter: $filter, set: $set, atMost: $atMost) {
+                            affectedCount
+                            records {
+                                id
+                                address
+                                linkedType_id
+                                linkedTypes {
+                                  totalCount
+                                  edges {
+                                    node {
+                                      id
+                                    }
+                                  }
+                                }
+                                resourceType_id
+                                resourceTypes {
+                                  id
+                                }
+                            }
+                        }
+                    }
+                `)
+            );
+        });
 
-//             expect(
-//                 print(
-//                     buildGqlQuery(introspectionResults)(
-//                         resource,
-//                         UPDATE,
-//                         { ...queryType, name: 'updateCommand' },
-//                         params
-//                     )
-//                 )
-//             ).toEqual(
-//                 print(gql`
-//                     mutation updateCommand($foo: Int!) {
-//                         data: updateCommand(foo: $foo) {
-//                             address
-//                             linked {
-//                                 title
-//                             }
-//                             resource {
-//                                 foo
-//                                 name
-//                             }
-//                         }
-//                     }
-//                 `)
-//             );
-//         });
-//     });
+        it('returns the correct query with sparse fields', () => {
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { UpdateSparseFields: params }, 
+                queryTypes: { Update: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
+
+            expect(
+                print(
+                    buildGqlQuery(introspectionResults)(
+                        resource,
+                        UPDATE,
+                        queryType,
+                        params
+                    )
+                )
+            ).toEqual(
+                print(gql`
+                    mutation updatecommandsCollection($filter: commandsFilter, $set: commandsUpdateInput!, $atMost: Int!) {
+                        data: updatecommandsCollection(filter: $filter, set: $set, atMost: $atMost) {
+                            affectedCount
+                            records {
+                                id
+                                address
+                                linkedTypes {
+                                  totalCount
+                                  edges {
+                                    node {
+                                      id
+                                      title
+                                    }
+                                  }
+                                }
+                                resourceTypes {
+                                  id
+                                  foo
+                                  name
+                                }
+                            }
+                        }
+                    }
+                `)
+            );
+        });
+    });
 //     describe('CREATE', () => {
 //         it('returns the correct query', () => {
 //             expect(

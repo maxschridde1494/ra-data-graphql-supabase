@@ -3,6 +3,8 @@ import {
     GET_LIST,
     GET_MANY,
     GET_MANY_REFERENCE,
+    GET_ONE,
+    UPDATE,
     // UPDATE_MANY,
 } from 'ra-core';
 import { IntrospectionResult, IntrospectedResource } from 'ra-data-graphql';
@@ -22,13 +24,21 @@ export default (_introspectionResults: IntrospectionResult) => (
         raFetchMethod === GET_MANY_REFERENCE
     ) {
         return {
-            data: response.data.items.edges.map(({ node }: { node: any }) => node).map(sanitizeResource),
-            total: response.data.items.totalCount,
+            data: data.items.edges.map(({ node }: { node: any }) => node).map(sanitizeResource),
+            total: data.items.totalCount,
         };
     } 
     // else if (raFetchMethod === DELETE_MANY || raFetchMethod === UPDATE_MANY) {
     //     return { data: sanitizeResource(data.data).ids };
     // }
+
+    if (raFetchMethod === GET_ONE) {
+        return { data: sanitizeResource(data.data) };
+    }
+
+    if (raFetchMethod === UPDATE){
+        return { data: sanitizeResource(data.data.records[0]) };
+    }
     
     return { data: sanitizeResource(data.data) };
 };
