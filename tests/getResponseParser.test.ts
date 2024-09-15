@@ -6,7 +6,7 @@ import {
     GET_ONE,
     UPDATE,
     CREATE,
-    // DELETE,
+    DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
 } from 'ra-core';
@@ -152,17 +152,19 @@ describe('getResponseParser', () => {
     const mutationTypes = [
         [CREATE], 
         [UPDATE], 
-        // [DELETE]
+        [DELETE]
     ]
     
     describe.each(mutationTypes)('%s', type => {
         it(`returns the response expected for ${type}`, () => {
+            const queryTypeKey = type === UPDATE ? 'Update' : type === CREATE ? 'Create': 'Delete'
+            
             const { 
                 introspectionResults: { default: introspectionResult },
-                queryTypes: { [type === UPDATE ? 'Update' : 'Create']: queryType },
-                // params: { [type === UPDATE ? 'Update' : 'Create']: params },
+                queryTypes: { [queryTypeKey]: queryType },
+                // params: { [queryTypeKey]: params },
                 resources: { default: { resource } },
-                responses: { [type === UPDATE ? 'Update' : 'Create']: response }
+                responses: { [queryTypeKey]: response }
             } = mockTestData()
     
             expect(

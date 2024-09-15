@@ -14,7 +14,7 @@ import {
     GET_MANY_REFERENCE,
     UPDATE,
     CREATE,
-    // DELETE,
+    DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
 } from 'ra-core';
@@ -49,7 +49,8 @@ export default (introspectionResults: IntrospectionResult) =>
                 filter: { id: { in: preparedParams.ids } },
                 ...(preparedParams.meta
                     ? { meta: preparedParams.meta }
-                    : {}),
+                    : {}
+                ),
             };
         case GET_MANY_REFERENCE: {
             let variables = buildGetListVariables(introspectionResults)(
@@ -70,17 +71,9 @@ export default (introspectionResults: IntrospectionResult) =>
                 id: preparedParams.id,
                 ...(preparedParams.meta
                     ? { meta: preparedParams.meta }
-                    : {}),
-                };
-        // case DELETE:
-        //     return {
-        //         id: preparedParams.id,
-        //         ...(preparedParams.meta
-        //             ? { meta: preparedParams.meta }
-        //             : {}),
-        //         };
-        // case DELETE_MANY:
-        //     return preparedParams;
+                    : {}
+                ),
+            };
         case CREATE:
         case UPDATE: {
             return buildCreateUpdateVariables(introspectionResults)(
@@ -90,6 +83,17 @@ export default (introspectionResults: IntrospectionResult) =>
                 preparedParams
             );
         }
+        case DELETE:
+            return {
+                filter: { id: { eq: preparedParams.id } },
+                atMost: 1,
+                ...(preparedParams.meta
+                    ? { meta: preparedParams.meta }
+                    : {}
+                ),
+            };
+        // case DELETE_MANY:
+        //     return preparedParams;
         // case UPDATE_MANY: {
         //     const { ids, data: resourceData } = preparedParams;
         //     const { id, ...data } = buildCreateUpdateVariables(

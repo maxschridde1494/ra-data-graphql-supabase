@@ -4,7 +4,7 @@ import {
     GET_MANY_REFERENCE,
     CREATE,
     UPDATE,
-    // DELETE,
+    DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
 } from 'ra-core';
@@ -259,39 +259,50 @@ describe('buildVariables', () => {
         });
     });
 
-    // describe('DELETE', () => {
-    //     it('returns correct variables', () => {
-    //         const params = {
-    //             id: 'post1',
-    //         };
-    //         expect(
-    //             buildVariables(introspectionResult)(
-    //                 { type: { name: 'Post', inputFields: [] } },
-    //                 DELETE,
-    //                 params,
-    //                 {}
-    //             )
-    //         ).toEqual({
-    //             id: 'post1',
-    //         });
-    //     });
+    describe('DELETE', () => {
+        it('returns correct variables', () => {
+            const { 
+                introspectionResults: { default: introspectionResult },
+                queryTypes: { Delete: queryType },
+                params: { Delete: params },
+                resources: { default: { resource } }
+            } = mockTestData()
 
-    //     it('should return correct meta', () => {
-    //         const params = {
-    //             meta: { sparseFields: [] },
-    //         };
-    //         expect(
-    //             buildVariables(introspectionResult)(
-    //                 { type: { name: 'Post', inputFields: [] } },
-    //                 DELETE,
-    //                 params,
-    //                 {}
-    //             )
-    //         ).toEqual({
-    //             meta: { sparseFields: [] },
-    //         });
-    //     });
-    // });
+            expect(
+                buildVariables(introspectionResult)(
+                    resource,
+                    DELETE,
+                    params,
+                    queryType
+                )
+            ).toEqual({
+                atMost: 1,
+                filter: { id: { eq: params.id } },
+            });
+        });
+
+        it('should return correct meta', () => {
+            const { 
+                introspectionResults: { default: introspectionResult },
+                queryTypes: { Delete: queryType },
+                params: { DeleteSparseFields: params },
+                resources: { default: { resource } }
+            } = mockTestData()
+
+            expect(
+                buildVariables(introspectionResult)(
+                    resource,
+                    DELETE,
+                    params,
+                    queryType
+                )
+            ).toEqual({
+                atMost: 1,
+                filter: { id: { eq: params.id } },
+                meta: { sparseFields: params.meta.sparseFields },
+            });
+        });
+    });
 
     // describe('DELETE_MANY', () => {
     //     it('returns correct variables', () => {

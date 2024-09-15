@@ -5,7 +5,7 @@ import {
     GET_ONE,
     UPDATE,
     CREATE,
-    // DELETE,
+    DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
   } from 'ra-core';
@@ -168,7 +168,7 @@ export default (introspectionResults: IntrospectionResult) =>
             ]);
         }
 
-        if (raFetchMethod === UPDATE || raFetchMethod === CREATE) {
+        if (raFetchMethod === UPDATE || raFetchMethod === CREATE || raFetchMethod === DELETE) {
             return gqlTypes.document([
                 gqlTypes.operationDefinition(
                     'mutation',
@@ -189,25 +189,6 @@ export default (introspectionResults: IntrospectionResult) =>
                 ),
             ]);
         }
-  
-        // if (raFetchMethod === DELETE) {
-        //     return gqlTypes.document([
-        //         gqlTypes.operationDefinition(
-        //             'mutation',
-        //             gqlTypes.selectionSet([
-        //                 gqlTypes.field(
-        //                     gqlTypes.name(queryType.name),
-        //                     gqlTypes.name('data'),
-        //                     args,
-        //                     null,
-        //                     gqlTypes.selectionSet(fields)
-        //                 ),
-        //             ]),
-        //             gqlTypes.name(queryType.name),
-        //             apolloArgs
-        //         ),
-        //     ]);
-        // }
   
         // if (raFetchMethod === DELETE_MANY || raFetchMethod === UPDATE_MANY) {
         //     return gqlTypes.document([
@@ -456,8 +437,10 @@ export const buildArgs = (
         validVariables.push('filter')
         validVariables.push('set')
         validVariables.push('atMost')
-    }
-    else if (raFetchMethod === CREATE) {
+    } else if (raFetchMethod === DELETE) {
+        validVariables.push('filter')
+        validVariables.push('atMost')
+    } else if (raFetchMethod === CREATE) {
         validVariables.push('objects')
     } else {
         const { sortField, sortOrder, page, perPage } = variables
@@ -508,9 +491,11 @@ export const buildApolloArgs = (
         validVariables.push('filter')
         validVariables.push('set')
         validVariables.push('atMost')
-    }
-    else if (raFetchMethod === CREATE) {
+    } else if (raFetchMethod === CREATE) {
         validVariables.push('objects')
+    } else if (raFetchMethod === DELETE) {
+        validVariables.push('filter')
+        validVariables.push('atMost')
     } else {
         const { sortField, sortOrder, page, perPage } = variables
         if (sortField && sortOrder) validVariables.push('orderBy')

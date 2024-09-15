@@ -7,7 +7,7 @@ import {
     GET_MANY_REFERENCE,
     UPDATE,
     CREATE,
-    // DELETE,
+    DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
 } from 'ra-core';
@@ -555,6 +555,7 @@ describe('buildGqlQuery', () => {
             );
         });
     });
+
     describe('GET_ONE', () => {
         it('returns the correct query', () => {
             const { 
@@ -825,65 +826,98 @@ describe('buildGqlQuery', () => {
             );
         });
     });
-//     describe('DELETE', () => {
-//         it('returns the correct query', () => {
-//             expect(
-//                 print(
-//                     buildGqlQuery(introspectionResults)(
-//                         resource,
-//                         DELETE,
-//                         { ...queryType, name: 'deleteCommand' },
-//                         params
-//                     )
-//                 )
-//             ).toEqual(
-//                 print(gql`
-//                     mutation deleteCommand($foo: Int!) {
-//                         data: deleteCommand(foo: $foo) {
-//                             foo
-//                             linked {
-//                                 foo
-//                             }
-//                             resource {
-//                                 id
-//                             }
-//                         }
-//                     }
-//                 `)
-//             );
-//         });
+    describe('DELETE', () => {
+        it('returns the correct query', () => {
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { Delete: params }, 
+                queryTypes: { Delete: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
 
-//         it('returns the correct query with sparse fields', () => {
-//             const { introspectionResults: { default: introspectionResults}, params, queryType, resources: { default: resource } } =
-//                 mockTestData();
+            expect(
+                print(
+                    buildGqlQuery(introspectionResults)(
+                        resource,
+                        DELETE,
+                        queryType,
+                        params
+                    )
+                )
+            ).toEqual(
+                print(gql`
+                    mutation deleteFromcommandsCollection($filter: commandsFilter, $atMost: Int!) {
+                        data: deleteFromcommandsCollection(filter: $filter, atMost: $atMost) {
+                            affectedCount
+                            records {
+                                id
+                                address
+                                linkedType_id
+                                linkedTypes {
+                                  totalCount
+                                  edges {
+                                    node {
+                                      id
+                                    }
+                                  }
+                                }
+                                resourceType_id
+                                resourceTypes {
+                                  id
+                                }
+                            }
+                        }
+                    }
+                `)
+            );
+        });
 
-//             expect(
-//                 print(
-//                     buildGqlQuery(introspectionResults)(
-//                         resource,
-//                         DELETE,
-//                         { ...queryType, name: 'deleteCommand' },
-//                         params
-//                     )
-//                 )
-//             ).toEqual(
-//                 print(gql`
-//                     mutation deleteCommand($foo: Int!) {
-//                         data: deleteCommand(foo: $foo) {
-//                             address
-//                             linked {
-//                                 title
-//                             }
-//                             resource {
-//                                 foo
-//                                 name
-//                             }
-//                         }
-//                     }
-//                 `)
-//             );
-//         });
-//     });
+        it('returns the correct query with sparse fields', () => {
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { DeleteSparseFields: params }, 
+                queryTypes: { Delete: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
+
+            expect(
+                print(
+                    buildGqlQuery(introspectionResults)(
+                        resource,
+                        DELETE,
+                        queryType,
+                        params
+                    )
+                )
+            ).toEqual(
+                print(gql`
+                    mutation deleteFromcommandsCollection($filter: commandsFilter, $atMost: Int!) {
+                        data: deleteFromcommandsCollection(filter: $filter, atMost: $atMost) {
+                            affectedCount
+                            records {
+                                id
+                                address
+                                linkedTypes {
+                                  totalCount
+                                  edges {
+                                    node {
+                                      id
+                                      title
+                                    }
+                                  }
+                                }
+                                resourceTypes {
+                                  id
+                                  foo
+                                  name
+                                }
+                            }
+                        }
+                    }
+                `)
+            );
+        });
+    });
 
 //     it('returns the correct query for DELETE_MANY', () => {
 //         expect(

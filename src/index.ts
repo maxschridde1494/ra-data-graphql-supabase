@@ -8,7 +8,7 @@ import { DELETE_MANY, DataProvider, Identifier, UPDATE_MANY } from 'ra-core';
 import pluralize from 'pluralize';
 
 import defaultBuildQuery from './buildQuery';
-import { CREATE, GET_LIST, GET_MANY, GET_MANY_REFERENCE, GET_ONE, UPDATE } from 'react-admin';
+import { CREATE, GET_LIST, GET_MANY, GET_MANY_REFERENCE, GET_ONE, UPDATE, DELETE } from 'react-admin';
 
 export const buildQuery = defaultBuildQuery;
 export { buildQueryFactory } from './buildQuery';
@@ -22,9 +22,9 @@ const introspection= {
         [GET_MANY]: (resource: { name: string }) => `${resource.name}Collection`,
         [GET_MANY_REFERENCE]: (resource: { name: string }) => `${resource.name}Collection`,
         [GET_ONE]: (resource: { name: string }) => `${resource.name}ById`,
-        [CREATE]: (resource: { name: string }) => `insertInto${pluralize(resource.name)}Collection`, // TODO: implement
+        [CREATE]: (resource: { name: string }) => `insertInto${resource.name}Collection`, // TODO: implement
         [UPDATE]: (resource: { name: string }) => `update${resource.name}Collection`,
-        // [DELETE]: (resource: { name: string }) => `delete${resource.name}`, // TODO: implement
+        [DELETE]: (resource: { name: string }) => `deleteFrom${resource.name}Collection`, // TODO: implement
         // [DELETE_MANY]: (resource: { name: string }) => `deleteFrom${resource.name}Collection`,
         // [UPDATE_MANY]: (resource: { name: string }) => `update${resource.name}Collection`,
     },

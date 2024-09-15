@@ -58,6 +58,7 @@ export const mockTestData = (): {
                 {
                     CREATE: 'CREATE',
                     UPDATE: 'UPDATE',
+                    DELETE: 'DELETE',
                     GET_LIST: 'GET_LIST',
                     type: {
                         name: 'commands',
@@ -434,37 +435,96 @@ export const mockTestData = (): {
             ]
         },
         circularDependencies: {
-        resources: [
-            {
-                type: {
-                    name: 'resourceTypes',
+            resources: [
+                {
+                    type: {
+                        name: 'resourceTypes',
+                        fields: [
+                            {
+                                name: 'id',
+                                type: { 
+                                    kind: 'SCALAR', 
+                                    name: 'ID',
+                                    __typename: 'ID'
+                                },
+                            },
+                            {
+                                name: 'name',
+                                type: { 
+                                    kind: 'SCALAR', 
+                                    name: 'String',
+                                    __typename: 'String'
+                                },
+                            },
+                            {
+                                name: 'foo',
+                                type: { 
+                                    kind: 'SCALAR', 
+                                    name: 'String',
+                                    __typename: 'String'
+                                },
+                            },
+                        ],
+                        __typename: 'resourceTypes',
+                        enumValues: [],
+                        interfaces: [
+                            {
+                                kind: "INTERFACE",
+                                name: "Node",
+                                ofType: null,
+                                __typename: "Node"
+                            }
+                        ],
+                        description: null,
+                        inputFields: null,
+                        possibleTypes: null,
+                    },
+                },
+            ],
+            types: [
+                {
+                    name: 'linkedTypes',
                     fields: [
                         {
                             name: 'id',
                             type: { 
                                 kind: 'SCALAR', 
                                 name: 'ID',
+                                ofType: null,
                                 __typename: 'ID'
                             },
                         },
                         {
-                            name: 'name',
+                            name: 'title',
                             type: { 
                                 kind: 'SCALAR', 
                                 name: 'String',
+                                ofType: null,
                                 __typename: 'String'
                             },
                         },
                         {
-                            name: 'foo',
-                            type: { 
-                                kind: 'SCALAR', 
-                                name: 'String',
-                                __typename: 'String'
+                            // Correctly singular foreign key field
+                            name: 'child_id',
+                            type: {
+                                kind: 'SCALAR',
+                                name: 'ID',
+                                ofType: null,
+                                __typename: 'ID'
+                            },
+                        },
+                        {
+                            // Pluralized object field representing the relationship to the nested linked type
+                            name: 'childs',
+                            type: {
+                                kind: 'OBJECT',
+                                name: 'linkedTypes',
+                                ofType: null,
+                                __typename: 'linkedTypes'
                             },
                         },
                     ],
-                    __typename: 'resourceTypes',
+                    __typename: 'linkedTypes',
                     enumValues: [],
                     interfaces: [
                         {
@@ -478,156 +538,97 @@ export const mockTestData = (): {
                     inputFields: null,
                     possibleTypes: null,
                 },
-            },
-        ],
-        types: [
-            {
-                name: 'linkedTypes',
-                fields: [
-                    {
-                        name: 'id',
-                        type: { 
-                            kind: 'SCALAR', 
-                            name: 'ID',
+                {
+                    kind: "INTERFACE",
+                    name: "Node",
+                    fields: [
+                        {
+                            args: [],
+                            name: "nodeId",
+                            type: {
+                                kind: "NON_NULL",
+                                name: null,
+                                ofType: {
+                                    kind: "SCALAR",
+                                    name: "ID",
+                                    ofType: null,
+                                    __typename: "ID"
+                                },
+                                __typename: null
+                            },
+                            __typename: "nodeId",
+                            description: "Retrieves a record by `ID`",
+                            isDeprecated: false,
+                            deprecationReason: null
+                        }
+                    ],
+                    __typename: "Node",
+                    enumValues: [],
+                    interfaces: [],
+                    description: null,
+                    inputFields: null,
+                    possibleTypes: [
+                        {
+                            kind: "OBJECT",
+                            name: "linkedTypes",
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: "linkedTypes"
                         },
-                    },
-                    {
-                        name: 'title',
-                        type: { 
-                            kind: 'SCALAR', 
-                            name: 'String',
+                        {
+                            kind: "OBJECT",
+                            name: "nestedLinks",
                             ofType: null,
-                            __typename: 'String'
+                            __typename: "nestedLinks"
                         },
-                    },
-                    {
-                        // Correctly singular foreign key field
-                        name: 'child_id',
-                        type: {
-                            kind: 'SCALAR',
-                            name: 'ID',
+                        {
+                            kind: "OBJECT",
+                            name: "commands",
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: "commands"
                         },
-                    },
-                    {
-                        // Pluralized object field representing the relationship to the nested linked type
-                        name: 'childs',
-                        type: {
-                            kind: 'OBJECT',
-                            name: 'linkedTypes',
+                        {
+                            kind: "OBJECT",
+                            name: "resourceTypes",
                             ofType: null,
-                            __typename: 'linkedTypes'
-                        },
-                    },
-                ],
-                __typename: 'linkedTypes',
-                enumValues: [],
-                interfaces: [
-                    {
+                            __typename: "resourceTypes"
+                        }
+                    ]
+                },
+            ],
+            queries: [
+                {
+                    args: [
+                        {
+                            name: "nodeId",
+                            type: {
+                                kind: "NON_NULL",
+                                name: null,
+                                ofType: {
+                                    kind: "SCALAR",
+                                    name: "ID",
+                                    ofType: null,
+                                    __typename: "ID"
+                                },
+                                __typename: null
+                            },
+                            __typename: "nodeId",
+                            description: "The record's `ID`",
+                            defaultValue: null
+                        }
+                    ],
+                    name: "node",
+                    type: {
                         kind: "INTERFACE",
                         name: "Node",
                         ofType: null,
                         __typename: "Node"
-                    }
-                ],
-                description: null,
-                inputFields: null,
-                possibleTypes: null,
-            },
-            {
-                kind: "INTERFACE",
-                name: "Node",
-                fields: [
-                    {
-                        args: [],
-                        name: "nodeId",
-                        type: {
-                            kind: "NON_NULL",
-                            name: null,
-                            ofType: {
-                                kind: "SCALAR",
-                                name: "ID",
-                                ofType: null,
-                                __typename: "ID"
-                            },
-                            __typename: null
-                        },
-                        __typename: "nodeId",
-                        description: "Retrieves a record by `ID`",
-                        isDeprecated: false,
-                        deprecationReason: null
-                    }
-                ],
-                __typename: "Node",
-                enumValues: [],
-                interfaces: [],
-                description: null,
-                inputFields: null,
-                possibleTypes: [
-                    {
-                        kind: "OBJECT",
-                        name: "linkedTypes",
-                        ofType: null,
-                        __typename: "linkedTypes"
                     },
-                    {
-                        kind: "OBJECT",
-                        name: "nestedLinks",
-                        ofType: null,
-                        __typename: "nestedLinks"
-                    },
-                    {
-                        kind: "OBJECT",
-                        name: "commands",
-                        ofType: null,
-                        __typename: "commands"
-                    },
-                    {
-                        kind: "OBJECT",
-                        name: "resourceTypes",
-                        ofType: null,
-                        __typename: "resourceTypes"
-                    }
-                ]
-            },
-        ],
-        queries: [
-            {
-                args: [
-                    {
-                        name: "nodeId",
-                        type: {
-                            kind: "NON_NULL",
-                            name: null,
-                            ofType: {
-                                kind: "SCALAR",
-                                name: "ID",
-                                ofType: null,
-                                __typename: "ID"
-                            },
-                            __typename: null
-                        },
-                        __typename: "nodeId",
-                        description: "The record's `ID`",
-                        defaultValue: null
-                    }
-                ],
-                name: "node",
-                type: {
-                    kind: "INTERFACE",
-                    name: "Node",
-                    ofType: null,
-                    __typename: "Node"
+                    __typename: "node",
+                    description: "Retrieve a record by its `ID`",
+                    isDeprecated: false,
+                    deprecationReason: null
                 },
-                __typename: "node",
-                description: "Retrieve a record by its `ID`",
-                isDeprecated: false,
-                deprecationReason: null
-            },
-        ]
+            ]
         }
     }, 
     resources: {
@@ -959,7 +960,26 @@ export const mockTestData = (): {
                     },
                 },
             ],
-        }
+        },
+        Delete: {
+            name: 'deleteFromcommandsCollection',
+            args: [
+                {
+                    name: 'filter',
+                    type: { kind: TypeKind.OBJECT, name: 'commandsFilter' },
+                },
+                {
+                    name: 'atMost',
+                    type: {
+                        kind: TypeKind.NON_NULL,
+                        ofType: {
+                            kind: TypeKind.SCALAR, 
+                            name: 'Int' 
+                        }
+                    }
+                },
+            ],
+        },
     },
     params: {
         default: { foo: 'foo_value' },
@@ -1033,7 +1053,23 @@ export const mockTestData = (): {
                     { resourceTypes: ['id', 'foo', 'name'] },
                 ],
             },
-        }
+        },
+        Delete: {
+            id: 'foo',
+            previousData: {},
+        },
+        DeleteSparseFields: {
+            id: 'foo',
+            previousData: {},
+            meta: {
+                sparseFields: [
+                    'id',
+                    'address',
+                    { linkedTypes: ['id', 'title'] },
+                    { resourceTypes: ['id', 'foo', 'name'] },
+                ],
+            },
+        },
     },
     responses: {
         Create: {
@@ -1069,6 +1105,19 @@ export const mockTestData = (): {
                     address: 'bar',
                 }
             }
-        }
+        },
+        Delete: {
+            data: {
+                data: {
+                    affectedCount: 1,
+                    records: [
+                        {
+                            id: 'foo',
+                            address: 'bar',
+                        }
+                    ]
+                }
+            }
+        },
     }
 })
