@@ -4,6 +4,7 @@ import {
     GET_MANY_REFERENCE,
     GET_ONE,
     UPDATE,
+    CREATE,
     // DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
@@ -101,10 +102,18 @@ export default (introspectionResults: IntrospectionResult) =>
   
         // const sparseFields = metaVariables.meta?.sparseFields;
         // if (sparseFields) delete metaVariables.meta.sparseFields;
-        const sparseFields = variables.meta?.sparseFields;
-        if (sparseFields) delete variables.meta.sparseFields;
-  
         // const metaArgs = buildArgs(queryType, metaVariables);
+        
+        let sparseFields: any;
+        if (variables.meta) {
+            sparseFields = variables.meta?.sparseFields;
+            delete variables.meta.sparseFields;
+        } else if (variables.data?.meta){
+            // create case
+            sparseFields = variables.data.meta.sparseFields;
+            delete variables.data.meta.sparseFields;
+        }
+  
 
         const fields = buildFields(introspectionResults)({
             resourceObject: resource,
@@ -159,7 +168,7 @@ export default (introspectionResults: IntrospectionResult) =>
             ]);
         }
 
-        if (raFetchMethod === UPDATE) {
+        if (raFetchMethod === UPDATE || raFetchMethod === CREATE) {
             return gqlTypes.document([
                 gqlTypes.operationDefinition(
                     'mutation',
@@ -447,6 +456,9 @@ export const buildArgs = (
         validVariables.push('filter')
         validVariables.push('set')
         validVariables.push('atMost')
+    }
+    else if (raFetchMethod === CREATE) {
+        validVariables.push('objects')
     } else {
         const { sortField, sortOrder, page, perPage } = variables
         if (sortField && sortOrder) validVariables.push('orderBy')
@@ -496,6 +508,9 @@ export const buildApolloArgs = (
         validVariables.push('filter')
         validVariables.push('set')
         validVariables.push('atMost')
+    }
+    else if (raFetchMethod === CREATE) {
+        validVariables.push('objects')
     } else {
         const { sortField, sortOrder, page, perPage } = variables
         if (sortField && sortOrder) validVariables.push('orderBy')

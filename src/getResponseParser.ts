@@ -1,10 +1,12 @@
 import {
-    // DELETE_MANY,
     GET_LIST,
     GET_MANY,
     GET_MANY_REFERENCE,
     GET_ONE,
     UPDATE,
+    CREATE,
+    // DELETE
+    // DELETE_MANY,
     // UPDATE_MANY,
 } from 'ra-core';
 import { IntrospectionResult, IntrospectedResource } from 'ra-data-graphql';
@@ -36,7 +38,7 @@ export default (_introspectionResults: IntrospectionResult) => (
         return { data: sanitizeResource(data.data) };
     }
 
-    if (raFetchMethod === UPDATE){
+    if (raFetchMethod === UPDATE || raFetchMethod === CREATE) {
         return { data: sanitizeResource(data.data.records[0]) };
     }
     

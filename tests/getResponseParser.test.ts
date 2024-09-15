@@ -3,9 +3,9 @@ import {
     GET_LIST,
     GET_MANY,
     GET_MANY_REFERENCE,
-    // CREATE,
     GET_ONE,
     UPDATE,
+    CREATE,
     // DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
@@ -150,7 +150,7 @@ describe('getResponseParser', () => {
     })
 
     const mutationTypes = [
-        // [CREATE], 
+        [CREATE], 
         [UPDATE], 
         // [DELETE]
     ]
@@ -159,10 +159,10 @@ describe('getResponseParser', () => {
         it(`returns the response expected for ${type}`, () => {
             const { 
                 introspectionResults: { default: introspectionResult },
-                queryTypes: { Update: queryType },
-                // params: { Update: params },
+                queryTypes: { [type === UPDATE ? 'Update' : 'Create']: queryType },
+                // params: { [type === UPDATE ? 'Update' : 'Create']: params },
                 resources: { default: { resource } },
-                responses: { Update: response }
+                responses: { [type === UPDATE ? 'Update' : 'Create']: response }
             } = mockTestData()
     
             expect(

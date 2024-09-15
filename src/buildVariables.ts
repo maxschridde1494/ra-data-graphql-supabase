@@ -5,14 +5,15 @@ import {
     IntrospectionNamedTypeRef,
     IntrospectionNonNullTypeRef,
     IntrospectionType,
+    TypeKind,
 } from 'graphql';
 import {
     GET_LIST,
     GET_ONE,
     GET_MANY,
     GET_MANY_REFERENCE,
-    // CREATE,
     UPDATE,
+    CREATE,
     // DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
@@ -80,22 +81,15 @@ export default (introspectionResults: IntrospectionResult) =>
         //         };
         // case DELETE_MANY:
         //     return preparedParams;
+        case CREATE:
         case UPDATE: {
-            return buildUpdateVariables(introspectionResults)(
+            return buildCreateUpdateVariables(introspectionResults)(
                 resource,
                 raFetchMethod,
                 queryType,
                 preparedParams
             );
         }
-        // case CREATE: {
-        //     return buildCreateUpdateVariables(
-        //         resource,
-        //         raFetchMethod,
-        //         preparedParams,
-        //         queryType
-        //     );
-        // }
         // case UPDATE_MANY: {
         //     const { ids, data: resourceData } = preparedParams;
         //     const { id, ...data } = buildCreateUpdateVariables(
@@ -356,93 +350,72 @@ const buildGetListVariables = (introspectionResults: IntrospectionResult) =>
         return variables;
     };
 
-const buildUpdateVariables = (introspectionResults: IntrospectionResult) => (
+const buildCreateUpdateVariables = (introspectionResults: IntrospectionResult) => (
     _resource: IntrospectedResource,
-    _raFetchMethod: string,
+    raFetchMethod: string,
     queryType: IntrospectionField,
     args: any,
 ) => {
-    const { id, data, meta } = args;
-    const updateInputTypeName = (queryType.args.find(a => a.name === 'set').type as any).ofType.name
-    const updateInputType = introspectionResults.types.find(t => t.name === updateInputTypeName) as IntrospectionInputObjectType;
+    let { id, data, meta } = args;
+    if (!meta && data.meta) {
+        meta = data.meta;
+        delete data.meta;
+    }
+    let variables: any = { meta };
+    let dataType: { key: 'objects' | 'set', type: TypeKind.LIST | TypeKind.OBJECT }
+    let inputType: IntrospectionInputObjectType;
 
-    return {
-        filter: { id: { eq: id } },
-        atMost: 1,
-        set: Object.keys(data).reduce(
-            (acc, key) => {
-                if (!updateInputType.inputFields.find(f => f.name === key)) {
-                    console.info(`Field ${key} is not available on type ${updateInputType.name}`);
-                    return acc;
+    if (raFetchMethod === UPDATE) {
+        dataType = { key: 'set', type: TypeKind.OBJECT };
+        const updateInputTypeName = (queryType.args.find(a => a.name === dataType.key).type as any).ofType.name
+        inputType = introspectionResults.types.find(t => t.name === updateInputTypeName) as IntrospectionInputObjectType;
+        variables.filter = { id: { eq: id } }
+        variables.atMost = 1
+    } else {
+        dataType = { key: 'objects', type: TypeKind.LIST };
+        const instertInputTypeName = (queryType.args.find(a => a.name === dataType.key).type as any).ofType.ofType.ofType.name // list type so doubly nested ofTypes
+        inputType = introspectionResults.types.find(t => t.name === instertInputTypeName) as IntrospectionInputObjectType;
+    }
+
+    const sanitizedData = Object.keys(data).reduce(
+        (acc, key) => {
+            if (!inputType.inputFields.find(f => f.name === key)) {
+                console.info(`Field ${key} is not available on type ${inputType.name}`);
+                return acc;
+            }
+            if (Array.isArray(data[key])) {
+                const arg = queryType.args.find(a => a.name === `${key}Ids`);
+
+                if (arg) {
+                    return {
+                        ...acc,
+                        [`${key}Ids`]: data[key].map(({ id }) => id),
+                    };
                 }
-                if (Array.isArray(data[key])) {
-                    const arg = queryType.args.find(a => a.name === `${key}Ids`);
-    
-                    if (arg) {
-                        return {
-                            ...acc,
-                            [`${key}Ids`]: data[key].map(({ id }) => id),
-                        };
-                    }
+            }
+
+            if (typeof data[key] === 'object') {
+                const arg = queryType.args.find(a => a.name === `${key}Id`);
+
+                if (arg) {
+                    return {
+                        ...acc,
+                        [`${key}Id`]: data[key].id,
+                    };
                 }
-    
-                if (typeof data[key] === 'object') {
-                    const arg = queryType.args.find(a => a.name === `${key}Id`);
-    
-                    if (arg) {
-                        return {
-                            ...acc,
-                            [`${key}Id`]: data[key].id,
-                        };
-                    }
-                }
-    
-                return {
-                    ...acc,
-                    [key]: data[key],
-                };
-            },
-            {}
-        ),
-        meta 
-    };
+            }
+
+            return {
+                ...acc,
+                [key]: data[key],
+            };
+        },
+        {}
+    )
+
+    variables[dataType.key] = sanitizedData;
+    if (dataType.type === TypeKind.LIST) variables[dataType.key] = [variables[dataType.key]];
+
+    return variables
 }
-  
-//   const buildCreateUpdateVariables = (
-//     resource: IntrospectedResource,
-//     raFetchMethod,
-//     { id, data }: any,
-//     queryType: IntrospectionField
-//   ) =>
-    // Object.keys(data).reduce(
-    //     (acc, key) => {
-    //         if (Array.isArray(data[key])) {
-    //             const arg = queryType.args.find(a => a.name === `${key}Ids`);
-  
-    //             if (arg) {
-    //                 return {
-    //                     ...acc,
-    //                     [`${key}Ids`]: data[key].map(({ id }) => id),
-    //                 };
-    //             }
-    //         }
-  
-    //         if (typeof data[key] === 'object') {
-    //             const arg = queryType.args.find(a => a.name === `${key}Id`);
-  
-    //             if (arg) {
-    //                 return {
-    //                     ...acc,
-    //                     [`${key}Id`]: data[key].id,
-    //                 };
-    //             }
-    //         }
-  
-    //         return {
-    //             ...acc,
-    //             [key]: data[key],
-    //         };
-    //     },
-    //     { id }
-    // );
   

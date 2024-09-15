@@ -16,14 +16,11 @@ describe('buildQuery', () => {
 
     it('throws an error if resource does not have a query or mutation for specified AOR fetch type', () => {
         const { introspectionResults: { default: introspectionResults }, resources: { default: resource } } = mockTestData();
-        const queryType = 'CREATE';
-
-        if (resource[queryType]) delete resource[queryType];
 
         expect(() =>
-            buildQueryFactory()(introspectionResults)(queryType, resource.type.name, {})
+            buildQueryFactory()(introspectionResults)('UNKNOWN_ACTION', resource.type.name, {})
         ).toThrow(
-            'No query or mutation matching fetch type CREATE could be found for resource commands'
+            'No query or mutation matching fetch type UNKNOWN_ACTION could be found for resource commands'
         );
     });
 

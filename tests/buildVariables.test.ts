@@ -2,7 +2,7 @@ import {
     GET_LIST,
     GET_MANY,
     GET_MANY_REFERENCE,
-    // CREATE,
+    CREATE,
     UPDATE,
     // DELETE,
     // DELETE_MANY,
@@ -73,54 +73,57 @@ describe('buildVariables', () => {
         });
     });
 
-    // describe('CREATE', () => {
-    //     it('returns correct variables', () => {
-    //         const params = {
-    //             data: {
-    //                 author: { id: 'author1' },
-    //                 tags: [{ id: 'tag1' }, { id: 'tag2' }],
-    //                 title: 'Foo',
-    //             },
-    //         };
-    //         const queryType = {
-    //             args: [{ name: 'tagsIds' }, { name: 'authorId' }],
-    //         };
+    describe('CREATE', () => {
+        it('returns correct variables', () => {
+            const { 
+                introspectionResults: { default: introspectionResult },
+                queryTypes: { Create: queryType },
+                params: { Create: params },
+                resources: { default: { resource } }
+            } = mockTestData()
 
-    //         expect(
-    //             buildVariables(introspectionResult)(
-    //                 { type: { name: 'Post' } },
-    //                 CREATE,
-    //                 params,
-    //                 queryType
-    //             )
-    //         ).toEqual({
-    //             authorId: 'author1',
-    //             tagsIds: ['tag1', 'tag2'],
-    //             title: 'Foo',
-    //         });
-    //     });
-    //     it('should return correct meta', () => {
-    //         const params = {
-    //             data: {
-    //                 meta: { sparseFields: [] },
-    //             },
-    //         };
-    //         const queryType = {
-    //             args: [],
-    //         };
+            expect(
+                buildVariables(introspectionResult)(
+                    resource,
+                    CREATE,
+                    params,
+                    queryType
+                )
+            ).toEqual({
+                objects: [
+                    {
+                        address: params.data.address,
+                        linkedType_id: params.data.linkedType_id
+                    }
+                ]
+            });
+        });
+        it('should return correct meta', () => {
+            const { 
+                introspectionResults: { default: introspectionResult },
+                queryTypes: { Create: queryType },
+                params: { CreateSparseFields: params },
+                resources: { default: { resource } }
+            } = mockTestData()
 
-    //         expect(
-    //             buildVariables(introspectionResult)(
-    //                 { type: { name: 'Post' } },
-    //                 CREATE,
-    //                 params,
-    //                 queryType
-    //             )
-    //         ).toEqual({
-    //             meta: { sparseFields: [] },
-    //         });
-    //     });
-    // });
+            expect(
+                buildVariables(introspectionResult)(
+                    resource,
+                    CREATE,
+                    params,
+                    queryType
+                )
+            ).toEqual({
+                objects: [
+                    {
+                        address: params.data.address,
+                        linkedType_id: params.data.linkedType_id
+                    }
+                ],
+                meta: params.data.meta
+            });
+        });
+    });
 
     describe('UPDATE', () => {
         it('returns correct variables', () => {

@@ -56,6 +56,7 @@ export const mockTestData = (): {
                     },
                 },
                 {
+                    CREATE: 'CREATE',
                     UPDATE: 'UPDATE',
                     GET_LIST: 'GET_LIST',
                     type: {
@@ -335,6 +336,67 @@ export const mockTestData = (): {
                     ],
                     possibleTypes: null
                 },
+                {
+                    kind: "INPUT_OBJECT",
+                    name: "commandsInsertInput",
+                    fields: null,
+                    enumValues: [],
+                    interfaces: [],
+                    description: null,
+                    inputFields: [
+                        {
+                            name: "id",
+                            type: {
+                                kind: "SCALAR",
+                                name: "UUID",
+                                ofType: null
+                            },
+                            description: null,
+                            defaultValue: null
+                        },
+                        {
+                            name: "address",
+                            type: {
+                                kind: "SCALAR",
+                                name: "String",
+                                ofType: null
+                            },
+                            description: null,
+                            defaultValue: null
+                        },
+                        {
+                            name: "linkedType_id",
+                            type: {
+                                kind: "SCALAR",
+                                name: "UUID",
+                                ofType: null
+                            },
+                            description: null,
+                            defaultValue: null
+                        },
+                        // {
+                        //     name: "created_at",
+                        //     type: {
+                        //         kind: "SCALAR",
+                        //         name: "Datetime",
+                        //         ofType: null
+                        //     },
+                        //     description: null,
+                        //     defaultValue: null
+                        // },
+                        // {
+                        //     name: "updated_at",
+                        //     type: {
+                        //         kind: "SCALAR",
+                        //         name: "Datetime",
+                        //         ofType: null
+                        //     },
+                        //     description: null,
+                        //     defaultValue: null
+                        // }
+                    ],
+                    possibleTypes: null
+                },
             ],
             queries: [
                 {
@@ -572,6 +634,7 @@ export const mockTestData = (): {
         default: {
             GET_LIST: 'GET_LIST',
             UPDATE: 'UPDATE',
+            CREATE: 'CREATE',
             type: {
                 name: 'commands', // Assuming resource is of 'resourceTypes'
                 fields: [
@@ -871,6 +934,31 @@ export const mockTestData = (): {
                     }
                 },
             ],
+        },
+        Create: {
+            name: 'insertIntoCommandsCollection',
+            args: [
+                {
+                    name: 'objects',
+                    type: { 
+                        kind: TypeKind.NON_NULL,
+                        name: null,
+                        ofType: {
+                            kind: TypeKind.LIST,
+                            name: null,
+                            ofType: {
+                                kind: TypeKind.NON_NULL,
+                                name: null,
+                                ofType: {
+                                    kind: TypeKind.INPUT_OBJECT, 
+                                    name: 'commandsInsertInput'
+                                },
+                                __typename: null
+                            },
+                        }
+                    },
+                },
+            ],
         }
     },
     params: {
@@ -900,6 +988,30 @@ export const mockTestData = (): {
                 ],
             },
         },
+        Create: {
+            data: { 
+                // id: 'foo',
+                address: 'bar',
+                linkedType_id: 'baz', 
+                resourceType_id: 'not updated' // this should never get updated b/c it is not in the insert input
+            },
+        },
+        CreateSparseFields: {
+            data: { 
+                // id: 'foo',
+                address: 'bar',
+                linkedType_id: 'baz', 
+                resourceType_id: 'not updated', // this should never get updated b/c it is not in the insert input
+                meta: {
+                    sparseFields: [
+                        'id',
+                        'address',
+                        { linkedTypes: ['id', 'title'] },
+                        { resourceTypes: ['id', 'foo', 'name'] },
+                    ],
+                },
+            },
+        },
         Update: {
             id: 'foo',
             data: { 
@@ -924,6 +1036,19 @@ export const mockTestData = (): {
         }
     },
     responses: {
+        Create: {
+            data: {
+                data: {
+                    affectedCount: 1,
+                    records: [
+                        {
+                            id: 'foo',
+                            address: 'bar',
+                        }
+                    ]
+                }
+            }
+        },
         Update: {
             data: {
                 data: {

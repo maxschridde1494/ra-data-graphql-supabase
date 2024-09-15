@@ -6,7 +6,7 @@ import {
     GET_MANY,
     GET_MANY_REFERENCE,
     UPDATE,
-    // CREATE,
+    CREATE,
     // DELETE,
     // DELETE_MANY,
     // UPDATE_MANY,
@@ -733,65 +733,98 @@ describe('buildGqlQuery', () => {
             );
         });
     });
-//     describe('CREATE', () => {
-//         it('returns the correct query', () => {
-//             expect(
-//                 print(
-//                     buildGqlQuery(introspectionResults)(
-//                         resource,
-//                         CREATE,
-//                         { ...queryType, name: 'createCommand' },
-//                         params
-//                     )
-//                 )
-//             ).toEqual(
-//                 print(gql`
-//                     mutation createCommand($foo: Int!) {
-//                         data: createCommand(foo: $foo) {
-//                             foo
-//                             linked {
-//                                 foo
-//                             }
-//                             resource {
-//                                 id
-//                             }
-//                         }
-//                     }
-//                 `)
-//             );
-//         });
+    describe('CREATE', () => {
+        it('returns the correct query', () => {
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { Create: params }, 
+                queryTypes: { Create: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
 
-//         it('returns the correct query with sparse fields', () => {
-//             const { introspectionResults: { default: introspectionResults}, params, queryType, resources: { default: resource } } =
-//                 mockTestData();
+            expect(
+                print(
+                    buildGqlQuery(introspectionResults)(
+                        resource,
+                        CREATE,
+                        queryType,
+                        params
+                    )
+                )
+            ).toEqual(
+                print(gql`
+                    mutation insertIntoCommandsCollection($objects: [commandsInsertInput!]!) {
+                        data: insertIntoCommandsCollection(objects: $objects) {
+                            affectedCount
+                            records {
+                                id
+                                address
+                                linkedType_id
+                                linkedTypes {
+                                  totalCount
+                                  edges {
+                                    node {
+                                      id
+                                    }
+                                  }
+                                }
+                                resourceType_id
+                                resourceTypes {
+                                  id
+                                }
+                            }
+                        }
+                    }
+                `)
+            );
+        });
 
-//             expect(
-//                 print(
-//                     buildGqlQuery(introspectionResults)(
-//                         resource,
-//                         CREATE,
-//                         { ...queryType, name: 'createCommand' },
-//                         params
-//                     )
-//                 )
-//             ).toEqual(
-//                 print(gql`
-//                     mutation createCommand($foo: Int!) {
-//                         data: createCommand(foo: $foo) {
-//                             address
-//                             linked {
-//                                 title
-//                             }
-//                             resource {
-//                                 foo
-//                                 name
-//                             }
-//                         }
-//                     }
-//                 `)
-//             );
-//         });
-//     });
+        it('returns the correct query with sparse fields', () => {
+            const { 
+                introspectionResults: { default: introspectionResults }, 
+                params: { CreateSparseFields: params }, 
+                queryTypes: { Create: queryType }, 
+                resources: { default: resource } 
+            } = mockTestData();
+
+            expect(
+                print(
+                    buildGqlQuery(introspectionResults)(
+                        resource,
+                        CREATE,
+                        queryType,
+                        params
+                    )
+                )
+            ).toEqual(
+                print(gql`
+                    mutation insertIntoCommandsCollection($objects: [commandsInsertInput!]!) {
+                        data: insertIntoCommandsCollection(objects: $objects) {
+                            affectedCount
+                            records {
+                                id
+                                address
+                                linkedTypes {
+                                  totalCount
+                                  edges {
+                                    node {
+                                      id
+                                      title
+                                    }
+                                  }
+                                }
+                                resourceTypes {
+                                  id
+                                  foo
+                                  name
+                                }
+                            }
+                        }
+                    }
+                `)
+            );
+        });
+    });
 //     describe('DELETE', () => {
 //         it('returns the correct query', () => {
 //             expect(
