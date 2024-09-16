@@ -60,6 +60,11 @@ export const mockTestData = (): {
                     UPDATE: 'UPDATE',
                     DELETE: 'DELETE',
                     GET_LIST: 'GET_LIST',
+                    GET_ONE: 'GET_ONE',
+                    GET_MANY: 'GET_MANY',
+                    GET_MANY_REFERENCE: 'GET_MANY_REFERENCE',
+                    DELETE_MANY: 'DELETE_MANY',
+                    UPDATE_MANY: 'UPDATE_MANY',
                     type: {
                         name: 'commands',
                         fields: [
@@ -634,8 +639,14 @@ export const mockTestData = (): {
     resources: {
         default: {
             GET_LIST: 'GET_LIST',
-            UPDATE: 'UPDATE',
+            GET_ONE: 'GET_ONE',
+            GET_MANY: 'GET_MANY',
+            GET_MANY_REFERENCE: 'GET_MANY_REFERENCE',
             CREATE: 'CREATE',
+            UPDATE: 'UPDATE',
+            DELETE: 'DELETE',
+            DELETE_MANY: 'DELETE_MANY',
+            UPDATE_MANY: 'UPDATE_MANY',
             type: {
                 name: 'commands', // Assuming resource is of 'resourceTypes'
                 fields: [
@@ -852,46 +863,6 @@ export const mockTestData = (): {
                 { name: 'bar' },
             ],
         },
-        DeleteMany: {
-            name: 'deleteCommands',
-            args: [
-                {
-                    name: 'ids',
-                    type: {
-                        kind: TypeKind.LIST,
-                        ofType: {
-                            kind: TypeKind.NON_NULL,
-                            ofType: {
-                                kind: TypeKind.SCALAR,
-                                name: 'ID',
-                            },
-                        },
-                    },
-                },
-            ],
-        },
-        UpdateMany: {
-            name: 'updateCommands',
-            args: [
-                {
-                    name: 'ids',
-                    type: {
-                        kind: TypeKind.LIST,
-                        ofType: {
-                            kind: TypeKind.NON_NULL,
-                            ofType: {
-                                kind: TypeKind.SCALAR,
-                                name: 'ID',
-                            },
-                        },
-                    },
-                },
-                {
-                    name: 'data',
-                    type: { kind: TypeKind.OBJECT, name: 'CommandType' },
-                },
-            ],
-        },
         GetOne: {
             name: 'commandsById',
             args: [
@@ -980,6 +951,54 @@ export const mockTestData = (): {
                 },
             ],
         },
+        DeleteMany: {
+            name: 'deleteFromcommandsCollection',
+            args: [
+                {
+                    name: 'filter',
+                    type: { kind: TypeKind.OBJECT, name: 'commandsFilter' },
+                },
+                {
+                    name: 'atMost',
+                    type: {
+                        kind: TypeKind.NON_NULL,
+                        ofType: {
+                            kind: TypeKind.SCALAR, 
+                            name: 'Int' 
+                        }
+                    }
+                },
+            ],
+        },
+        UpdateMany: {
+            name: 'updatecommandsCollection',
+            args: [
+                {
+                    name: 'filter',
+                    type: { kind: TypeKind.OBJECT, name: 'commandsFilter' },
+                },
+                {
+                    name: 'set',
+                    type: { 
+                        kind: TypeKind.NON_NULL,
+                        ofType: {
+                            kind: TypeKind.OBJECT, 
+                            name: 'commandsUpdateInput'
+                        }
+                    },
+                },
+                {
+                    name: 'atMost',
+                    type: {
+                        kind: TypeKind.NON_NULL,
+                        ofType: {
+                            kind: TypeKind.SCALAR, 
+                            name: 'Int' 
+                        }
+                    }
+                },
+            ],
+        },
     },
     params: {
         default: { foo: 'foo_value' },
@@ -1054,6 +1073,28 @@ export const mockTestData = (): {
                 ],
             },
         },
+        UpdateMany: {
+            ids: ['foo', 'id'],
+            data: { 
+                address: 'bar',
+                linkedType_id: 'baz', // this should never get updated b/c it is not in the update input
+            },
+        },
+        UpdateManySparseFields: {
+            ids: ['foo', 'id'],
+            data: { 
+                address: 'bar',
+                linkedType_id: 'baz', // this should never get updated b/c it is not in the update input
+            },
+            meta: {
+                sparseFields: [
+                    'id',
+                    'address',
+                    { linkedTypes: ['id', 'title'] },
+                    { resourceTypes: ['id', 'foo', 'name'] },
+                ],
+            },
+        },
         Delete: {
             id: 'foo',
             previousData: {},
@@ -1070,8 +1111,32 @@ export const mockTestData = (): {
                 ],
             },
         },
+        DeleteMany: {
+            ids: ['foo', 'id'],
+            previousData: {},
+        },
+        DeleteManySparseFields: {
+            ids: ['foo', 'id'],
+            previousData: {},
+            meta: {
+                sparseFields: [
+                    'id',
+                    'address',
+                    { linkedTypes: ['id', 'title'] },
+                    { resourceTypes: ['id', 'foo', 'name'] },
+                ],
+            },
+        },
     },
     responses: {
+        GetOne: {
+            data: {
+                data: {
+                    id: 'foo',
+                    address: 'bar',
+                }
+            }
+        },
         Create: {
             data: {
                 data: {
@@ -1098,11 +1163,20 @@ export const mockTestData = (): {
                 }
             }
         },
-        GetOne: {
+        UpdateMany: {
             data: {
                 data: {
-                    id: 'foo',
-                    address: 'bar',
+                    affectedCount: 2,
+                    records: [
+                        {
+                            id: 'foo',
+                            address: 'bar',
+                        },
+                        {
+                            id: 'id',
+                            address: 'address',
+                        }
+                    ]
                 }
             }
         },
@@ -1114,6 +1188,23 @@ export const mockTestData = (): {
                         {
                             id: 'foo',
                             address: 'bar',
+                        }
+                    ]
+                }
+            }
+        },
+        DeleteMany: {
+            data: {
+                data: {
+                    affectedCount: 2,
+                    records: [
+                        {
+                            id: 'foo',
+                            address: 'bar',
+                        },
+                        {
+                            id: 'id',
+                            address: 'address',
                         }
                     ]
                 }

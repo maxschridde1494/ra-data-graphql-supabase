@@ -7,8 +7,8 @@ import {
     UPDATE,
     CREATE,
     DELETE,
-    // DELETE_MANY,
-    // UPDATE_MANY,
+    DELETE_MANY,
+    UPDATE_MANY,
 } from 'ra-core';
 import getResponseParser from '../src/getResponseParser';
 import { mockTestData } from './helpers/mockTestData';
@@ -158,7 +158,7 @@ describe('getResponseParser', () => {
     describe.each(mutationTypes)('%s', type => {
         it(`returns the response expected for ${type}`, () => {
             const queryTypeKey = type === UPDATE ? 'Update' : type === CREATE ? 'Create': 'Delete'
-            
+
             const { 
                 introspectionResults: { default: introspectionResult },
                 queryTypes: { [queryTypeKey]: queryType },
@@ -392,77 +392,41 @@ describe('getResponseParser', () => {
     //     });
     });
 
-    // it('returns the response expected for DELETE_MANY', () => {
-    //     const introspectionResults = {
-    //         resources: [
-    //             {
-    //                 type: {
-    //                     name: 'User',
-    //                     fields: [
-    //                         { name: 'id', type: { kind: TypeKind.SCALAR } },
-    //                         {
-    //                             name: 'firstName',
-    //                             type: { kind: TypeKind.SCALAR },
-    //                         },
-    //                     ],
-    //                 },
-    //             },
-    //         ],
-    //         types: [{ name: 'User' }],
-    //     };
-    //     const response = {
-    //         data: {
-    //             data: {
-    //                 ids: [1, 2, 3, 4],
-    //             },
-    //         },
-    //     };
+    it('returns the response expected for DELETE_MANY', () => {
+        const { 
+            introspectionResults: { default: introspectionResult },
+            queryTypes: { DeleteMany: queryType },
+            resources: { default: { resource } },
+            responses: { DeleteMany: response }
+        } = mockTestData()
 
-    //     expect(
-    //         getResponseParser(introspectionResults)(
-    //             DELETE_MANY,
-    //             undefined,
-    //             undefined
-    //         )(response)
-    //     ).toEqual({
-    //         data: [1, 2, 3, 4],
-    //     });
-    // });
+        expect(
+            getResponseParser(introspectionResult)(
+                DELETE_MANY,
+                resource,
+                queryType
+            )(response)
+        ).toEqual({
+            data: response.data.data.records.map(({ id }) => id),
+        });
+    });
 
-    // it('returns the response expected for UPDATE_MANY', () => {
-    //     const introspectionResults = {
-    //         resources: [
-    //             {
-    //                 type: {
-    //                     name: 'User',
-    //                     fields: [
-    //                         { name: 'id', type: { kind: TypeKind.SCALAR } },
-    //                         {
-    //                             name: 'firstName',
-    //                             type: { kind: TypeKind.SCALAR },
-    //                         },
-    //                     ],
-    //                 },
-    //             },
-    //         ],
-    //         types: [{ name: 'User' }],
-    //     };
-    //     const response = {
-    //         data: {
-    //             data: {
-    //                 ids: [1, 2, 3, 4],
-    //             },
-    //         },
-    //     };
+    it('returns the response expected for UPDATE_MANY', () => {
+        const { 
+            introspectionResults: { default: introspectionResult },
+            queryTypes: { UpdateMany: queryType },
+            resources: { default: { resource } },
+            responses: { UpdateMany: response }
+        } = mockTestData()
 
-    //     expect(
-    //         getResponseParser(introspectionResults)(
-    //             UPDATE_MANY,
-    //             undefined,
-    //             undefined
-    //         )(response)
-    //     ).toEqual({
-    //         data: [1, 2, 3, 4],
-    //     });
-    // });
+        expect(
+            getResponseParser(introspectionResult)(
+                UPDATE_MANY,
+                resource,
+                queryType
+            )(response)
+        ).toEqual({
+            data: response.data.data.records.map(({ id }) => id),
+        });
+    });
 });

@@ -6,11 +6,10 @@ import {
     UPDATE,
     CREATE,
     DELETE,
-    // DELETE_MANY,
-    // UPDATE_MANY,
+    DELETE_MANY,
+    UPDATE_MANY,
   } from 'ra-core';
   import {
-    QUERY_TYPES,
     IntrospectionResult,
     IntrospectedResource,
   } from 'ra-data-graphql';
@@ -168,7 +167,13 @@ export default (introspectionResults: IntrospectionResult) =>
             ]);
         }
 
-        if (raFetchMethod === UPDATE || raFetchMethod === CREATE || raFetchMethod === DELETE) {
+        if (
+            raFetchMethod === UPDATE || 
+            raFetchMethod === CREATE || 
+            raFetchMethod === DELETE ||
+            raFetchMethod === DELETE_MANY ||
+            raFetchMethod === UPDATE_MANY
+        ) {
             return gqlTypes.document([
                 gqlTypes.operationDefinition(
                     'mutation',
@@ -180,7 +185,13 @@ export default (introspectionResults: IntrospectionResult) =>
                             null,
                             gqlTypes.selectionSet([
                                 gqlTypes.field(gqlTypes.name('affectedCount')),
-                                gqlTypes.field(gqlTypes.name('records'), null, null, null, gqlTypes.selectionSet(fields))
+                                gqlTypes.field(
+                                    gqlTypes.name('records'), 
+                                    null, 
+                                    null, 
+                                    null, 
+                                    gqlTypes.selectionSet(fields)
+                                )
                             ])
                         ),
                     ]),
@@ -189,44 +200,6 @@ export default (introspectionResults: IntrospectionResult) =>
                 ),
             ]);
         }
-  
-        // if (raFetchMethod === DELETE_MANY || raFetchMethod === UPDATE_MANY) {
-        //     return gqlTypes.document([
-        //         gqlTypes.operationDefinition(
-        //             'mutation',
-        //             gqlTypes.selectionSet([
-        //                 gqlTypes.field(
-        //                     gqlTypes.name(queryType.name),
-        //                     gqlTypes.name('data'),
-        //                     args,
-        //                     null,
-        //                     gqlTypes.selectionSet([
-        //                         gqlTypes.field(gqlTypes.name('ids')),
-        //                     ])
-        //                 ),
-        //             ]),
-        //             gqlTypes.name(queryType.name),
-        //             apolloArgs
-        //         ),
-        //     ]);
-        // }
-  
-        return gqlTypes.document([
-            gqlTypes.operationDefinition(
-                QUERY_TYPES.includes(raFetchMethod) ? 'query' : 'mutation',
-                gqlTypes.selectionSet([
-                    gqlTypes.field(
-                        gqlTypes.name(queryType.name),
-                        gqlTypes.name('data'),
-                        args,
-                        null,
-                        gqlTypes.selectionSet(fields)
-                    ),
-                ]),
-                gqlTypes.name(queryType.name),
-                apolloArgs
-            ),
-        ]);
     };
 
 const fieldsForObject = ({ 
@@ -433,11 +406,11 @@ export const buildArgs = (
     // 'after',
     // 'offset',
 
-    if (raFetchMethod === UPDATE) {
+    if (raFetchMethod === UPDATE || raFetchMethod === UPDATE_MANY) {
         validVariables.push('filter')
         validVariables.push('set')
         validVariables.push('atMost')
-    } else if (raFetchMethod === DELETE) {
+    } else if (raFetchMethod === DELETE || raFetchMethod === DELETE_MANY) {
         validVariables.push('filter')
         validVariables.push('atMost')
     } else if (raFetchMethod === CREATE) {
@@ -487,13 +460,13 @@ export const buildApolloArgs = (
     // 'after',
     // 'offset',
 
-    if (raFetchMethod === UPDATE) {
+    if (raFetchMethod === UPDATE || raFetchMethod === UPDATE_MANY) {
         validVariables.push('filter')
         validVariables.push('set')
         validVariables.push('atMost')
     } else if (raFetchMethod === CREATE) {
         validVariables.push('objects')
-    } else if (raFetchMethod === DELETE) {
+    } else if (raFetchMethod === DELETE || raFetchMethod === DELETE_MANY) {
         validVariables.push('filter')
         validVariables.push('atMost')
     } else {

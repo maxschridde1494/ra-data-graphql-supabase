@@ -5,9 +5,10 @@ import {
     CREATE,
     UPDATE,
     DELETE,
-    // DELETE_MANY,
-    // UPDATE_MANY,
+    DELETE_MANY,
+    UPDATE_MANY,
 } from 'ra-core';
+
 import buildVariables from '../src/buildVariables';
 import { mockTestData } from './helpers/mockTestData';
 
@@ -304,45 +305,52 @@ describe('buildVariables', () => {
         });
     });
 
-    // describe('DELETE_MANY', () => {
-    //     it('returns correct variables', () => {
-    //         const params = {
-    //             ids: ['post1'],
-    //         };
-    //         expect(
-    //             buildVariables(introspectionResult)(
-    //                 { type: { name: 'Post', inputFields: [] } },
-    //                 DELETE_MANY,
-    //                 params,
-    //                 {}
-    //             )
-    //         ).toEqual({
-    //             ids: ['post1'],
-    //         });
-    //     });
-    // });
+    describe('DELETE_MANY', () => {
+        it('returns correct variables', () => {
+            const { 
+                introspectionResults: { default: introspectionResult },
+                queryTypes: { DeleteMany: queryType },
+                params: { DeleteMany: params },
+                resources: { default: { resource } },
+            } = mockTestData()
 
-    // describe('UPDATE_MANY', () => {
-    //     it('returns correct variables', () => {
-    //         const params = {
-    //             ids: ['post1', 'post2'],
-    //             data: {
-    //                 title: 'New Title',
-    //             },
-    //         };
-    //         expect(
-    //             buildVariables(introspectionResult)(
-    //                 { type: { name: 'Post', inputFields: [] } },
-    //                 UPDATE_MANY,
-    //                 params,
-    //                 {}
-    //             )
-    //         ).toEqual({
-    //             ids: ['post1', 'post2'],
-    //             data: {
-    //                 title: 'New Title',
-    //             },
-    //         });
-    //     });
-    // });
+            expect(
+                buildVariables(introspectionResult)(
+                    resource,
+                    DELETE_MANY,
+                    params,
+                    queryType
+                )
+            ).toEqual({
+                atMost: params.ids.length,
+                filter: { id: { in: params.ids } },
+            });
+        });
+    });
+
+    describe('UPDATE_MANY', () => {
+        it('returns correct variables', () => {
+            const { 
+                introspectionResults: { default: introspectionResult },
+                queryTypes: { UpdateMany: queryType },
+                params: { UpdateMany: params },
+                resources: { default: { resource } },
+            } = mockTestData()
+
+            expect(
+                buildVariables(introspectionResult)(
+                    resource,
+                    UPDATE_MANY,
+                    params,
+                    queryType
+                )
+            ).toEqual({
+                filter: { id: { in: params.ids } },
+                atMost: params.ids.length,
+                set: {
+                    address: params.data.address
+                }
+            });
+        });
+    });
 });

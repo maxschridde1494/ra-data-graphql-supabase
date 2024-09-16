@@ -22,11 +22,9 @@ const introspection= {
         [GET_MANY]: (resource: { name: string }) => `${resource.name}Collection`,
         [GET_MANY_REFERENCE]: (resource: { name: string }) => `${resource.name}Collection`,
         [GET_ONE]: (resource: { name: string }) => `${resource.name}ById`,
-        [CREATE]: (resource: { name: string }) => `insertInto${resource.name}Collection`, // TODO: implement
+        [CREATE]: (resource: { name: string }) => `insertInto${resource.name}Collection`,
         [UPDATE]: (resource: { name: string }) => `update${resource.name}Collection`,
-        [DELETE]: (resource: { name: string }) => `deleteFrom${resource.name}Collection`, // TODO: implement
-        // [DELETE_MANY]: (resource: { name: string }) => `deleteFrom${resource.name}Collection`,
-        // [UPDATE_MANY]: (resource: { name: string }) => `update${resource.name}Collection`,
+        [DELETE]: (resource: { name: string }) => `deleteFrom${resource.name}Collection`,
     },
     exclude: undefined,
     include: undefined,
@@ -41,8 +39,8 @@ const defaultOptions = {
 };
 
 const bulkActionOperationNames = {
-    [DELETE_MANY]: resource => `delete${pluralize(resource.name)}`,
-    [UPDATE_MANY]: resource => `update${pluralize(resource.name)}`,
+    [DELETE_MANY]: (resource: { name: string }) => `deleteFrom${resource.name}Collection`,
+    [UPDATE_MANY]: (resource: { name: string }) => `update${resource.name}Collection`,
 };
 
 export default (

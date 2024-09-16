@@ -5,9 +5,9 @@ import {
     GET_ONE,
     UPDATE,
     CREATE,
-    DELETE
-    // DELETE_MANY,
-    // UPDATE_MANY,
+    DELETE,
+    DELETE_MANY,
+    UPDATE_MANY,
 } from 'ra-core';
 import { IntrospectionResult, IntrospectedResource } from 'ra-data-graphql';
 import { IntrospectionField } from 'graphql';
@@ -33,9 +33,8 @@ export default (_introspectionResults: IntrospectionResult) => (
         return { data: sanitizeResource(data.data) };
     else if (raFetchMethod === UPDATE || raFetchMethod === CREATE || raFetchMethod === DELETE)
         return { data: sanitizeResource(data.data.records[0]) };
-    // else if (raFetchMethod === DELETE_MANY || raFetchMethod === UPDATE_MANY)
-    //     return { data: sanitizeResource(data.data).ids };
-    
+    else if (raFetchMethod === DELETE_MANY || raFetchMethod === UPDATE_MANY)
+        return { data: data.data.records.map(({ id }) => id) };
     else return { data: sanitizeResource(data.data) };
 };
   

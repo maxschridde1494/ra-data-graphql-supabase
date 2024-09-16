@@ -8,8 +8,8 @@ import {
     UPDATE,
     CREATE,
     DELETE,
-    // DELETE_MANY,
-    // UPDATE_MANY,
+    DELETE_MANY,
+    UPDATE_MANY,
 } from 'ra-core';
 
 import buildGqlQuery, {
@@ -362,6 +362,7 @@ describe('buildGqlQuery', () => {
             );
         });
     });
+
     describe('GET_MANY', () => {
         it('returns the correct query', () => {
             const { 
@@ -642,6 +643,7 @@ describe('buildGqlQuery', () => {
             );
         });
     });
+
     describe('UPDATE', () => {
         it('returns the correct query', () => {
             const { 
@@ -734,6 +736,7 @@ describe('buildGqlQuery', () => {
             );
         });
     });
+
     describe('CREATE', () => {
         it('returns the correct query', () => {
             const { 
@@ -826,6 +829,7 @@ describe('buildGqlQuery', () => {
             );
         });
     });
+
     describe('DELETE', () => {
         it('returns the correct query', () => {
             const { 
@@ -919,46 +923,93 @@ describe('buildGqlQuery', () => {
         });
     });
 
-//     it('returns the correct query for DELETE_MANY', () => {
-//         expect(
-//             print(
-//                 buildGqlQuery(introspectionResults)(
-//                     resource,
-//                     DELETE_MANY,
-//                     queryTypeDeleteMany,
-//                     { ids: [1, 2, 3] }
-//                 )
-//             )
-//         ).toEqual(
-//             `mutation deleteCommands($ids: [ID!]) {
-//   data: deleteCommands(ids: $ids) {
-//     ids
-//   }
-// }
-// `
-//         );
-//     });
+    it('returns the correct query for DELETE_MANY', () => {
+        const { 
+            introspectionResults: { default: introspectionResults }, 
+            params: { DeleteMany: params }, 
+            queryTypes: { DeleteMany: queryType }, 
+            resources: { default: resource } 
+        } = mockTestData();
 
-//     it('returns the correct query for UPDATE_MANY', () => {
-//         expect(
-//             print(
-//                 buildGqlQuery(introspectionResults)(
-//                     resource,
-//                     UPDATE_MANY,
-//                     queryTypeUpdateMany,
-//                     {
-//                         ids: [1, 2, 3],
-//                         data: params,
-//                     }
-//                 )
-//             )
-//         ).toEqual(
-//             `mutation updateCommands($ids: [ID!], $data: CommandType) {
-//   data: updateCommands(ids: $ids, data: $data) {
-//     ids
-//   }
-// }
-// `
-//         );
-//     });
+        expect(
+            print(
+                buildGqlQuery(introspectionResults)(
+                    resource,
+                    DELETE_MANY,
+                    queryType,
+                    params
+                )
+            )
+        ).toEqual(
+            print(gql`
+                mutation deleteFromcommandsCollection($filter: commandsFilter, $atMost: Int!) {
+                    data: deleteFromcommandsCollection(filter: $filter, atMost: $atMost) {
+                        affectedCount
+                        records {
+                            id
+                            address
+                            linkedType_id
+                            linkedTypes {
+                                totalCount
+                                edges {
+                                    node {
+                                        id
+                                    }
+                                }
+                            }
+                            resourceType_id
+                            resourceTypes {
+                                id
+                            }
+                        }
+                    }
+                }
+            `)
+        );
+    });
+
+    it('returns the correct query for UPDATE_MANY', () => {
+        const { 
+            introspectionResults: { default: introspectionResults }, 
+            params: { UpdateMany: params }, 
+            queryTypes: { UpdateMany: queryType }, 
+            resources: { default: resource } 
+        } = mockTestData();
+
+        expect(
+            print(
+                buildGqlQuery(introspectionResults)(
+                    resource,
+                    UPDATE_MANY,
+                    queryType,
+                    params
+                )
+            )
+        ).toEqual(
+            print(gql`
+                mutation updatecommandsCollection($filter: commandsFilter, $set: commandsUpdateInput!, $atMost: Int!) {
+                    data: updatecommandsCollection(filter: $filter, set: $set, atMost: $atMost) {
+                        affectedCount
+                        records {
+                            id
+                            address
+                            linkedType_id
+                            linkedTypes {
+                                totalCount
+                                edges {
+                                node {
+                                    id
+                                }
+                                }
+                            }
+                            resourceType_id
+                            resourceTypes {
+                                id
+                            }
+                        }
+                    }
+                }
+            `)
+        );
+    });
 });

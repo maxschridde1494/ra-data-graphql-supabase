@@ -15,8 +15,8 @@ import {
     UPDATE,
     CREATE,
     DELETE,
-    // DELETE_MANY,
-    // UPDATE_MANY,
+    DELETE_MANY,
+    UPDATE_MANY,
 } from 'ra-core';
 import { IntrospectionResult, IntrospectedResource } from 'ra-data-graphql';
   
@@ -52,6 +52,7 @@ export default (introspectionResults: IntrospectionResult) =>
                     : {}
                 ),
             };
+            
         case GET_MANY_REFERENCE: {
             let variables = buildGetListVariables(introspectionResults)(
                 resource,
@@ -75,6 +76,7 @@ export default (introspectionResults: IntrospectionResult) =>
                 ),
             };
         case CREATE:
+        case UPDATE_MANY:
         case UPDATE: {
             return buildCreateUpdateVariables(introspectionResults)(
                 resource,
@@ -83,30 +85,18 @@ export default (introspectionResults: IntrospectionResult) =>
                 preparedParams
             );
         }
+        case DELETE_MANY:
         case DELETE:
             return {
-                filter: { id: { eq: preparedParams.id } },
-                atMost: 1,
+                filter: { 
+                    id: raFetchMethod === DELETE ? { eq: preparedParams.id } : { in: preparedParams.ids } 
+                },
+                atMost: raFetchMethod === DELETE ? 1 : preparedParams.ids.length,
                 ...(preparedParams.meta
                     ? { meta: preparedParams.meta }
                     : {}
                 ),
             };
-        // case DELETE_MANY:
-        //     return preparedParams;
-        // case UPDATE_MANY: {
-        //     const { ids, data: resourceData } = preparedParams;
-        //     const { id, ...data } = buildCreateUpdateVariables(
-        //         resource,
-        //         raFetchMethod,
-        //         { data: resourceData },
-        //         queryType
-        //     );
-        //     return {
-        //         ids,
-        //         data,
-        //     };
-        // }
     }
 };
   
@@ -360,7 +350,7 @@ const buildCreateUpdateVariables = (introspectionResults: IntrospectionResult) =
     queryType: IntrospectionField,
     args: any,
 ) => {
-    let { id, data, meta } = args;
+    let { id, ids, data, meta } = args;
     if (!meta && data.meta) {
         meta = data.meta;
         delete data.meta;
@@ -369,14 +359,17 @@ const buildCreateUpdateVariables = (introspectionResults: IntrospectionResult) =
     let dataType: { key: 'objects' | 'set', type: TypeKind.LIST | TypeKind.OBJECT }
     let inputType: IntrospectionInputObjectType;
 
-    if (raFetchMethod === UPDATE) {
+    if (raFetchMethod === UPDATE || raFetchMethod === UPDATE_MANY) {
         dataType = { key: 'set', type: TypeKind.OBJECT };
+
         const updateInputTypeName = (queryType.args.find(a => a.name === dataType.key).type as any).ofType.name
         inputType = introspectionResults.types.find(t => t.name === updateInputTypeName) as IntrospectionInputObjectType;
-        variables.filter = { id: { eq: id } }
-        variables.atMost = 1
+
+        variables.filter = { id: raFetchMethod === UPDATE ? { eq: id } : { in: ids } }
+        variables.atMost = raFetchMethod === UPDATE ? 1 : ids.length
     } else {
         dataType = { key: 'objects', type: TypeKind.LIST };
+
         const instertInputTypeName = (queryType.args.find(a => a.name === dataType.key).type as any).ofType.ofType.ofType.name // list type so doubly nested ofTypes
         inputType = introspectionResults.types.find(t => t.name === instertInputTypeName) as IntrospectionInputObjectType;
     }
