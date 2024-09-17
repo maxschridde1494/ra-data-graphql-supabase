@@ -1,4 +1,4 @@
-# ra-data-graphql-supabase
+# @groovestack/ra-data-graphql-supabase
 
 A GraphQL data provider for [react-admin](https://github.com/marmelab/react-admin/) and [supabase pg_graphql](https://github.com/supabase/pg_graphql) built with [Apollo](https://www.apollodata.com/).
 
@@ -37,24 +37,24 @@ This can be overridden via the dataprovider `introspection` option.
 Install with:
 
 ```sh
-npm install --save graphql ra-data-graphql-supabase
+npm install --save @groovestack/ra-data-graphql-supabase
 ```
 
 or
 
 ```sh
-yarn add graphql ra-data-graphql-supabase
+yarn add @groovestack/ra-data-graphql-supabase
 ```
 
 ## Usage
 
-The `ra-data-graphql-supabase` package exposes a single function, which is a constructor for a `dataProvider` based on a GraphQL endpoint. When executed, this function calls the GraphQL endpoint, running an [introspection](https://graphql.org/learn/introspection/) query. It uses the result of this query (the GraphQL schema) to automatically configure the `dataProvider` accordingly.
+The `@groovestack/ra-data-graphql-supabase` package exposes a single function, which is a constructor for a `dataProvider` based on a GraphQL endpoint. When executed, this function calls the GraphQL endpoint, running an [introspection](https://graphql.org/learn/introspection/) query. It uses the result of this query (the GraphQL schema) to automatically configure the `dataProvider` accordingly.
 
 ```jsx
 // in App.js
 import React from 'react';
 import { Component } from 'react';
-import buildGraphQLProvider from 'ra-data-graphql-supabase';
+import buildGraphQLProvider from '@groovestack/ra-data-graphql-supabase';
 import { Admin, Resource } from 'react-admin';
 
 import { PostCreate, PostEdit, PostList } from './Post';
@@ -93,7 +93,7 @@ The default behavior might not be optimized especially when dealing with referen
 
 ```js
 // in src/dataProvider.js
-import buildGraphQLProvider, { buildQuery } from 'ra-data-graphql-supabase';
+import buildGraphQLProvider, { buildQuery } from '@groovestack/ra-data-graphql-supabase';
 
 const myBuildQuery = introspection => (fetchType, resource, params) => {
     const builtQuery = buildQuery(introspection)(fetchType, resource, params);
