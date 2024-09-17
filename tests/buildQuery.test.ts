@@ -6,7 +6,7 @@ import { mockTestData } from './helpers/mockTestData';
 
 describe('buildQuery', () => {
     it('throws an error if resource is unknown', () => {
-        const { introspectionResults: { default: introspectionResults } } = mockTestData();
+        const { introspectionResults } = mockTestData();
         expect(() =>
             buildQueryFactory()(introspectionResults)('GET_LIST', 'Comment', {})
         ).toThrow(
@@ -15,7 +15,7 @@ describe('buildQuery', () => {
     });
 
     it('throws an error if resource does not have a query or mutation for specified AOR fetch type', () => {
-        const { introspectionResults: { default: introspectionResults }, resources: { default: resource } } = mockTestData();
+        const { introspectionResults, resources: { default: resource } } = mockTestData();
 
         expect(() =>
             buildQueryFactory()(introspectionResults)('UNKNOWN_ACTION', resource.type.name, {})
@@ -26,8 +26,8 @@ describe('buildQuery', () => {
 
     it('correctly builds a query and returns it along with variables and parseResponse', () => {
         const { 
-            introspectionResults: { default: introspectionResults },
-            params: { default: params },
+            introspectionResults,
+            params: { GET_LIST: { default: params } },
         } = mockTestData();
 
         const queryType = 'GET_LIST';

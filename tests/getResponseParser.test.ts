@@ -131,14 +131,14 @@ describe('getResponseParser', () => {
     describe(GET_ONE, () => {
         it(`returns the response expected for GET_ONE`, () => {
             const { 
-                introspectionResults: { default: introspectionResult },
-                queryTypes: { GetOne: queryType },
-                resources: { default: { resource } },
-                responses: { GetOne: response }
+                introspectionResults,
+                queryTypes: { GET_ONE: queryType },
+                resources: { default: resource },
+                responses: { GET_ONE: response }
             } = mockTestData()
     
             expect(
-                getResponseParser(introspectionResult)(
+                getResponseParser(introspectionResults)(
                     GET_ONE,
                     resource,
                     queryType
@@ -157,18 +157,18 @@ describe('getResponseParser', () => {
     
     describe.each(mutationTypes)('%s', type => {
         it(`returns the response expected for ${type}`, () => {
-            const queryTypeKey = type === UPDATE ? 'Update' : type === CREATE ? 'Create': 'Delete'
+            const queryTypeKey = type === UPDATE ? 'UPDATE' : type === CREATE ? 'CREATE': 'DELETE'
 
             const { 
-                introspectionResults: { default: introspectionResult },
+                introspectionResults,
                 queryTypes: { [queryTypeKey]: queryType },
                 // params: { [queryTypeKey]: params },
-                resources: { default: { resource } },
+                resources: { default: resource },
                 responses: { [queryTypeKey]: response }
             } = mockTestData()
     
             expect(
-                getResponseParser(introspectionResult)(
+                getResponseParser(introspectionResults)(
                     type,
                     resource,
                     queryType
@@ -394,14 +394,14 @@ describe('getResponseParser', () => {
 
     it('returns the response expected for DELETE_MANY', () => {
         const { 
-            introspectionResults: { default: introspectionResult },
-            queryTypes: { DeleteMany: queryType },
-            resources: { default: { resource } },
-            responses: { DeleteMany: response }
+            introspectionResults,
+            queryTypes: { DELETE_MANY: queryType },
+            resources: { default: resource },
+            responses: { DELETE_MANY: response }
         } = mockTestData()
 
         expect(
-            getResponseParser(introspectionResult)(
+            getResponseParser(introspectionResults)(
                 DELETE_MANY,
                 resource,
                 queryType
@@ -413,14 +413,14 @@ describe('getResponseParser', () => {
 
     it('returns the response expected for UPDATE_MANY', () => {
         const { 
-            introspectionResults: { default: introspectionResult },
-            queryTypes: { UpdateMany: queryType },
-            resources: { default: { resource } },
-            responses: { UpdateMany: response }
+            introspectionResults,
+            queryTypes: { UPDATE_MANY: queryType },
+            resources: { default: resource },
+            responses: { UPDATE_MANY: response }
         } = mockTestData()
 
         expect(
-            getResponseParser(introspectionResult)(
+            getResponseParser(introspectionResults)(
                 UPDATE_MANY,
                 resource,
                 queryType

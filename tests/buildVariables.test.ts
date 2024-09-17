@@ -13,40 +13,26 @@ import buildVariables from '../src/buildVariables';
 import { mockTestData } from './helpers/mockTestData';
 
 describe('buildVariables', () => {
-    const introspectionResult = {
-        types: [
-            {
-                name: 'PostFilter',
-                inputFields: [{ name: 'tags_some' }],
-            },
-        ],
-    };
     describe('GET_LIST', () => {
         it('returns correct variables', () => {
-            const params = {
-                filter: {
-                    ids: ['foo1', 'foo2'],
-                    tags: { id: ['tag1', 'tag2'] },
-                    'author.id': 'author1',
-                    views: 100,
-                },
-                pagination: { page: 10, perPage: 10 },
-                sort: { field: 'sortField', order: 'DESC' },
-            };
+            const { 
+                introspectionResults,
+                queryTypes: { GET_LIST: queryType },
+                params: { GET_LIST: { filtered: params } },
+                resources: { default: resource }
+            } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
-                    { type: { name: 'Post', fields: [] } },
+                buildVariables(introspectionResults)(
+                    resource,
                     GET_LIST,
                     params,
-                    {}
+                    queryType
                 )
             ).toEqual({
                 filter: {
                     id: { in: ['foo1', 'foo2'] },
-                    tags_some: { id_in: ['tag1', 'tag2'] },
-                    author: { id: 'author1' },
-                    views: 100,
+                    linkedTypesId: { in: ['tag1', 'tag2'] },
                 },
                 first: 10,
                 offset: 90,
@@ -55,21 +41,23 @@ describe('buildVariables', () => {
         });
 
         it('should return correct meta', () => {
-            const params = {
-                filter: {},
-                meta: { sparseFields: [] },
-            };
+            const { 
+                introspectionResults,
+                queryTypes: { GET_LIST: queryType },
+                params: { GET_LIST: { sparse: params } },
+                resources: { default: resource }
+            } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
-                    { type: { name: 'Post', fields: [] } },
+                buildVariables(introspectionResults)(
+                    resource,
                     GET_LIST,
                     params,
-                    {}
+                    queryType
                 )
             ).toEqual({
                 filter: {},
-                meta: { sparseFields: [] },
+                meta: params.meta,
             });
         });
     });
@@ -77,14 +65,14 @@ describe('buildVariables', () => {
     describe('CREATE', () => {
         it('returns correct variables', () => {
             const { 
-                introspectionResults: { default: introspectionResult },
-                queryTypes: { Create: queryType },
-                params: { Create: params },
-                resources: { default: { resource } }
+                introspectionResults,
+                queryTypes: { CREATE: queryType },
+                params: { CREATE: { default: params } },
+                resources: { default: resource }
             } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
+                buildVariables(introspectionResults)(
                     resource,
                     CREATE,
                     params,
@@ -101,14 +89,14 @@ describe('buildVariables', () => {
         });
         it('should return correct meta', () => {
             const { 
-                introspectionResults: { default: introspectionResult },
-                queryTypes: { Create: queryType },
-                params: { CreateSparseFields: params },
-                resources: { default: { resource } }
+                introspectionResults,
+                queryTypes: { CREATE: queryType },
+                params: { CREATE: { sparse: params } },
+                resources: { default: resource }
             } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
+                buildVariables(introspectionResults)(
                     resource,
                     CREATE,
                     params,
@@ -129,14 +117,14 @@ describe('buildVariables', () => {
     describe('UPDATE', () => {
         it('returns correct variables', () => {
             const { 
-                introspectionResults: { default: introspectionResult },
-                queryTypes: { Update: queryType },
-                params: { Update: params },
-                resources: { default: { resource } }
+                introspectionResults,
+                queryTypes: { UPDATE: queryType },
+                params: { UPDATE: { default: params } },
+                resources: { default: resource }
             } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
+                buildVariables(introspectionResults)(
                     resource,
                     UPDATE,
                     params,
@@ -153,14 +141,14 @@ describe('buildVariables', () => {
 
         it('should return correct meta', () => {
             const { 
-                introspectionResults: { default: introspectionResult },
-                queryTypes: { Update: queryType },
-                params: { UpdateSparseFields: params },
-                resources: { default: { resource } }
+                introspectionResults,
+                queryTypes: { UPDATE: queryType },
+                params: { UPDATE: { sparse: params } },
+                resources: { default: resource }
             } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
+                buildVariables(introspectionResults)(
                     resource,
                     UPDATE,
                     params,
@@ -179,83 +167,92 @@ describe('buildVariables', () => {
 
     describe('GET_MANY', () => {
         it('returns correct variables', () => {
-            const params = {
-                ids: ['tag1', 'tag2'],
-            };
+            const {
+                introspectionResults,
+                queryTypes: { GET_MANY: queryType },
+                params: { GET_MANY: { default: params } },
+                resources: { default: resource }
+            } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
-                    { type: { name: 'Post' } },
+                buildVariables(introspectionResults)(
+                    resource,
                     GET_MANY,
                     params,
-                    {}
+                    queryType
                 )
             ).toEqual({
-                filter: { id: { in: ['tag1', 'tag2'] } },
+                filter: { id: { in: params.ids } },
             });
         });
 
         it('should return correct meta', () => {
-            const params = {
-                ids: ['tag1', 'tag2'],
-                meta: { sparseFields: [] },
-            };
+            const {
+                introspectionResults,
+                queryTypes: { GET_MANY: queryType },
+                params: { GET_MANY: { sparse: params } },
+                resources: { default: resource }
+            } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
-                    { type: { name: 'Post' } },
+                buildVariables(introspectionResults)(
+                    resource,
                     GET_MANY,
                     params,
-                    {}
+                    queryType
                 )
             ).toEqual({
-                filter: { id: { in: ['tag1', 'tag2'] } },
-                meta: { sparseFields: [] },
+                filter: { id: { in: params.ids } },
+                meta: params.meta,
             });
         });
     });
 
     describe('GET_MANY_REFERENCE', () => {
         it('returns correct variables', () => {
-            const params = {
-                target: 'author_id',
-                id: 'author1',
-                pagination: { page: 1, perPage: 10 },
-                sort: { field: 'name', order: 'ASC' },
-            };
+            const {
+                introspectionResults,
+                queryTypes: { GET_MANY_REFERENCE: queryType },
+                params: { GET_MANY_REFERENCE: { default: params } },
+                resources: { default: resource }
+            } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
-                    { type: { name: 'Post' } },
+                buildVariables(introspectionResults)(
+                    resource,
                     GET_MANY_REFERENCE,
                     params,
-                    {}
+                    queryType
                 )
             ).toEqual({
-                filter: { author_id: { eq: 'author1' } },
+                filter: { [params.target]: { eq: params.id } },
                 offset: 0,
                 first: 10,
-                orderBy: [{ name: 'AscNullsLast' }],
+                orderBy: [{ [params.sort.field]: 'AscNullsLast' }],
             });
         });
 
         it('should return correct meta', () => {
-            const params = {
-                target: 'author_id',
-                id: 'author1',
-                meta: { sparseFields: [] },
-            };
+            const {
+                introspectionResults,
+                queryTypes: { GET_MANY_REFERENCE: queryType },
+                params: { GET_MANY_REFERENCE: { sparse: params } },
+                resources: { default: resource }
+            } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
-                    { type: { name: 'Post' } },
+                buildVariables(introspectionResults)(
+                    resource,
                     GET_MANY_REFERENCE,
                     params,
-                    {}
+                    queryType
                 )
             ).toEqual({
-                filter: { author_id: { eq: 'author1' } },
-                meta: { sparseFields: [] },
+                filter: { [params.target]: { eq: params.id } },
+                offset: 0,
+                first: 10,
+                orderBy: [{ [params.sort.field]: 'AscNullsLast' }],
+                meta: params.meta,
             });
         });
     });
@@ -263,14 +260,14 @@ describe('buildVariables', () => {
     describe('DELETE', () => {
         it('returns correct variables', () => {
             const { 
-                introspectionResults: { default: introspectionResult },
-                queryTypes: { Delete: queryType },
-                params: { Delete: params },
-                resources: { default: { resource } }
+                introspectionResults,
+                queryTypes: { DELETE: queryType },
+                params: { DELETE: { default: params } },
+                resources: { default: resource }
             } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
+                buildVariables(introspectionResults)(
                     resource,
                     DELETE,
                     params,
@@ -284,14 +281,14 @@ describe('buildVariables', () => {
 
         it('should return correct meta', () => {
             const { 
-                introspectionResults: { default: introspectionResult },
-                queryTypes: { Delete: queryType },
-                params: { DeleteSparseFields: params },
-                resources: { default: { resource } }
+                introspectionResults,
+                queryTypes: { DELETE: queryType },
+                params: { DELETE: { sparse: params } },
+                resources: { default: resource }
             } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
+                buildVariables(introspectionResults)(
                     resource,
                     DELETE,
                     params,
@@ -308,14 +305,14 @@ describe('buildVariables', () => {
     describe('DELETE_MANY', () => {
         it('returns correct variables', () => {
             const { 
-                introspectionResults: { default: introspectionResult },
-                queryTypes: { DeleteMany: queryType },
-                params: { DeleteMany: params },
-                resources: { default: { resource } },
+                introspectionResults,
+                queryTypes: { DELETE_MANY: queryType },
+                params: { DELETE_MANY: { default: params } },
+                resources: { default: resource },
             } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
+                buildVariables(introspectionResults)(
                     resource,
                     DELETE_MANY,
                     params,
@@ -331,14 +328,14 @@ describe('buildVariables', () => {
     describe('UPDATE_MANY', () => {
         it('returns correct variables', () => {
             const { 
-                introspectionResults: { default: introspectionResult },
-                queryTypes: { UpdateMany: queryType },
-                params: { UpdateMany: params },
-                resources: { default: { resource } },
+                introspectionResults,
+                queryTypes: { UPDATE_MANY: queryType },
+                params: { UPDATE_MANY: { default: params } },
+                resources: { default: resource },
             } = mockTestData()
 
             expect(
-                buildVariables(introspectionResult)(
+                buildVariables(introspectionResults)(
                     resource,
                     UPDATE_MANY,
                     params,

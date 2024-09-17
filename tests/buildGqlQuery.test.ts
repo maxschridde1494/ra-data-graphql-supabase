@@ -17,82 +17,75 @@ import buildGqlQuery, {
     buildArgs,
     buildFields,
 } from '../src/buildGqlQuery';
-import { mockTestData } from './helpers/mockTestData';
+import { mockTestData, circularDependencyTypes } from './helpers/mockTestData';
 
 describe('buildArgs', () => {
     it('returns an empty array when query does not have any arguments', () => {
-        expect(buildArgs({ args: [] } as IntrospectionField, {})).toEqual([]);
+        const {
+            queryTypes: { UPDATE: queryType },
+            params: { UPDATE: { default: params } },
+        } = mockTestData()
+
+        queryType.args = []
+
+        expect(buildArgs(queryType, params, 'UPDATE')).toEqual([]);
     });
 
     it('returns an array of args correctly filtered when query has arguments', () => {
+        const {
+            queryTypes: { UPDATE: queryType },
+            params: { UPDATE: { default: params } },
+        } = mockTestData()
+        
         expect(
-            print(
-                buildArgs(
-                    { args: [{ name: 'foo' }, { name: 'bar' }] } as IntrospectionField,
-                    { foo: 'foo_value' }
-                )
-            )
-        ).toEqual(['foo: $foo']);
+            print(buildArgs(queryType, params, 'UPDATE'))
+        ).toEqual([
+            'filter: $filter',
+            'set: $set',
+            'atMost: $atMost',
+        ]);
     });
 });
 
 describe('buildApolloArgs', () => {
     it('returns an empty array when query does not have any arguments', () => {
-        expect(print(buildApolloArgs({ args: [] }, {}))).toEqual([]);
+        const {
+            queryTypes: { UPDATE: queryType },
+            params: { UPDATE: { default: params } },
+        } = mockTestData()
+
+        queryType.args = []
+
+        expect(
+            print(
+                buildApolloArgs(queryType, params, 'UPDATE')
+            )
+        ).toEqual([]);
     });
 
     it('returns an array of args correctly filtered when query has arguments', () => {
+        const {
+            queryTypes: { UPDATE: queryType },
+            params: { UPDATE: { default: params } },
+        } = mockTestData()
+
         expect(
-            print(
-                buildApolloArgs(
-                    {
-                        args: [
-                            {
-                                name: 'foo',
-                                type: {
-                                    kind: TypeKind.NON_NULL,
-                                    ofType: {
-                                        kind: TypeKind.SCALAR,
-                                        name: 'Int',
-                                    },
-                                },
-                            },
-                            {
-                                name: 'barId',
-                                type: { kind: TypeKind.SCALAR, name: 'ID' },
-                            },
-                            {
-                                name: 'barIds',
-                                type: {
-                                    kind: TypeKind.LIST,
-                                    ofType: {
-                                        kind: TypeKind.NON_NULL,
-                                        ofType: {
-                                            kind: TypeKind.SCALAR,
-                                            name: 'ID',
-                                        },
-                                    },
-                                },
-                            },
-                            { name: 'bar' },
-                        ],
-                    },
-                    { foo: 'foo_value', barId: 100, barIds: [101, 102] }
-                )
-            )
-        ).toEqual(['$foo: Int!', '$barId: ID', '$barIds: [ID!]']);
+            print(buildApolloArgs(queryType, params, 'UPDATE'))
+        ).toEqual([
+            '$filter: commandsFilter',
+            '$set: commandsUpdateInput!',
+            '$atMost: Int!',
+        ]);
     });
 });
 
 describe('buildFields', () => {
     it('returns an object with the fields to retrieve', () => {
-        const { introspectionResults: { default: introspectionResults }, resources: { default: resource } } =
-                mockTestData();
+        const { introspectionResults, resources: { default: resource } } = mockTestData();
 
-        const scalarFields = resource.type.fields //.filter(f => f.type.kind === TypeKind.SCALAR)
         const builtFields = buildFields(introspectionResults)({ 
             resourceObject: resource,
-            fieldsProp: scalarFields,
+            fieldsProp: resource.type.fields,
         })
 
         expect(print(builtFields)).toEqual([
@@ -117,13 +110,13 @@ describe('buildFields', () => {
     describe('with sparse fields', () => {
         it('returns an object with the fields to retrieve', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
+                introspectionResults, 
                 resources: { default: resource }, 
-                params: { SparseFields: params } 
+                params: { GET_LIST: { sparse: params } } 
             } = mockTestData();
 
             // nested sparse params
-            // const params = {...SparseFields}
+            // const params = {...sparse}
             params.meta.sparseFields[2].linkedTypes.push({ nestedLinks: ['id', 'bar'] });
 
             expect(
@@ -163,7 +156,7 @@ describe('buildFields', () => {
 
         it('throws an error when sparse fields is requested but empty', () => {
             const { 
-                introspectionResults: { default: introspectionResults}, 
+                introspectionResults, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -180,7 +173,7 @@ describe('buildFields', () => {
 
         it('throws an error when requested sparse fields are not available', () => {
             const { 
-                introspectionResults: { default: introspectionResults}, 
+                introspectionResults, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -199,9 +192,12 @@ describe('buildFields', () => {
 
 describe('buildFieldsWithCircularDependency', () => {
     it('returns an object with the fields to retrieve', () => {
+        
         const { 
-            introspectionResults: { circularDependencies: introspectionResults }, 
+            introspectionResults, 
             resources: { default: resource } } = mockTestData();
+
+        introspectionResults.types = circularDependencyTypes;
 
         expect(print(buildFields(introspectionResults)({
             resourceObject: resource,
@@ -229,7 +225,7 @@ describe('buildFieldsWithCircularDependency', () => {
 describe('buildFieldsWithSameType', () => {
     it('returns an object with the fields to retrieve', () => {
         const { 
-            introspectionResults: { default: introspectionResults }, 
+            introspectionResults, 
             resources: { WithMultipleFieldsOfSameType: resource } 
         } = mockTestData();
 
@@ -269,10 +265,10 @@ describe('buildGqlQuery', () => {
     describe('GET_LIST', () => {
         it('returns the correct query', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
+                introspectionResults, 
                 resources: { default: resource },
-                queryTypes: { GetList: queryType }, 
-                params: { default: params },
+                queryTypes: { GET_LIST: queryType }, 
+                params: { GET_LIST: { default: params } },
             } = mockTestData();
 
             expect(
@@ -316,9 +312,9 @@ describe('buildGqlQuery', () => {
 
         it('returns the correct query with sparse fields', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { SparseFields: params }, 
-                queryTypes: { GetList: queryType }, 
+                introspectionResults, 
+                params: { GET_LIST: { sparse: params } }, 
+                queryTypes: { GET_LIST: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -366,9 +362,9 @@ describe('buildGqlQuery', () => {
     describe('GET_MANY', () => {
         it('returns the correct query', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { default: params }, 
-                queryTypes: { GetList: queryType }, 
+                introspectionResults, 
+                params: { GET_LIST: { default: params } }, 
+                queryTypes: { GET_LIST: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -413,9 +409,9 @@ describe('buildGqlQuery', () => {
 
         it('returns the correct query with sparse fields', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { SparseFields: params }, 
-                queryTypes: { GetList: queryType }, 
+                introspectionResults, 
+                params: { GET_LIST: { sparse: params } }, 
+                queryTypes: { GET_LIST: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -463,9 +459,9 @@ describe('buildGqlQuery', () => {
     describe('GET_MANY_REFERENCE', () => {
         it('returns the correct query', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { default: params }, 
-                queryTypes: { GetList: queryType }, 
+                introspectionResults, 
+                params: { GET_LIST: { default: params } }, 
+                queryTypes: { GET_LIST: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -510,9 +506,9 @@ describe('buildGqlQuery', () => {
 
         it('returns the correct query with sparse fields', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { SparseFields: params }, 
-                queryTypes: { GetList: queryType }, 
+                introspectionResults, 
+                params: { GET_LIST: { sparse: params } }, 
+                queryTypes: { GET_LIST: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -560,9 +556,9 @@ describe('buildGqlQuery', () => {
     describe('GET_ONE', () => {
         it('returns the correct query', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { GetOne: params }, 
-                queryTypes: { GetOne: queryType }, 
+                introspectionResults, 
+                params: { GET_ONE: { default: params } }, 
+                queryTypes: { GET_ONE: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -602,9 +598,9 @@ describe('buildGqlQuery', () => {
 
         it('returns the correct query with sparse fields', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { GetOneSparseFields: params }, 
-                queryTypes: { GetOne: queryType }, 
+                introspectionResults, 
+                params: { GET_ONE: { sparse: params } }, 
+                queryTypes: { GET_ONE: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -647,9 +643,9 @@ describe('buildGqlQuery', () => {
     describe('UPDATE', () => {
         it('returns the correct query', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { Update: params }, 
-                queryTypes: { Update: queryType }, 
+                introspectionResults, 
+                params: { UPDATE: { default: params } }, 
+                queryTypes: { UPDATE: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -692,9 +688,9 @@ describe('buildGqlQuery', () => {
 
         it('returns the correct query with sparse fields', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { UpdateSparseFields: params }, 
-                queryTypes: { Update: queryType }, 
+                introspectionResults, 
+                params: { UPDATE: { sparse: params } }, 
+                queryTypes: { UPDATE: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -740,9 +736,9 @@ describe('buildGqlQuery', () => {
     describe('CREATE', () => {
         it('returns the correct query', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { Create: params }, 
-                queryTypes: { Create: queryType }, 
+                introspectionResults, 
+                params: { CREATE: { default: params } }, 
+                queryTypes: { CREATE: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -785,9 +781,9 @@ describe('buildGqlQuery', () => {
 
         it('returns the correct query with sparse fields', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { CreateSparseFields: params }, 
-                queryTypes: { Create: queryType }, 
+                introspectionResults, 
+                params: { CREATE: { sparse: params } }, 
+                queryTypes: { CREATE: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -833,9 +829,9 @@ describe('buildGqlQuery', () => {
     describe('DELETE', () => {
         it('returns the correct query', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { Delete: params }, 
-                queryTypes: { Delete: queryType }, 
+                introspectionResults, 
+                params: { DELETE: { default: params } }, 
+                queryTypes: { DELETE: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -878,9 +874,9 @@ describe('buildGqlQuery', () => {
 
         it('returns the correct query with sparse fields', () => {
             const { 
-                introspectionResults: { default: introspectionResults }, 
-                params: { DeleteSparseFields: params }, 
-                queryTypes: { Delete: queryType }, 
+                introspectionResults, 
+                params: { DELETE: { sparse: params } }, 
+                queryTypes: { DELETE: queryType }, 
                 resources: { default: resource } 
             } = mockTestData();
 
@@ -925,9 +921,9 @@ describe('buildGqlQuery', () => {
 
     it('returns the correct query for DELETE_MANY', () => {
         const { 
-            introspectionResults: { default: introspectionResults }, 
-            params: { DeleteMany: params }, 
-            queryTypes: { DeleteMany: queryType }, 
+            introspectionResults, 
+            params: { DELETE_MANY: { default: params } }, 
+            queryTypes: { DELETE_MANY: queryType }, 
             resources: { default: resource } 
         } = mockTestData();
 
@@ -970,9 +966,9 @@ describe('buildGqlQuery', () => {
 
     it('returns the correct query for UPDATE_MANY', () => {
         const { 
-            introspectionResults: { default: introspectionResults }, 
-            params: { UpdateMany: params }, 
-            queryTypes: { UpdateMany: queryType }, 
+            introspectionResults, 
+            params: { UPDATE_MANY: { default: params } }, 
+            queryTypes: { UPDATE_MANY: queryType }, 
             resources: { default: resource } 
         } = mockTestData();
 
