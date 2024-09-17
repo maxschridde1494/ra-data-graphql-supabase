@@ -5,6 +5,9 @@
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/cjs/index.d.ts",
+    "exports": {
+        ".": "./dist/cjs/index.js"
+    },
     "sideEffects": false,
     "repository": {
         "type": "git",
