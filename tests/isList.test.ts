@@ -1,5 +1,5 @@
 import { TypeKind } from 'graphql';
-import isList from '../src/isList';
+import isList from '../src/helpers/isList';
 
 describe('isList', () => {
     it('returns the correct type for SCALAR types', () => {
