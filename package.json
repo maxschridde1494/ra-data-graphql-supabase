@@ -32,8 +32,8 @@
         "build": "yarn run build-cjs && yarn run build-esm",
         "build-cjs": "rimraf ./dist/cjs && tsc --outDir dist/cjs",
         "build-esm": "rimraf ./dist/esm && tsc --outDir dist/esm --module es2015",
-        "lint": "eslint --ext .js,.ts,.tsx \"./packages/**/src/**/*.{js,ts,tsx}\" \"./examples/**/src/**/*.{js,ts,tsx}\" \"./cypress/**/*.{js,ts,tsx}\"",
-        "prettier": "prettier --config ./.prettierrc.js --write --list-different \"packages/*/src/**/*.{js,json,ts,tsx,css,md}\" \"examples/*/src/**/*.{js,ts,json,tsx,css,md}\" \"cypress/**/*.{js,ts,json,tsx,css,md}\"",
+        "lint": "eslint --ext .js,.ts,.tsx \"./src/**/*.{js,ts,tsx}\" \"./tests/**/*.{js,ts,tsx}\"",
+        "prettier": "prettier --config ./.prettierrc.js --write --list-different \"./src/**/*.{js,json,ts,tsx,css,md}\" \"./tests/**/*.{js,ts,tsx}\"",
         "test-unit": "cross-env NODE_ENV=test cross-env BABEL_ENV=cjs NODE_ICU_DATA=./node_modules/full-icu jest",
         "watch": "tsc --outDir dist/esm --module es2015 --watch"
     },

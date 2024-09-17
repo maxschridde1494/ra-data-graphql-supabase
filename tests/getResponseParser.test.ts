@@ -10,18 +10,18 @@ import {
     UPDATE_MANY,
 } from 'ra-core';
 import getResponseParser from '../src/getResponseParser';
-import { mockTestData } from './helpers/mockTestData';
+import { mockTestData } from './mockTestData';
 
 describe('getResponseParser', () => {
     it.each([[GET_LIST], [GET_MANY], [GET_MANY_REFERENCE]])(
         'returns the response expected for %s',
         type => {
-            const { 
+            const {
                 introspectionResults,
-                queryTypes: { GET_LIST: queryType },
+                queryTypes: { [type]: queryType },
                 resources: { default: resource },
-                responses: { GET_LIST: response }
-            } = mockTestData()
+                responses: { GET_LIST: response },
+            } = mockTestData();
 
             expect(
                 getResponseParser(introspectionResults)(
@@ -30,13 +30,11 @@ describe('getResponseParser', () => {
                     queryType
                 )(response)
             ).toEqual({
-                data: response.data.items.edges.map(({ node }) => (
-                    {
-                        ...node,
-                        "linkedTypes.id": node.linkedTypes.id,
-                        "resourceTypes.id": node.resourceTypes.id,
-                    }
-                )),
+                data: response.data.items.edges.map(({ node }) => ({
+                    ...node,
+                    'linkedTypes.id': node.linkedTypes.id,
+                    'resourceTypes.id': node.resourceTypes.id,
+                })),
                 total: response.data.items.totalCount,
             });
         }
@@ -44,13 +42,13 @@ describe('getResponseParser', () => {
 
     describe(GET_ONE, () => {
         it(`returns the response expected for GET_ONE`, () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { GET_ONE: queryType },
                 resources: { default: resource },
-                responses: { GET_ONE: response }
-            } = mockTestData()
-    
+                responses: { GET_ONE: response },
+            } = mockTestData();
+
             expect(
                 getResponseParser(introspectionResults)(
                     GET_ONE,
@@ -58,29 +56,30 @@ describe('getResponseParser', () => {
                     queryType
                 )(response)
             ).toEqual({
-                data: response.data.data
+                data: response.data.data,
             });
         });
-    })
+    });
 
-    const mutationTypes = [
-        [CREATE], 
-        [UPDATE], 
-        [DELETE]
-    ]
-    
+    const mutationTypes = [[CREATE], [UPDATE], [DELETE]];
+
     describe.each(mutationTypes)('%s', type => {
         it(`returns the response expected for ${type}`, () => {
-            const queryTypeKey = type === UPDATE ? 'UPDATE' : type === CREATE ? 'CREATE': 'DELETE'
+            const queryTypeKey =
+                type === UPDATE
+                    ? 'UPDATE'
+                    : type === CREATE
+                      ? 'CREATE'
+                      : 'DELETE';
 
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { [queryTypeKey]: queryType },
                 // params: { [queryTypeKey]: params },
                 resources: { default: resource },
-                responses: { [queryTypeKey]: response }
-            } = mockTestData()
-    
+                responses: { [queryTypeKey]: response },
+            } = mockTestData();
+
             expect(
                 getResponseParser(introspectionResults)(
                     type,
@@ -88,17 +87,17 @@ describe('getResponseParser', () => {
                     queryType
                 )(response)
             ).toEqual({
-                data: response.data.data.records[0]
+                data: response.data.data.records[0],
             });
         });
 
         it(`returns the response expected for ${type} with simple arrays of values`, () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { [type]: queryType },
                 resources: { default: resource },
-                responses: { [type]: response }
-            } = mockTestData()
+                responses: { [type]: response },
+            } = mockTestData();
 
             expect(
                 getResponseParser(introspectionResults)(
@@ -112,12 +111,12 @@ describe('getResponseParser', () => {
         });
 
         it(`returns the response expected for ${type} with aliases`, () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { [type]: queryType },
                 resources: { default: resource },
-                responses: { [type]: response }
-            } = mockTestData()
+                responses: { [type]: response },
+            } = mockTestData();
 
             expect(
                 getResponseParser(introspectionResults)(
@@ -131,12 +130,12 @@ describe('getResponseParser', () => {
         });
 
         it(`returns the response expected for ${type} with embedded objects`, () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { [type]: queryType },
                 resources: { default: resource },
-                responses: { [type]: response }
-            } = mockTestData()
+                responses: { [type]: response },
+            } = mockTestData();
 
             expect(
                 getResponseParser(introspectionResults)(
@@ -151,12 +150,12 @@ describe('getResponseParser', () => {
     });
 
     it('returns the response expected for DELETE_MANY', () => {
-        const { 
+        const {
             introspectionResults,
             queryTypes: { DELETE_MANY: queryType },
             resources: { default: resource },
-            responses: { DELETE_MANY: response }
-        } = mockTestData()
+            responses: { DELETE_MANY: response },
+        } = mockTestData();
 
         expect(
             getResponseParser(introspectionResults)(
@@ -170,12 +169,12 @@ describe('getResponseParser', () => {
     });
 
     it('returns the response expected for UPDATE_MANY', () => {
-        const { 
+        const {
             introspectionResults,
             queryTypes: { UPDATE_MANY: queryType },
             resources: { default: resource },
-            responses: { UPDATE_MANY: response }
-        } = mockTestData()
+            responses: { UPDATE_MANY: response },
+        } = mockTestData();
 
         expect(
             getResponseParser(introspectionResults)(

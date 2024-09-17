@@ -1,5 +1,5 @@
-import { IntrospectionField, IntrospectionInputObjectType } from "graphql";
-import { IntrospectionResult } from "ra-data-graphql";
+import { IntrospectionField, IntrospectionInputObjectType } from 'graphql';
+import { IntrospectionResult } from 'ra-data-graphql';
 
 import { castType } from '../helpers/castType';
 
@@ -8,7 +8,7 @@ export const prepareParams = (
     queryType: Partial<IntrospectionField>,
     introspectionResults: IntrospectionResult
 ) => {
-    const result: { [key: string]: any; } = {};
+    const result: { [key: string]: any } = {};
 
     if (!params) {
         return params;
@@ -37,13 +37,16 @@ export const prepareParams = (
             return;
         }
 
-        if (param instanceof Object &&
+        if (
+            param instanceof Object &&
             !Array.isArray(param) &&
             arg &&
-            arg.type.kind === 'INPUT_OBJECT') {
+            arg.type.kind === 'INPUT_OBJECT'
+        ) {
             const args = (
                 introspectionResults.types.find(
-                    item => item.kind === arg.type.kind &&
+                    item =>
+                        item.kind === arg.type.kind &&
                         item.name === arg.type.name
                 ) as IntrospectionInputObjectType
             ).inputFields;
@@ -51,9 +54,11 @@ export const prepareParams = (
             return;
         }
 
-        if (param instanceof Object &&
+        if (
+            param instanceof Object &&
             !(param instanceof Date) &&
-            !Array.isArray(param)) {
+            !Array.isArray(param)
+        ) {
             result[key] = prepareParams(param, queryType, introspectionResults);
             return;
         }

@@ -12,7 +12,7 @@ import {
     UPDATE_MANY,
 } from 'ra-core';
 import { IntrospectionResult, IntrospectedResource } from 'ra-data-graphql';
-  
+
 import { prepareParams } from './prepareParams';
 import { buildGetListVariables } from './buildGetListVariables';
 import { buildCreateUpdateVariables } from './buildCreateUpdateVariables';
@@ -23,13 +23,13 @@ export default (introspectionResults: IntrospectionResult) =>
         raFetchMethod: string,
         params: any,
         queryType: IntrospectionField
-    ) => {    
+    ) => {
         const preparedParams = prepareParams(
             params,
             queryType,
             introspectionResults
         );
-    
+
         switch (raFetchMethod) {
             case GET_LIST: {
                 return buildGetListVariables(introspectionResults)(
@@ -43,22 +43,21 @@ export default (introspectionResults: IntrospectionResult) =>
                     filter: { id: { in: preparedParams.ids } },
                     ...(preparedParams.meta
                         ? { meta: preparedParams.meta }
-                        : {}
-                    ),
+                        : {}),
                 };
-                
+
             case GET_MANY_REFERENCE: {
                 let variables = buildGetListVariables(introspectionResults)(
                     resource,
                     raFetchMethod,
                     preparedParams
                 );
-    
+
                 variables.filter = {
                     ...variables.filter,
                     [preparedParams.target]: { eq: preparedParams.id },
                 };
-    
+
                 return variables;
             }
             case GET_ONE:
@@ -66,8 +65,7 @@ export default (introspectionResults: IntrospectionResult) =>
                     id: preparedParams.id,
                     ...(preparedParams.meta
                         ? { meta: preparedParams.meta }
-                        : {}
-                    ),
+                        : {}),
                 };
             case CREATE:
             case UPDATE_MANY:
@@ -82,15 +80,19 @@ export default (introspectionResults: IntrospectionResult) =>
             case DELETE_MANY:
             case DELETE:
                 return {
-                    filter: { 
-                        id: raFetchMethod === DELETE ? { eq: preparedParams.id } : { in: preparedParams.ids } 
+                    filter: {
+                        id:
+                            raFetchMethod === DELETE
+                                ? { eq: preparedParams.id }
+                                : { in: preparedParams.ids },
                     },
-                    atMost: raFetchMethod === DELETE ? 1 : preparedParams.ids.length,
+                    atMost:
+                        raFetchMethod === DELETE
+                            ? 1
+                            : preparedParams.ids.length,
                     ...(preparedParams.meta
                         ? { meta: preparedParams.meta }
-                        : {}
-                    ),
+                        : {}),
                 };
         }
     };
-  

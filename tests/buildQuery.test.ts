@@ -1,8 +1,7 @@
 import { gql } from '@apollo/client';
 
 import { buildQueryFactory } from '../src/buildQuery';
-import { mockTestData } from './helpers/mockTestData';
-
+import { mockTestData } from './mockTestData';
 
 describe('buildQuery', () => {
     it('throws an error if resource is unknown', () => {
@@ -15,26 +14,37 @@ describe('buildQuery', () => {
     });
 
     it('throws an error if resource does not have a query or mutation for specified AOR fetch type', () => {
-        const { introspectionResults, resources: { default: resource } } = mockTestData();
+        const {
+            introspectionResults,
+            resources: { default: resource },
+        } = mockTestData();
 
         expect(() =>
-            buildQueryFactory()(introspectionResults)('UNKNOWN_ACTION', resource.type.name, {})
+            buildQueryFactory()(introspectionResults)(
+                'UNKNOWN_ACTION',
+                resource.type.name,
+                {}
+            )
         ).toThrow(
             'No query or mutation matching fetch type UNKNOWN_ACTION could be found for resource commands'
         );
     });
 
     it('correctly builds a query and returns it along with variables and parseResponse', () => {
-        const { 
+        const {
             introspectionResults,
-            params: { GET_LIST: { default: params } },
+            params: {
+                GET_LIST: { default: params },
+            },
         } = mockTestData();
 
         const queryType = 'GET_LIST';
 
-        const resource = introspectionResults.resources.find(resource => resource.type.name === 'commands');
+        const resource = introspectionResults.resources.find(
+            resource => resource.type.name === 'commands'
+        );
 
-        const buildVariables = jest.fn(() => (params));
+        const buildVariables = jest.fn(() => params);
 
         const buildGqlQuery = jest.fn(
             () => gql`

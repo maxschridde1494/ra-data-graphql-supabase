@@ -7,7 +7,15 @@ import buildDataProvider, {
 import { DELETE_MANY, DataProvider, Identifier, UPDATE_MANY } from 'ra-core';
 
 import defaultBuildQuery from './buildQuery';
-import { CREATE, GET_LIST, GET_MANY, GET_MANY_REFERENCE, GET_ONE, UPDATE, DELETE } from 'react-admin';
+import {
+    CREATE,
+    GET_LIST,
+    GET_MANY,
+    GET_MANY_REFERENCE,
+    GET_ONE,
+    UPDATE,
+    DELETE,
+} from 'react-admin';
 
 export const buildQuery = defaultBuildQuery;
 export { buildQueryFactory } from './buildQuery';
@@ -15,21 +23,27 @@ export { default as buildGqlQuery } from './buildGqlQuery';
 export { default as buildVariables } from './buildVariables';
 export { default as getResponseParser } from './getResponseParser';
 
-const introspection= {
+const introspection = {
     operationNames: {
-        [GET_LIST]: (resource: { name: string }) => `${resource.name}Collection`,
-        [GET_MANY]: (resource: { name: string }) => `${resource.name}Collection`,
-        [GET_MANY_REFERENCE]: (resource: { name: string }) => `${resource.name}Collection`,
+        [GET_LIST]: (resource: { name: string }) =>
+            `${resource.name}Collection`,
+        [GET_MANY]: (resource: { name: string }) =>
+            `${resource.name}Collection`,
+        [GET_MANY_REFERENCE]: (resource: { name: string }) =>
+            `${resource.name}Collection`,
         [GET_ONE]: (resource: { name: string }) => `${resource.name}ById`,
-        [CREATE]: (resource: { name: string }) => `insertInto${resource.name}Collection`,
-        [UPDATE]: (resource: { name: string }) => `update${resource.name}Collection`,
-        [DELETE]: (resource: { name: string }) => `deleteFrom${resource.name}Collection`,
+        [CREATE]: (resource: { name: string }) =>
+            `insertInto${resource.name}Collection`,
+        [UPDATE]: (resource: { name: string }) =>
+            `update${resource.name}Collection`,
+        [DELETE]: (resource: { name: string }) =>
+            `deleteFrom${resource.name}Collection`,
     },
     exclude: undefined,
     include: undefined,
-}
+};
 
-export { introspection as defaultIntrospection }
+export { introspection as defaultIntrospection };
 
 const defaultOptions = {
     ...baseDefaultOptions,
@@ -38,8 +52,10 @@ const defaultOptions = {
 };
 
 const bulkActionOperationNames = {
-    [DELETE_MANY]: (resource: { name: string }) => `deleteFrom${resource.name}Collection`,
-    [UPDATE_MANY]: (resource: { name: string }) => `update${resource.name}Collection`,
+    [DELETE_MANY]: (resource: { name: string }) =>
+        `deleteFrom${resource.name}Collection`,
+    [UPDATE_MANY]: (resource: { name: string }) =>
+        `update${resource.name}Collection`,
 };
 
 export default (
@@ -61,7 +77,7 @@ export default (
         );
 
     const defaultDataProvider = buildDataProvider(dPOptions);
-    
+
     return {
         ...defaultDataProvider,
         // This provider defaults to sending multiple DELETE requests for DELETE_MANY

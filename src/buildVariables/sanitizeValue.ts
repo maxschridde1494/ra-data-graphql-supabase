@@ -1,4 +1,4 @@
-import { IntrospectionType } from "graphql";
+import { IntrospectionType } from 'graphql';
 
 export const sanitizeValue = (type: IntrospectionType, value: any) => {
     if (type.name === 'Int') {

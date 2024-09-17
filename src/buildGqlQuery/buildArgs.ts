@@ -1,8 +1,12 @@
-import { IntrospectionField, ArgumentNode, VariableDefinitionNode } from "graphql";
+import {
+    IntrospectionField,
+    ArgumentNode,
+    VariableDefinitionNode,
+} from 'graphql';
 import * as gqlTypes from 'graphql-ast-types-browser';
-import { UPDATE, UPDATE_MANY, DELETE, DELETE_MANY, CREATE } from "react-admin";
+import { UPDATE, UPDATE_MANY, DELETE, DELETE_MANY, CREATE } from 'react-admin';
 
-import { getGqlType } from "../helpers/getGqlType";
+import { getGqlType } from '../helpers/getGqlType';
 
 export const buildArgs = (
     query: IntrospectionField,

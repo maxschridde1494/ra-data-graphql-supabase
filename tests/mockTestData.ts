@@ -1,12 +1,12 @@
-import { IntrospectionResult } from "ra-data-graphql"
+import { IntrospectionResult } from 'ra-data-graphql';
 import { TypeKind, IntrospectionType } from 'graphql';
 
 export const mockTestData = (): {
-  introspectionResults: IntrospectionResult
-  resources: any;
-  params: any;
-  queryTypes: any;
-  responses: any;
+    introspectionResults: IntrospectionResult;
+    resources: any;
+    params: any;
+    queryTypes: any;
+    responses: any;
 } => ({
     introspectionResults: {
         resources: [
@@ -16,26 +16,26 @@ export const mockTestData = (): {
                     fields: [
                         {
                             name: 'id',
-                            type: { 
-                                kind: 'SCALAR', 
+                            type: {
+                                kind: 'SCALAR',
                                 name: 'ID',
-                                __typename: 'ID'
+                                __typename: 'ID',
                             },
                         },
                         {
                             name: 'name',
-                            type: { 
-                                kind: 'SCALAR', 
+                            type: {
+                                kind: 'SCALAR',
                                 name: 'String',
-                                __typename: 'String'
+                                __typename: 'String',
                             },
                         },
                         {
                             name: 'foo',
-                            type: { 
-                                kind: 'SCALAR', 
+                            type: {
+                                kind: 'SCALAR',
                                 name: 'String',
-                                __typename: 'String'
+                                __typename: 'String',
                             },
                         },
                     ],
@@ -43,11 +43,11 @@ export const mockTestData = (): {
                     enumValues: [],
                     interfaces: [
                         {
-                            kind: "INTERFACE",
-                            name: "Node",
+                            kind: 'INTERFACE',
+                            name: 'Node',
                             ofType: null,
-                            __typename: "Node"
-                        }
+                            __typename: 'Node',
+                        },
                     ],
                     description: null,
                     inputFields: null,
@@ -69,42 +69,42 @@ export const mockTestData = (): {
                     fields: [
                         {
                             name: 'id',
-                            type: { 
-                                kind: 'SCALAR', 
+                            type: {
+                                kind: 'SCALAR',
                                 name: 'ID',
                                 ofType: null,
-                                __typename: 'ID'
+                                __typename: 'ID',
                             },
                         },
                         {
                             name: 'address',
-                            type: { 
-                                kind: 'SCALAR', 
+                            type: {
+                                kind: 'SCALAR',
                                 name: 'String',
                                 ofType: null,
-                                __typename: 'String'
+                                __typename: 'String',
                             },
                         },
                         {
                             name: 'features',
                             type: {
-                                kind: "LIST",
+                                kind: 'LIST',
                                 name: null,
                                 ofType: {
-                                    kind: "SCALAR",
-                                    name: "String",
-                                    __typename: "String"
+                                    kind: 'SCALAR',
+                                    name: 'String',
+                                    __typename: 'String',
                                 },
-                                __typename: null
+                                __typename: null,
                             },
                         },
                         {
                             name: 'foo1',
-                            type: { 
-                                kind: 'SCALAR', 
+                            type: {
+                                kind: 'SCALAR',
                                 name: '_internalField',
                                 ofType: null,
-                                __typename: '_internalField'
+                                __typename: '_internalField',
                             },
                         },
                         {
@@ -114,7 +114,7 @@ export const mockTestData = (): {
                                 kind: 'SCALAR',
                                 name: 'ID',
                                 ofType: null,
-                                __typename: 'ID'
+                                __typename: 'ID',
                             },
                         },
                         {
@@ -124,7 +124,7 @@ export const mockTestData = (): {
                                 kind: 'OBJECT',
                                 name: 'linkedTypes',
                                 ofType: null,
-                                __typename: 'linkedTypes'
+                                __typename: 'linkedTypes',
                             },
                         },
                         {
@@ -134,7 +134,7 @@ export const mockTestData = (): {
                                 kind: 'SCALAR',
                                 name: 'ID',
                                 ofType: null,
-                                __typename: 'ID'
+                                __typename: 'ID',
                             },
                         },
                         {
@@ -144,7 +144,7 @@ export const mockTestData = (): {
                                 kind: 'OBJECT',
                                 name: 'linkedTypes',
                                 ofType: null,
-                                __typename: 'linkedTypes'
+                                __typename: 'linkedTypes',
                             },
                         },
                         {
@@ -154,7 +154,7 @@ export const mockTestData = (): {
                                 kind: 'SCALAR',
                                 name: 'ID',
                                 ofType: null,
-                                __typename: 'ID'
+                                __typename: 'ID',
                             },
                         },
                         {
@@ -164,7 +164,7 @@ export const mockTestData = (): {
                                 kind: 'OBJECT',
                                 name: 'resourceTypes',
                                 ofType: null,
-                                __typename: 'resourceTypes'
+                                __typename: 'resourceTypes',
                             },
                         },
                     ],
@@ -172,11 +172,11 @@ export const mockTestData = (): {
                     enumValues: [],
                     interfaces: [
                         {
-                            kind: "INTERFACE",
-                            name: "Node",
+                            kind: 'INTERFACE',
+                            name: 'Node',
                             ofType: null,
-                            __typename: "Node"
-                        }
+                            __typename: 'Node',
+                        },
                     ],
                     description: null,
                     inputFields: null,
@@ -190,20 +190,20 @@ export const mockTestData = (): {
                 fields: [
                     {
                         name: 'id',
-                        type: { 
-                            kind: 'SCALAR', 
+                        type: {
+                            kind: 'SCALAR',
                             name: 'ID',
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: 'ID',
                         },
                     },
                     {
                         name: 'title',
-                        type: { 
-                            kind: 'SCALAR', 
+                        type: {
+                            kind: 'SCALAR',
                             name: 'String',
                             ofType: null,
-                            __typename: 'String'
+                            __typename: 'String',
                         },
                     },
                     {
@@ -213,7 +213,7 @@ export const mockTestData = (): {
                             kind: 'SCALAR',
                             name: 'ID',
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: 'ID',
                         },
                     },
                     {
@@ -223,7 +223,7 @@ export const mockTestData = (): {
                             kind: 'OBJECT',
                             name: 'nestedLinks',
                             ofType: null,
-                            __typename: 'nestedLinks'
+                            __typename: 'nestedLinks',
                         },
                     },
                 ],
@@ -231,139 +231,141 @@ export const mockTestData = (): {
                 enumValues: [],
                 interfaces: [
                     {
-                        kind: "INTERFACE",
-                        name: "Node",
+                        kind: 'INTERFACE',
+                        name: 'Node',
                         ofType: null,
-                        __typename: "Node"
-                    }
+                        __typename: 'Node',
+                    },
                 ],
                 description: null,
                 inputFields: null,
                 possibleTypes: null,
             },
             {
-                kind: "INPUT_OBJECT",
-                name: "linkedTypesFilter",
+                kind: 'INPUT_OBJECT',
+                name: 'linkedTypesFilter',
                 fields: null,
-                __typename: "linkedTypesFilter",
+                __typename: 'linkedTypesFilter',
                 enumValues: [],
                 interfaces: [],
                 description: null,
                 inputFields: [
                     {
-                        name: "id",
+                        name: 'id',
                         type: {
-                            kind: "INPUT_OBJECT",
-                            name: "UUIDFilter",
+                            kind: 'INPUT_OBJECT',
+                            name: 'UUIDFilter',
                             ofType: null,
-                            __typename: "UUIDFilter"
+                            __typename: 'UUIDFilter',
                         },
-                        __typename: "id",
+                        __typename: 'id',
                         description: null,
-                        defaultValue: null
+                        defaultValue: null,
                     },
                     {
-                        name: "title",
+                        name: 'title',
                         type: {
-                            kind: "INPUT_OBJECT",
-                            name: "StringFilter",
+                            kind: 'INPUT_OBJECT',
+                            name: 'StringFilter',
                             ofType: null,
-                            __typename: "StringFilter"
+                            __typename: 'StringFilter',
                         },
-                        __typename: "title",
+                        __typename: 'title',
                         description: null,
-                        defaultValue: null
+                        defaultValue: null,
                     },
                     {
-                        name: "nestedLink_id",
+                        name: 'nestedLink_id',
                         type: {
-                            kind: "INPUT_OBJECT",
-                            name: "StringFilter",
+                            kind: 'INPUT_OBJECT',
+                            name: 'StringFilter',
                             ofType: null,
-                            __typename: "StringFilter"
+                            __typename: 'StringFilter',
                         },
-                        __typename: "nestedLink_id",
+                        __typename: 'nestedLink_id',
                         description: null,
-                        defaultValue: null
+                        defaultValue: null,
                     },
                     {
-                        name: "and",
+                        name: 'and',
                         type: {
-                            kind: "LIST",
+                            kind: 'LIST',
                             name: null,
                             ofType: {
-                                kind: "NON_NULL",
+                                kind: 'NON_NULL',
                                 name: null,
                                 ofType: {
-                                    kind: "INPUT_OBJECT",
-                                    name: "linkedTypesFilter",
+                                    kind: 'INPUT_OBJECT',
+                                    name: 'linkedTypesFilter',
                                     ofType: null,
-                                    __typename: "linkedTypesFilter"
+                                    __typename: 'linkedTypesFilter',
                                 },
-                                __typename: null
+                                __typename: null,
                             },
-                            __typename: null
+                            __typename: null,
                         },
-                        __typename: "and",
-                        description: "Returns true only if all its inner filters are true, otherwise returns false",
-                        defaultValue: null
+                        __typename: 'and',
+                        description:
+                            'Returns true only if all its inner filters are true, otherwise returns false',
+                        defaultValue: null,
                     },
                     {
-                        name: "or",
+                        name: 'or',
                         type: {
-                            kind: "LIST",
+                            kind: 'LIST',
                             name: null,
                             ofType: {
-                                kind: "NON_NULL",
+                                kind: 'NON_NULL',
                                 name: null,
                                 ofType: {
-                                    kind: "INPUT_OBJECT",
-                                    name: "linkedTypesFilter",
+                                    kind: 'INPUT_OBJECT',
+                                    name: 'linkedTypesFilter',
                                     ofType: null,
-                                    __typename: "linkedTypesFilter"
+                                    __typename: 'linkedTypesFilter',
                                 },
-                                __typename: null
+                                __typename: null,
                             },
-                            __typename: null
+                            __typename: null,
                         },
-                        __typename: "or",
-                        description: "Returns true if at least one of its inner filters is true, otherwise returns false",
-                        defaultValue: null
+                        __typename: 'or',
+                        description:
+                            'Returns true if at least one of its inner filters is true, otherwise returns false',
+                        defaultValue: null,
                     },
                     {
-                        name: "not",
+                        name: 'not',
                         type: {
-                            kind: "INPUT_OBJECT",
-                            name: "linkedTypesFilter",
+                            kind: 'INPUT_OBJECT',
+                            name: 'linkedTypesFilter',
                             ofType: null,
-                            __typename: "linkedTypesFilter"
+                            __typename: 'linkedTypesFilter',
                         },
-                        __typename: "not",
-                        description: "Negates a filter",
-                        defaultValue: null
-                    }
+                        __typename: 'not',
+                        description: 'Negates a filter',
+                        defaultValue: null,
+                    },
                 ],
-                possibleTypes: null
+                possibleTypes: null,
             },
             {
                 name: 'nestedLinks',
                 fields: [
                     {
                         name: 'id',
-                        type: { 
-                            kind: 'SCALAR', 
+                        type: {
+                            kind: 'SCALAR',
                             name: 'ID',
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: 'ID',
                         },
                     },
                     {
                         name: 'bar',
-                        type: { 
-                            kind: 'SCALAR', 
+                        type: {
+                            kind: 'SCALAR',
                             name: 'String',
                             ofType: null,
-                            __typename: 'String'
+                            __typename: 'String',
                         },
                     },
                 ],
@@ -371,288 +373,290 @@ export const mockTestData = (): {
                 enumValues: [],
                 interfaces: [
                     {
-                        kind: "INTERFACE",
-                        name: "Node",
+                        kind: 'INTERFACE',
+                        name: 'Node',
                         ofType: null,
-                        __typename: "Node"
-                    }
+                        __typename: 'Node',
+                    },
                 ],
                 description: null,
                 inputFields: null,
                 possibleTypes: null,
             },
             {
-                kind: "INPUT_OBJECT",
-                name: "nestedLinksFilter",
+                kind: 'INPUT_OBJECT',
+                name: 'nestedLinksFilter',
                 fields: null,
-                __typename: "nestedLinksFilter",
+                __typename: 'nestedLinksFilter',
                 enumValues: [],
                 interfaces: [],
                 description: null,
                 inputFields: [
                     {
-                        name: "id",
+                        name: 'id',
                         type: {
-                            kind: "INPUT_OBJECT",
-                            name: "UUIDFilter",
+                            kind: 'INPUT_OBJECT',
+                            name: 'UUIDFilter',
                             ofType: null,
-                            __typename: "UUIDFilter"
+                            __typename: 'UUIDFilter',
                         },
-                        __typename: "id",
+                        __typename: 'id',
                         description: null,
-                        defaultValue: null
+                        defaultValue: null,
                     },
                     {
-                        name: "bar",
+                        name: 'bar',
                         type: {
-                            kind: "INPUT_OBJECT",
-                            name: "StringFilter",
+                            kind: 'INPUT_OBJECT',
+                            name: 'StringFilter',
                             ofType: null,
-                            __typename: "StringFilter"
+                            __typename: 'StringFilter',
                         },
-                        __typename: "title",
+                        __typename: 'title',
                         description: null,
-                        defaultValue: null
+                        defaultValue: null,
                     },
                     {
-                        name: "and",
+                        name: 'and',
                         type: {
-                            kind: "LIST",
+                            kind: 'LIST',
                             name: null,
                             ofType: {
-                                kind: "NON_NULL",
+                                kind: 'NON_NULL',
                                 name: null,
                                 ofType: {
-                                    kind: "INPUT_OBJECT",
-                                    name: "nestedLinksFilter",
+                                    kind: 'INPUT_OBJECT',
+                                    name: 'nestedLinksFilter',
                                     ofType: null,
-                                    __typename: "nestedLinksFilter"
+                                    __typename: 'nestedLinksFilter',
                                 },
-                                __typename: null
+                                __typename: null,
                             },
-                            __typename: null
+                            __typename: null,
                         },
-                        __typename: "and",
-                        description: "Returns true only if all its inner filters are true, otherwise returns false",
-                        defaultValue: null
+                        __typename: 'and',
+                        description:
+                            'Returns true only if all its inner filters are true, otherwise returns false',
+                        defaultValue: null,
                     },
                     {
-                        name: "or",
+                        name: 'or',
                         type: {
-                            kind: "LIST",
+                            kind: 'LIST',
                             name: null,
                             ofType: {
-                                kind: "NON_NULL",
+                                kind: 'NON_NULL',
                                 name: null,
                                 ofType: {
-                                    kind: "INPUT_OBJECT",
-                                    name: "nestedLinksFilter",
+                                    kind: 'INPUT_OBJECT',
+                                    name: 'nestedLinksFilter',
                                     ofType: null,
-                                    __typename: "nestedLinksFilter"
+                                    __typename: 'nestedLinksFilter',
                                 },
-                                __typename: null
+                                __typename: null,
                             },
-                            __typename: null
+                            __typename: null,
                         },
-                        __typename: "or",
-                        description: "Returns true if at least one of its inner filters is true, otherwise returns false",
-                        defaultValue: null
+                        __typename: 'or',
+                        description:
+                            'Returns true if at least one of its inner filters is true, otherwise returns false',
+                        defaultValue: null,
                     },
                     {
-                        name: "not",
+                        name: 'not',
                         type: {
-                            kind: "INPUT_OBJECT",
-                            name: "nestedLinksFilter",
+                            kind: 'INPUT_OBJECT',
+                            name: 'nestedLinksFilter',
                             ofType: null,
-                            __typename: "nestedLinksFilter"
+                            __typename: 'nestedLinksFilter',
                         },
-                        __typename: "not",
-                        description: "Negates a filter",
-                        defaultValue: null
-                    }
+                        __typename: 'not',
+                        description: 'Negates a filter',
+                        defaultValue: null,
+                    },
                 ],
-                possibleTypes: null
+                possibleTypes: null,
             },
             {
-                kind: "INTERFACE",
-                name: "Node",
+                kind: 'INTERFACE',
+                name: 'Node',
                 fields: [
                     {
                         args: [],
-                        name: "nodeId",
+                        name: 'nodeId',
                         type: {
-                            kind: "NON_NULL",
+                            kind: 'NON_NULL',
                             name: null,
                             ofType: {
-                                kind: "SCALAR",
-                                name: "ID",
+                                kind: 'SCALAR',
+                                name: 'ID',
                                 ofType: null,
-                                __typename: "ID"
+                                __typename: 'ID',
                             },
-                            __typename: null
+                            __typename: null,
                         },
-                        __typename: "nodeId",
-                        description: "Retrieves a record by `ID`",
+                        __typename: 'nodeId',
+                        description: 'Retrieves a record by `ID`',
                         isDeprecated: false,
-                        deprecationReason: null
-                    }
+                        deprecationReason: null,
+                    },
                 ],
-                __typename: "Node",
+                __typename: 'Node',
                 enumValues: [],
                 interfaces: [],
                 description: null,
                 inputFields: null,
                 possibleTypes: [
                     {
-                        kind: "OBJECT",
-                        name: "linkedTypes",
+                        kind: 'OBJECT',
+                        name: 'linkedTypes',
                         ofType: null,
-                        __typename: "linkedTypes"
+                        __typename: 'linkedTypes',
                     },
                     {
-                        kind: "OBJECT",
-                        name: "nestedLinks",
+                        kind: 'OBJECT',
+                        name: 'nestedLinks',
                         ofType: null,
-                        __typename: "nestedLinks"
+                        __typename: 'nestedLinks',
                     },
                     {
-                        kind: "OBJECT",
-                        name: "commands",
+                        kind: 'OBJECT',
+                        name: 'commands',
                         ofType: null,
-                        __typename: "commands"
+                        __typename: 'commands',
                     },
                     {
-                        kind: "OBJECT",
-                        name: "resourceTypes",
+                        kind: 'OBJECT',
+                        name: 'resourceTypes',
                         ofType: null,
-                        __typename: "resourceTypes"
-                    }
-                ]
+                        __typename: 'resourceTypes',
+                    },
+                ],
             },
             {
-                kind: "INPUT_OBJECT",
-                name: "commandsUpdateInput",
+                kind: 'INPUT_OBJECT',
+                name: 'commandsUpdateInput',
                 fields: null,
                 enumValues: [],
                 interfaces: [],
                 description: null,
                 inputFields: [
                     {
-                        name: "address",
+                        name: 'address',
                         type: {
-                            kind: "SCALAR",
-                            name: "String",
-                            ofType: null
+                            kind: 'SCALAR',
+                            name: 'String',
+                            ofType: null,
                         },
                         description: null,
-                        defaultValue: null
+                        defaultValue: null,
                     },
                     {
                         name: 'features',
                         type: {
-                            kind: "LIST",
+                            kind: 'LIST',
                             name: null,
                             ofType: {
-                                kind: "SCALAR",
-                                name: "String",
-                                __typename: "String"
+                                kind: 'SCALAR',
+                                name: 'String',
+                                __typename: 'String',
                             },
-                            __typename: null
+                            __typename: null,
                         },
                     },
                 ],
-                possibleTypes: null
+                possibleTypes: null,
             },
             {
-                kind: "INPUT_OBJECT",
-                name: "commandsInsertInput",
+                kind: 'INPUT_OBJECT',
+                name: 'commandsInsertInput',
                 fields: null,
                 enumValues: [],
                 interfaces: [],
                 description: null,
                 inputFields: [
                     {
-                        name: "id",
+                        name: 'id',
                         type: {
-                            kind: "SCALAR",
-                            name: "UUID",
-                            ofType: null
+                            kind: 'SCALAR',
+                            name: 'UUID',
+                            ofType: null,
                         },
                         description: null,
-                        defaultValue: null
+                        defaultValue: null,
                     },
                     {
-                        name: "address",
+                        name: 'address',
                         type: {
-                            kind: "SCALAR",
-                            name: "String",
-                            ofType: null
+                            kind: 'SCALAR',
+                            name: 'String',
+                            ofType: null,
                         },
                         description: null,
-                        defaultValue: null
+                        defaultValue: null,
                     },
                     {
-                        name: "linkedType_id",
+                        name: 'linkedType_id',
                         type: {
-                            kind: "SCALAR",
-                            name: "UUID",
-                            ofType: null
+                            kind: 'SCALAR',
+                            name: 'UUID',
+                            ofType: null,
                         },
                         description: null,
-                        defaultValue: null
+                        defaultValue: null,
                     },
                     {
                         name: 'features',
                         type: {
-                            kind: "LIST",
+                            kind: 'LIST',
                             name: null,
                             ofType: {
-                                kind: "SCALAR",
-                                name: "String",
-                                __typename: "String"
+                                kind: 'SCALAR',
+                                name: 'String',
+                                __typename: 'String',
                             },
-                            __typename: null
+                            __typename: null,
                         },
                     },
                 ],
-                possibleTypes: null
+                possibleTypes: null,
             },
         ],
         queries: [
             {
                 args: [
                     {
-                        name: "nodeId",
+                        name: 'nodeId',
                         type: {
-                            kind: "NON_NULL",
+                            kind: 'NON_NULL',
                             name: null,
                             ofType: {
-                                kind: "SCALAR",
-                                name: "ID",
+                                kind: 'SCALAR',
+                                name: 'ID',
                                 ofType: null,
-                                __typename: "ID"
+                                __typename: 'ID',
                             },
-                            __typename: null
+                            __typename: null,
                         },
-                        __typename: "nodeId",
+                        __typename: 'nodeId',
                         description: "The record's `ID`",
-                        defaultValue: null
-                    }
+                        defaultValue: null,
+                    },
                 ],
-                name: "node",
+                name: 'node',
                 type: {
-                    kind: "INTERFACE",
-                    name: "Node",
+                    kind: 'INTERFACE',
+                    name: 'Node',
                     ofType: null,
-                    __typename: "Node"
+                    __typename: 'Node',
                 },
-                __typename: "node",
-                description: "Retrieve a record by its `ID`",
+                __typename: 'node',
+                description: 'Retrieve a record by its `ID`',
                 isDeprecated: false,
-                deprecationReason: null
+                deprecationReason: null,
             },
-        ]
-    }, 
+        ],
+    },
     resources: {
         default: {
             GET_LIST: 'GET_LIST',
@@ -669,42 +673,42 @@ export const mockTestData = (): {
                 fields: [
                     {
                         name: 'id',
-                        type: { 
-                            kind: 'SCALAR', 
+                        type: {
+                            kind: 'SCALAR',
                             name: 'ID',
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: 'ID',
                         },
                     },
                     {
                         name: 'address',
-                        type: { 
-                            kind: 'SCALAR', 
+                        type: {
+                            kind: 'SCALAR',
                             name: 'String',
                             ofType: null,
-                            __typename: 'String'
+                            __typename: 'String',
                         },
                     },
                     {
                         name: 'foo1',
-                        type: { 
-                            kind: 'SCALAR', 
+                        type: {
+                            kind: 'SCALAR',
                             name: '_internalField',
                             ofType: null,
-                            __typename: '_internalField'
+                            __typename: '_internalField',
                         },
                     },
                     {
                         name: 'features',
                         type: {
-                            kind: "LIST",
+                            kind: 'LIST',
                             name: null,
                             ofType: {
-                                kind: "SCALAR",
-                                name: "String",
-                                __typename: "String"
+                                kind: 'SCALAR',
+                                name: 'String',
+                                __typename: 'String',
                             },
-                            __typename: null
+                            __typename: null,
                         },
                     },
                     {
@@ -714,7 +718,7 @@ export const mockTestData = (): {
                             kind: 'SCALAR',
                             name: 'ID',
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: 'ID',
                         },
                     },
                     {
@@ -724,7 +728,7 @@ export const mockTestData = (): {
                             kind: 'OBJECT',
                             name: 'linkedTypes',
                             ofType: null,
-                            __typename: 'linkedTypes'
+                            __typename: 'linkedTypes',
                         },
                     },
                     {
@@ -734,7 +738,7 @@ export const mockTestData = (): {
                             kind: 'SCALAR',
                             name: 'ID',
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: 'ID',
                         },
                     },
                     {
@@ -744,20 +748,20 @@ export const mockTestData = (): {
                             kind: 'OBJECT',
                             name: 'resourceTypes',
                             ofType: null,
-                            __typename: 'resourceTypes'
+                            __typename: 'resourceTypes',
                         },
                     },
                 ],
                 __typename: 'commands',
                 enumValues: [],
                 interfaces: [
-                        {
-                            kind: "INTERFACE",
-                            name: "Node",
-                            ofType: null,
-                            __typename: "Node"
-                        }
-                    ],
+                    {
+                        kind: 'INTERFACE',
+                        name: 'Node',
+                        ofType: null,
+                        __typename: 'Node',
+                    },
+                ],
                 description: null,
                 inputFields: null,
                 possibleTypes: null,
@@ -769,42 +773,42 @@ export const mockTestData = (): {
                 fields: [
                     {
                         name: 'id',
-                        type: { 
-                            kind: 'SCALAR', 
+                        type: {
+                            kind: 'SCALAR',
                             name: 'ID',
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: 'ID',
                         },
                     },
                     {
                         name: 'address',
-                        type: { 
-                            kind: 'SCALAR', 
+                        type: {
+                            kind: 'SCALAR',
                             name: 'String',
                             ofType: null,
-                            __typename: 'String'
+                            __typename: 'String',
                         },
                     },
                     {
                         name: 'features',
                         type: {
-                            kind: "LIST",
+                            kind: 'LIST',
                             name: null,
                             ofType: {
-                                kind: "SCALAR",
-                                name: "String",
-                                __typename: "String"
+                                kind: 'SCALAR',
+                                name: 'String',
+                                __typename: 'String',
                             },
-                            __typename: null
+                            __typename: null,
                         },
                     },
                     {
                         name: 'foo1',
-                        type: { 
-                            kind: 'SCALAR', 
+                        type: {
+                            kind: 'SCALAR',
                             name: '_internalField',
                             ofType: null,
-                            __typename: '_internalField'
+                            __typename: '_internalField',
                         },
                     },
                     {
@@ -814,7 +818,7 @@ export const mockTestData = (): {
                             kind: 'SCALAR',
                             name: 'ID',
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: 'ID',
                         },
                     },
                     {
@@ -824,7 +828,7 @@ export const mockTestData = (): {
                             kind: 'OBJECT',
                             name: 'linkedTypes',
                             ofType: null,
-                            __typename: 'linkedTypes'
+                            __typename: 'linkedTypes',
                         },
                     },
                     {
@@ -834,7 +838,7 @@ export const mockTestData = (): {
                             kind: 'SCALAR',
                             name: 'ID',
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: 'ID',
                         },
                     },
                     {
@@ -844,7 +848,7 @@ export const mockTestData = (): {
                             kind: 'OBJECT',
                             name: 'linkedTypes',
                             ofType: null,
-                            __typename: 'linkedTypes'
+                            __typename: 'linkedTypes',
                         },
                     },
                     {
@@ -854,7 +858,7 @@ export const mockTestData = (): {
                             kind: 'SCALAR',
                             name: 'ID',
                             ofType: null,
-                            __typename: 'ID'
+                            __typename: 'ID',
                         },
                     },
                     {
@@ -864,25 +868,25 @@ export const mockTestData = (): {
                             kind: 'OBJECT',
                             name: 'resourceTypes',
                             ofType: null,
-                            __typename: 'resourceTypes'
+                            __typename: 'resourceTypes',
                         },
                     },
                 ],
                 __typename: 'commands',
                 enumValues: [],
                 interfaces: [
-                        {
-                            kind: "INTERFACE",
-                            name: "Node",
-                            ofType: null,
-                            __typename: "Node"
-                        }
-                    ],
+                    {
+                        kind: 'INTERFACE',
+                        name: 'Node',
+                        ofType: null,
+                        __typename: 'Node',
+                    },
+                ],
                 description: null,
                 inputFields: null,
                 possibleTypes: null,
             },
-        }
+        },
     },
     queryTypes: {
         GET_LIST: {
@@ -896,8 +900,8 @@ export const mockTestData = (): {
                     },
                 },
                 {
-                name: 'barId',
-                type: { kind: TypeKind.SCALAR },
+                    name: 'barId',
+                    type: { kind: TypeKind.SCALAR },
                 },
                 {
                     name: 'barIds',
@@ -909,220 +913,230 @@ export const mockTestData = (): {
         GET_MANY_REFERENCE: {
             args: [
                 {
-                    name: "first",
+                    name: 'first',
                     type: {
-                        kind: "SCALAR",
-                        name: "Int",
+                        kind: 'SCALAR',
+                        name: 'Int',
                         ofType: null,
-                        __typename: "Int"
+                        __typename: 'Int',
                     },
-                    __typename: "first",
-                    description: "Query the first `n` records in the collection",
-                    defaultValue: null
+                    __typename: 'first',
+                    description:
+                        'Query the first `n` records in the collection',
+                    defaultValue: null,
                 },
                 {
-                    name: "last",
+                    name: 'last',
                     type: {
-                        kind: "SCALAR",
-                        name: "Int",
+                        kind: 'SCALAR',
+                        name: 'Int',
                         ofType: null,
-                        __typename: "Int"
+                        __typename: 'Int',
                     },
-                    __typename: "last",
-                    description: "Query the last `n` records in the collection",
-                    defaultValue: null
+                    __typename: 'last',
+                    description: 'Query the last `n` records in the collection',
+                    defaultValue: null,
                 },
                 {
-                    name: "before",
+                    name: 'before',
                     type: {
-                        kind: "SCALAR",
-                        name: "Cursor",
+                        kind: 'SCALAR',
+                        name: 'Cursor',
                         ofType: null,
-                        __typename: "Cursor"
+                        __typename: 'Cursor',
                     },
-                    __typename: "before",
-                    description: "Query values in the collection before the provided cursor",
-                    defaultValue: null
+                    __typename: 'before',
+                    description:
+                        'Query values in the collection before the provided cursor',
+                    defaultValue: null,
                 },
                 {
-                    name: "after",
+                    name: 'after',
                     type: {
-                        kind: "SCALAR",
-                        name: "Cursor",
+                        kind: 'SCALAR',
+                        name: 'Cursor',
                         ofType: null,
-                        __typename: "Cursor"
+                        __typename: 'Cursor',
                     },
-                    __typename: "after",
-                    description: "Query values in the collection after the provided cursor",
-                    defaultValue: null
+                    __typename: 'after',
+                    description:
+                        'Query values in the collection after the provided cursor',
+                    defaultValue: null,
                 },
                 {
-                    name: "offset",
+                    name: 'offset',
                     type: {
-                        kind: "SCALAR",
-                        name: "Int",
+                        kind: 'SCALAR',
+                        name: 'Int',
                         ofType: null,
-                        __typename: "Int"
+                        __typename: 'Int',
                     },
-                    __typename: "offset",
-                    description: "Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.",
-                    defaultValue: null
+                    __typename: 'offset',
+                    description:
+                        'Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.',
+                    defaultValue: null,
                 },
                 {
-                    name: "filter",
+                    name: 'filter',
                     type: {
-                        kind: "INPUT_OBJECT",
-                        name: "commandsFilter",
+                        kind: 'INPUT_OBJECT',
+                        name: 'commandsFilter',
                         ofType: null,
-                        __typename: "commandsFilter"
+                        __typename: 'commandsFilter',
                     },
-                    __typename: "filter",
-                    description: "Filters to apply to the results set when querying from the collection",
-                    defaultValue: null
+                    __typename: 'filter',
+                    description:
+                        'Filters to apply to the results set when querying from the collection',
+                    defaultValue: null,
                 },
                 {
-                    name: "orderBy",
+                    name: 'orderBy',
                     type: {
-                        kind: "LIST",
+                        kind: 'LIST',
                         name: null,
                         ofType: {
-                            kind: "NON_NULL",
+                            kind: 'NON_NULL',
                             name: null,
                             ofType: {
-                                kind: "INPUT_OBJECT",
-                                name: "commandsOrderBy",
+                                kind: 'INPUT_OBJECT',
+                                name: 'commandsOrderBy',
                                 ofType: null,
-                                __typename: "commandsOrderBy"
+                                __typename: 'commandsOrderBy',
                             },
-                            __typename: null
+                            __typename: null,
                         },
-                        __typename: null
+                        __typename: null,
                     },
-                    __typename: "orderBy",
-                    description: "Sort order to apply to the collection",
-                    defaultValue: null
-                }
+                    __typename: 'orderBy',
+                    description: 'Sort order to apply to the collection',
+                    defaultValue: null,
+                },
             ],
-            name: "commandsCollection",
+            name: 'commandsCollection',
             type: {
-                kind: "OBJECT",
-                name: "commandsConnection",
+                kind: 'OBJECT',
+                name: 'commandsConnection',
                 ofType: null,
-                __typename: "commandsConnection"
+                __typename: 'commandsConnection',
             },
-            __typename: "commandsCollection",
-            description: "A pagable collection of type `commands`",
+            __typename: 'commandsCollection',
+            description: 'A pagable collection of type `commands`',
             isDeprecated: false,
-            deprecationReason: null
+            deprecationReason: null,
         },
         GET_MANY: {
             args: [
                 {
-                    name: "first",
+                    name: 'first',
                     type: {
-                        kind: "SCALAR",
-                        name: "Int",
+                        kind: 'SCALAR',
+                        name: 'Int',
                         ofType: null,
-                        __typename: "Int"
+                        __typename: 'Int',
                     },
-                    __typename: "first",
-                    description: "Query the first `n` records in the collection",
-                    defaultValue: null
+                    __typename: 'first',
+                    description:
+                        'Query the first `n` records in the collection',
+                    defaultValue: null,
                 },
                 {
-                    name: "last",
+                    name: 'last',
                     type: {
-                        kind: "SCALAR",
-                        name: "Int",
+                        kind: 'SCALAR',
+                        name: 'Int',
                         ofType: null,
-                        __typename: "Int"
+                        __typename: 'Int',
                     },
-                    __typename: "last",
-                    description: "Query the last `n` records in the collection",
-                    defaultValue: null
+                    __typename: 'last',
+                    description: 'Query the last `n` records in the collection',
+                    defaultValue: null,
                 },
                 {
-                    name: "before",
+                    name: 'before',
                     type: {
-                        kind: "SCALAR",
-                        name: "Cursor",
+                        kind: 'SCALAR',
+                        name: 'Cursor',
                         ofType: null,
-                        __typename: "Cursor"
+                        __typename: 'Cursor',
                     },
-                    __typename: "before",
-                    description: "Query values in the collection before the provided cursor",
-                    defaultValue: null
+                    __typename: 'before',
+                    description:
+                        'Query values in the collection before the provided cursor',
+                    defaultValue: null,
                 },
                 {
-                    name: "after",
+                    name: 'after',
                     type: {
-                        kind: "SCALAR",
-                        name: "Cursor",
+                        kind: 'SCALAR',
+                        name: 'Cursor',
                         ofType: null,
-                        __typename: "Cursor"
+                        __typename: 'Cursor',
                     },
-                    __typename: "after",
-                    description: "Query values in the collection after the provided cursor",
-                    defaultValue: null
+                    __typename: 'after',
+                    description:
+                        'Query values in the collection after the provided cursor',
+                    defaultValue: null,
                 },
                 {
-                    name: "offset",
+                    name: 'offset',
                     type: {
-                        kind: "SCALAR",
-                        name: "Int",
+                        kind: 'SCALAR',
+                        name: 'Int',
                         ofType: null,
-                        __typename: "Int"
+                        __typename: 'Int',
                     },
-                    __typename: "offset",
-                    description: "Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.",
-                    defaultValue: null
+                    __typename: 'offset',
+                    description:
+                        'Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.',
+                    defaultValue: null,
                 },
                 {
-                    name: "filter",
+                    name: 'filter',
                     type: {
-                        kind: "INPUT_OBJECT",
-                        name: "commandsFilter",
+                        kind: 'INPUT_OBJECT',
+                        name: 'commandsFilter',
                         ofType: null,
-                        __typename: "commandsFilter"
+                        __typename: 'commandsFilter',
                     },
-                    __typename: "filter",
-                    description: "Filters to apply to the results set when querying from the collection",
-                    defaultValue: null
+                    __typename: 'filter',
+                    description:
+                        'Filters to apply to the results set when querying from the collection',
+                    defaultValue: null,
                 },
                 {
-                    name: "orderBy",
+                    name: 'orderBy',
                     type: {
-                        kind: "LIST",
+                        kind: 'LIST',
                         name: null,
                         ofType: {
-                            kind: "NON_NULL",
+                            kind: 'NON_NULL',
                             name: null,
                             ofType: {
-                                kind: "INPUT_OBJECT",
-                                name: "commandsOrderBy",
+                                kind: 'INPUT_OBJECT',
+                                name: 'commandsOrderBy',
                                 ofType: null,
-                                __typename: "commandsOrderBy"
+                                __typename: 'commandsOrderBy',
                             },
-                            __typename: null
+                            __typename: null,
                         },
-                        __typename: null
+                        __typename: null,
                     },
-                    __typename: "orderBy",
-                    description: "Sort order to apply to the collection",
-                    defaultValue: null
-                }
+                    __typename: 'orderBy',
+                    description: 'Sort order to apply to the collection',
+                    defaultValue: null,
+                },
             ],
-            name: "commandsCollection",
+            name: 'commandsCollection',
             type: {
-                kind: "OBJECT",
-                name: "commandsConnection",
+                kind: 'OBJECT',
+                name: 'commandsConnection',
                 ofType: null,
-                __typename: "commandsConnection"
+                __typename: 'commandsConnection',
             },
-            __typename: "commandsCollection",
-            description: "A pagable collection of type `commands`",
+            __typename: 'commandsCollection',
+            description: 'A pagable collection of type `commands`',
             isDeprecated: false,
-            deprecationReason: null
+            deprecationReason: null,
         },
         GET_ONE: {
             name: 'commandsById',
@@ -1148,12 +1162,12 @@ export const mockTestData = (): {
                 },
                 {
                     name: 'set',
-                    type: { 
+                    type: {
                         kind: TypeKind.NON_NULL,
                         ofType: {
-                            kind: TypeKind.OBJECT, 
-                            name: 'commandsUpdateInput'
-                        }
+                            kind: TypeKind.OBJECT,
+                            name: 'commandsUpdateInput',
+                        },
                     },
                 },
                 {
@@ -1161,10 +1175,10 @@ export const mockTestData = (): {
                     type: {
                         kind: TypeKind.NON_NULL,
                         ofType: {
-                            kind: TypeKind.SCALAR, 
-                            name: 'Int' 
-                        }
-                    }
+                            kind: TypeKind.SCALAR,
+                            name: 'Int',
+                        },
+                    },
                 },
             ],
         },
@@ -1173,7 +1187,7 @@ export const mockTestData = (): {
             args: [
                 {
                     name: 'objects',
-                    type: { 
+                    type: {
                         kind: TypeKind.NON_NULL,
                         name: null,
                         ofType: {
@@ -1183,12 +1197,12 @@ export const mockTestData = (): {
                                 kind: TypeKind.NON_NULL,
                                 name: null,
                                 ofType: {
-                                    kind: TypeKind.INPUT_OBJECT, 
-                                    name: 'commandsInsertInput'
+                                    kind: TypeKind.INPUT_OBJECT,
+                                    name: 'commandsInsertInput',
                                 },
-                                __typename: null
+                                __typename: null,
                             },
-                        }
+                        },
                     },
                 },
             ],
@@ -1205,10 +1219,10 @@ export const mockTestData = (): {
                     type: {
                         kind: TypeKind.NON_NULL,
                         ofType: {
-                            kind: TypeKind.SCALAR, 
-                            name: 'Int' 
-                        }
-                    }
+                            kind: TypeKind.SCALAR,
+                            name: 'Int',
+                        },
+                    },
                 },
             ],
         },
@@ -1224,10 +1238,10 @@ export const mockTestData = (): {
                     type: {
                         kind: TypeKind.NON_NULL,
                         ofType: {
-                            kind: TypeKind.SCALAR, 
-                            name: 'Int' 
-                        }
-                    }
+                            kind: TypeKind.SCALAR,
+                            name: 'Int',
+                        },
+                    },
                 },
             ],
         },
@@ -1240,12 +1254,12 @@ export const mockTestData = (): {
                 },
                 {
                     name: 'set',
-                    type: { 
+                    type: {
                         kind: TypeKind.NON_NULL,
                         ofType: {
-                            kind: TypeKind.OBJECT, 
-                            name: 'commandsUpdateInput'
-                        }
+                            kind: TypeKind.OBJECT,
+                            name: 'commandsUpdateInput',
+                        },
                     },
                 },
                 {
@@ -1253,18 +1267,18 @@ export const mockTestData = (): {
                     type: {
                         kind: TypeKind.NON_NULL,
                         ofType: {
-                            kind: TypeKind.SCALAR, 
-                            name: 'Int' 
-                        }
-                    }
+                            kind: TypeKind.SCALAR,
+                            name: 'Int',
+                        },
+                    },
                 },
             ],
         },
     },
     params: {
         GET_LIST: {
-            default: { 
-                foo: 'foo_value' 
+            default: {
+                foo: 'foo_value',
             },
             filtered: {
                 filter: {
@@ -1287,7 +1301,7 @@ export const mockTestData = (): {
             },
         },
         GET_MANY: {
-            default: { 
+            default: {
                 ids: ['command1', 'command2'],
             },
             sparse: {
@@ -1303,7 +1317,7 @@ export const mockTestData = (): {
             },
         },
         GET_MANY_REFERENCE: {
-            default: { 
+            default: {
                 id: 'foo',
                 target: 'linkedType_id',
                 pagination: { page: 1, perPage: 10 },
@@ -1340,18 +1354,18 @@ export const mockTestData = (): {
         },
         CREATE: {
             default: {
-                data: { 
+                data: {
                     // id: 'foo',
                     address: 'bar',
-                    linkedType_id: 'baz', 
-                    resourceType_id: 'not updated' // this should never get updated b/c it is not in the insert input
+                    linkedType_id: 'baz',
+                    resourceType_id: 'not updated', // this should never get updated b/c it is not in the insert input
                 },
             },
             sparse: {
-                data: { 
+                data: {
                     // id: 'foo',
                     address: 'bar',
-                    linkedType_id: 'baz', 
+                    linkedType_id: 'baz',
                     resourceType_id: 'not updated', // this should never get updated b/c it is not in the insert input
                     meta: {
                         sparseFields: [
@@ -1367,14 +1381,14 @@ export const mockTestData = (): {
         UPDATE: {
             default: {
                 id: 'foo',
-                data: { 
+                data: {
                     address: 'bar',
                     linkedType_id: 'baz', // this should never get updated b/c it is not in the update input
                 },
             },
             sparse: {
                 id: 'foo',
-                data: { 
+                data: {
                     address: 'bar',
                     linkedType_id: 'baz', // this should never get updated b/c it is not in the update input
                 },
@@ -1388,10 +1402,10 @@ export const mockTestData = (): {
                 },
             },
         },
-        UPDATE_MANY: { 
+        UPDATE_MANY: {
             default: {
                 ids: ['foo', 'id'],
-                data: { 
+                data: {
                     address: 'bar',
                     linkedType_id: 'baz', // this should never get updated b/c it is not in the update input
                 },
@@ -1420,7 +1434,7 @@ export const mockTestData = (): {
                 ids: ['foo', 'id'],
                 previousData: {},
             },
-        } 
+        },
     },
     responses: {
         GET_LIST: {
@@ -1428,41 +1442,49 @@ export const mockTestData = (): {
                 items: {
                     totalCount: 2,
                     edges: [
-                        { 
+                        {
                             node: {
                                 nodeId: 'command1NodeId',
                                 id: 'command1',
                                 address: 'address1',
-                                linkedTypes: { 
-                                    id: 'linkedType1', 
-                                    title: 'linkedType 1' ,
+                                linkedTypes: {
+                                    id: 'linkedType1',
+                                    title: 'linkedType 1',
                                     nestedLink_id: 'nestedLink1',
                                     nestedLinks: {
                                         id: 'nestedLink1',
-                                        bar: 'nestedLink 1'
-                                    }
+                                        bar: 'nestedLink 1',
+                                    },
                                 },
-                                resourceTypes: { id: 'resourceType1', name: 'resourceType 1', foo: 'resourceType foo 1' },
-                            }
+                                resourceTypes: {
+                                    id: 'resourceType1',
+                                    name: 'resourceType 1',
+                                    foo: 'resourceType foo 1',
+                                },
+                            },
                         },
                         {
                             node: {
                                 nodeId: 'command2NodeId',
                                 id: 'command2',
                                 address: 'address2',
-                                linkedTypes: { 
-                                    id: 'linkedType2', 
-                                    title: 'linkedType 2' ,
+                                linkedTypes: {
+                                    id: 'linkedType2',
+                                    title: 'linkedType 2',
                                     nestedLink_id: 'nestedLink2',
                                     nestedLinks: {
                                         id: 'nestedLink2',
-                                        bar: 'nestedLink 2'
-                                    }
+                                        bar: 'nestedLink 2',
+                                    },
                                 },
-                                resourceTypes: { id: 'resourceType2', name: 'resourceType 2', foo: 'resourceType foo 2' },
-                            }
+                                resourceTypes: {
+                                    id: 'resourceType2',
+                                    name: 'resourceType 2',
+                                    foo: 'resourceType foo 2',
+                                },
+                            },
                         },
-                    ]
+                    ],
                 },
             },
         },
@@ -1471,8 +1493,8 @@ export const mockTestData = (): {
                 data: {
                     id: 'foo',
                     address: 'bar',
-                }
-            }
+                },
+            },
         },
         CREATE: {
             data: {
@@ -1487,10 +1509,10 @@ export const mockTestData = (): {
                             embeddedJson: {
                                 strictEqual: [{ var: 'k5PjloYXQhn' }, true],
                             },
-                        }
-                    ]
-                }
-            }
+                        },
+                    ],
+                },
+            },
         },
         UPDATE: {
             data: {
@@ -1505,10 +1527,10 @@ export const mockTestData = (): {
                             embeddedJson: {
                                 strictEqual: [{ var: 'k5PjloYXQhn' }, true],
                             },
-                        }
-                    ]
-                }
-            }
+                        },
+                    ],
+                },
+            },
         },
         DELETE: {
             data: {
@@ -1523,10 +1545,10 @@ export const mockTestData = (): {
                             embeddedJson: {
                                 strictEqual: [{ var: 'k5PjloYXQhn' }, true],
                             },
-                        }
-                    ]
-                }
-            }
+                        },
+                    ],
+                },
+            },
         },
         UPDATE_MANY: {
             data: {
@@ -1542,10 +1564,10 @@ export const mockTestData = (): {
                             id: 'id',
                             address: 'address',
                             features: ['feature1', 'feature2'],
-                        }
-                    ]
-                }
-            }
+                        },
+                    ],
+                },
+            },
         },
         DELETE_MANY: {
             data: {
@@ -1561,13 +1583,13 @@ export const mockTestData = (): {
                             id: 'id',
                             address: 'address',
                             features: ['feature1', 'feature2'],
-                        }
-                    ]
-                }
-            }
+                        },
+                    ],
+                },
+            },
         },
-    }
-})
+    },
+});
 
 export const circularDependencyTypes: IntrospectionType[] = [
     {
@@ -1575,20 +1597,20 @@ export const circularDependencyTypes: IntrospectionType[] = [
         fields: [
             {
                 name: 'id',
-                type: { 
-                    kind: 'SCALAR', 
+                type: {
+                    kind: 'SCALAR',
                     name: 'ID',
                     ofType: null,
-                    __typename: 'ID'
+                    __typename: 'ID',
                 },
             },
             {
                 name: 'title',
-                type: { 
-                    kind: 'SCALAR', 
+                type: {
+                    kind: 'SCALAR',
                     name: 'String',
                     ofType: null,
-                    __typename: 'String'
+                    __typename: 'String',
                 },
             },
             {
@@ -1598,7 +1620,7 @@ export const circularDependencyTypes: IntrospectionType[] = [
                     kind: 'SCALAR',
                     name: 'ID',
                     ofType: null,
-                    __typename: 'ID'
+                    __typename: 'ID',
                 },
             },
             {
@@ -1608,7 +1630,7 @@ export const circularDependencyTypes: IntrospectionType[] = [
                     kind: 'OBJECT',
                     name: 'linkedTypes',
                     ofType: null,
-                    __typename: 'linkedTypes'
+                    __typename: 'linkedTypes',
                 },
             },
         ],
@@ -1616,70 +1638,70 @@ export const circularDependencyTypes: IntrospectionType[] = [
         enumValues: [],
         interfaces: [
             {
-                kind: "INTERFACE",
-                name: "Node",
+                kind: 'INTERFACE',
+                name: 'Node',
                 ofType: null,
-                __typename: "Node"
-            }
+                __typename: 'Node',
+            },
         ],
         description: null,
         inputFields: null,
         possibleTypes: null,
     },
     {
-        kind: "INTERFACE",
-        name: "Node",
+        kind: 'INTERFACE',
+        name: 'Node',
         fields: [
             {
                 args: [],
-                name: "nodeId",
+                name: 'nodeId',
                 type: {
-                    kind: "NON_NULL",
+                    kind: 'NON_NULL',
                     name: null,
                     ofType: {
-                        kind: "SCALAR",
-                        name: "ID",
+                        kind: 'SCALAR',
+                        name: 'ID',
                         ofType: null,
-                        __typename: "ID"
+                        __typename: 'ID',
                     },
-                    __typename: null
+                    __typename: null,
                 },
-                __typename: "nodeId",
-                description: "Retrieves a record by `ID`",
+                __typename: 'nodeId',
+                description: 'Retrieves a record by `ID`',
                 isDeprecated: false,
-                deprecationReason: null
-            }
+                deprecationReason: null,
+            },
         ],
-        __typename: "Node",
+        __typename: 'Node',
         enumValues: [],
         interfaces: [],
         description: null,
         inputFields: null,
         possibleTypes: [
             {
-                kind: "OBJECT",
-                name: "linkedTypes",
+                kind: 'OBJECT',
+                name: 'linkedTypes',
                 ofType: null,
-                __typename: "linkedTypes"
+                __typename: 'linkedTypes',
             },
             {
-                kind: "OBJECT",
-                name: "nestedLinks",
+                kind: 'OBJECT',
+                name: 'nestedLinks',
                 ofType: null,
-                __typename: "nestedLinks"
+                __typename: 'nestedLinks',
             },
             {
-                kind: "OBJECT",
-                name: "commands",
+                kind: 'OBJECT',
+                name: 'commands',
                 ofType: null,
-                __typename: "commands"
+                __typename: 'commands',
             },
             {
-                kind: "OBJECT",
-                name: "resourceTypes",
+                kind: 'OBJECT',
+                name: 'resourceTypes',
                 ofType: null,
-                __typename: "resourceTypes"
-            }
-        ]
+                __typename: 'resourceTypes',
+            },
+        ],
     },
-]
+];

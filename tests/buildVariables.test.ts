@@ -10,17 +10,19 @@ import {
 } from 'ra-core';
 
 import buildVariables from '../src/buildVariables';
-import { mockTestData } from './helpers/mockTestData';
+import { mockTestData } from './mockTestData';
 
 describe('buildVariables', () => {
     describe('GET_LIST', () => {
         it('returns correct variables', () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { GET_LIST: queryType },
-                params: { GET_LIST: { filtered: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    GET_LIST: { filtered: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -36,17 +38,19 @@ describe('buildVariables', () => {
                 },
                 first: 10,
                 offset: 90,
-                orderBy: [{ sortField: 'DescNullsLast' }]
+                orderBy: [{ sortField: 'DescNullsLast' }],
             });
         });
 
         it('should return correct meta', () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { GET_LIST: queryType },
-                params: { GET_LIST: { sparse: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    GET_LIST: { sparse: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -64,12 +68,14 @@ describe('buildVariables', () => {
 
     describe('CREATE', () => {
         it('returns correct variables', () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { CREATE: queryType },
-                params: { CREATE: { default: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    CREATE: { default: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -82,18 +88,20 @@ describe('buildVariables', () => {
                 objects: [
                     {
                         address: params.data.address,
-                        linkedType_id: params.data.linkedType_id
-                    }
-                ]
+                        linkedType_id: params.data.linkedType_id,
+                    },
+                ],
             });
         });
         it('should return correct meta', () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { CREATE: queryType },
-                params: { CREATE: { sparse: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    CREATE: { sparse: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -106,22 +114,24 @@ describe('buildVariables', () => {
                 objects: [
                     {
                         address: params.data.address,
-                        linkedType_id: params.data.linkedType_id
-                    }
+                        linkedType_id: params.data.linkedType_id,
+                    },
                 ],
-                meta: params.data.meta
+                meta: params.data.meta,
             });
         });
     });
 
     describe('UPDATE', () => {
         it('returns correct variables', () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { UPDATE: queryType },
-                params: { UPDATE: { default: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    UPDATE: { default: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -134,18 +144,20 @@ describe('buildVariables', () => {
                 filter: { id: { eq: params.id } },
                 atMost: 1,
                 set: {
-                    address: params.data.address
-                }
+                    address: params.data.address,
+                },
             });
         });
 
         it('should return correct meta', () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { UPDATE: queryType },
-                params: { UPDATE: { sparse: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    UPDATE: { sparse: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -158,9 +170,9 @@ describe('buildVariables', () => {
                 filter: { id: { eq: params.id } },
                 atMost: 1,
                 set: {
-                    address: params.data.address
+                    address: params.data.address,
                 },
-                meta: params.meta
+                meta: params.meta,
             });
         });
     });
@@ -170,9 +182,11 @@ describe('buildVariables', () => {
             const {
                 introspectionResults,
                 queryTypes: { GET_MANY: queryType },
-                params: { GET_MANY: { default: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    GET_MANY: { default: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -190,9 +204,11 @@ describe('buildVariables', () => {
             const {
                 introspectionResults,
                 queryTypes: { GET_MANY: queryType },
-                params: { GET_MANY: { sparse: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    GET_MANY: { sparse: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -213,9 +229,11 @@ describe('buildVariables', () => {
             const {
                 introspectionResults,
                 queryTypes: { GET_MANY_REFERENCE: queryType },
-                params: { GET_MANY_REFERENCE: { default: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    GET_MANY_REFERENCE: { default: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -236,9 +254,11 @@ describe('buildVariables', () => {
             const {
                 introspectionResults,
                 queryTypes: { GET_MANY_REFERENCE: queryType },
-                params: { GET_MANY_REFERENCE: { sparse: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    GET_MANY_REFERENCE: { sparse: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -259,12 +279,14 @@ describe('buildVariables', () => {
 
     describe('DELETE', () => {
         it('returns correct variables', () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { DELETE: queryType },
-                params: { DELETE: { default: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    DELETE: { default: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -280,12 +302,14 @@ describe('buildVariables', () => {
         });
 
         it('should return correct meta', () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { DELETE: queryType },
-                params: { DELETE: { sparse: params } },
-                resources: { default: resource }
-            } = mockTestData()
+                params: {
+                    DELETE: { sparse: params },
+                },
+                resources: { default: resource },
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -304,12 +328,14 @@ describe('buildVariables', () => {
 
     describe('DELETE_MANY', () => {
         it('returns correct variables', () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { DELETE_MANY: queryType },
-                params: { DELETE_MANY: { default: params } },
+                params: {
+                    DELETE_MANY: { default: params },
+                },
                 resources: { default: resource },
-            } = mockTestData()
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -327,12 +353,14 @@ describe('buildVariables', () => {
 
     describe('UPDATE_MANY', () => {
         it('returns correct variables', () => {
-            const { 
+            const {
                 introspectionResults,
                 queryTypes: { UPDATE_MANY: queryType },
-                params: { UPDATE_MANY: { default: params } },
+                params: {
+                    UPDATE_MANY: { default: params },
+                },
                 resources: { default: resource },
-            } = mockTestData()
+            } = mockTestData();
 
             expect(
                 buildVariables(introspectionResults)(
@@ -345,8 +373,8 @@ describe('buildVariables', () => {
                 filter: { id: { in: params.ids } },
                 atMost: params.ids.length,
                 set: {
-                    address: params.data.address
-                }
+                    address: params.data.address,
+                },
             });
         });
     });

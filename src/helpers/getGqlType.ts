@@ -18,6 +18,8 @@ export const getGqlType = (
             return gqlTypes.nonNullType(getGqlType(type.ofType));
 
         default:
-            return gqlTypes.namedType(gqlTypes.name((type as IntrospectionType).name));
+            return gqlTypes.namedType(
+                gqlTypes.name((type as IntrospectionType).name)
+            );
     }
 };

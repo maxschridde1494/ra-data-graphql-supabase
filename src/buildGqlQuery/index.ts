@@ -9,22 +9,15 @@ import {
     DELETE_MANY,
     UPDATE_MANY,
 } from 'ra-core';
-import {
-    IntrospectionResult,
-    IntrospectedResource,
-} from 'ra-data-graphql';
+import { IntrospectionResult, IntrospectedResource } from 'ra-data-graphql';
 import { IntrospectionField } from 'graphql';
 import * as gqlTypes from 'graphql-ast-types-browser';
 
 import { buildFields } from './buildFields';
 import { buildApolloArgs, buildArgs } from './buildArgs';
 
-export {
-    buildApolloArgs,
-    buildArgs,
-    buildFields
-}
-  
+export { buildApolloArgs, buildArgs, buildFields };
+
 export default (introspectionResults: IntrospectionResult) =>
     (
         resource: IntrospectedResource,
@@ -33,31 +26,30 @@ export default (introspectionResults: IntrospectionResult) =>
         variables: any
     ) => {
         // let { orderBy, ...metaVariables } = variables;
-  
+
         const apolloArgs = buildApolloArgs(queryType, variables, raFetchMethod);
         const args = buildArgs(queryType, variables, raFetchMethod);
-  
+
         // const sparseFields = metaVariables.meta?.sparseFields;
         // if (sparseFields) delete metaVariables.meta.sparseFields;
         // const metaArgs = buildArgs(queryType, metaVariables);
-        
+
         let sparseFields: any;
         if (variables.meta) {
             sparseFields = variables.meta?.sparseFields;
             delete variables.meta.sparseFields;
-        } else if (variables.data?.meta){
+        } else if (variables.data?.meta) {
             // create case
             sparseFields = variables.data.meta.sparseFields;
             delete variables.data.meta.sparseFields;
         }
-  
 
         const fields = buildFields(introspectionResults)({
             resourceObject: resource,
             fieldsProp: resource.type.fields as IntrospectionField[],
             sparseFields,
         });
-  
+
         if (
             raFetchMethod === GET_LIST ||
             raFetchMethod === GET_MANY ||
@@ -73,10 +65,22 @@ export default (introspectionResults: IntrospectionResult) =>
                             args,
                             null,
                             gqlTypes.selectionSet([
-                              gqlTypes.field(gqlTypes.name('totalCount')),
-                              gqlTypes.field(gqlTypes.name('edges'), null, null, null, gqlTypes.selectionSet([
-                                gqlTypes.field(gqlTypes.name('node'), null, null, null, gqlTypes.selectionSet(fields))
-                              ]))
+                                gqlTypes.field(gqlTypes.name('totalCount')),
+                                gqlTypes.field(
+                                    gqlTypes.name('edges'),
+                                    null,
+                                    null,
+                                    null,
+                                    gqlTypes.selectionSet([
+                                        gqlTypes.field(
+                                            gqlTypes.name('node'),
+                                            null,
+                                            null,
+                                            null,
+                                            gqlTypes.selectionSet(fields)
+                                        ),
+                                    ])
+                                ),
                             ])
                         ),
                     ]),
@@ -106,8 +110,8 @@ export default (introspectionResults: IntrospectionResult) =>
         }
 
         if (
-            raFetchMethod === UPDATE || 
-            raFetchMethod === CREATE || 
+            raFetchMethod === UPDATE ||
+            raFetchMethod === CREATE ||
             raFetchMethod === DELETE ||
             raFetchMethod === DELETE_MANY ||
             raFetchMethod === UPDATE_MANY
@@ -124,12 +128,12 @@ export default (introspectionResults: IntrospectionResult) =>
                             gqlTypes.selectionSet([
                                 gqlTypes.field(gqlTypes.name('affectedCount')),
                                 gqlTypes.field(
-                                    gqlTypes.name('records'), 
-                                    null, 
-                                    null, 
-                                    null, 
+                                    gqlTypes.name('records'),
+                                    null,
+                                    null,
+                                    null,
                                     gqlTypes.selectionSet(fields)
-                                )
+                                ),
                             ])
                         ),
                     ]),
@@ -139,4 +143,3 @@ export default (introspectionResults: IntrospectionResult) =>
             ]);
         }
     };
-  
