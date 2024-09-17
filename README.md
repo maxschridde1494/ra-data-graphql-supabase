@@ -1,10 +1,36 @@
 # ra-data-graphql-supabase
 
-A GraphQL data provider for [react-admin](https://github.com/marmelab/react-admin/) and [supabase](https://github.com/supabase/pg_graphql) built with [Apollo](https://www.apollodata.com/).
+A GraphQL data provider for [react-admin](https://github.com/marmelab/react-admin/) and [supabase pg_graphql](https://github.com/supabase/pg_graphql) built with [Apollo](https://www.apollodata.com/).
 
 - [Installation](#installation)
 - [Usage](#installation)
 - [Options](#options)
+
+### Note on the default introspection
+
+The default (auto-generated) introspection for [supabase pg_graphql](https://github.com/supabase/pg_graphql) can be explored [here](https://supabase.github.io/pg_graphql/example_schema/). There are a couple things of note with this schema:
+
+1. Collection list counts (used for pagination) are not enabled by default. [totalCount](https://supabase.github.io/pg_graphql/configuration/#totalcount) is an opt-in field that must be enabled for this data provider to work. Below is an example of how to enable the totalCount opt-in field for a resource:
+
+```sql
+COMMENT ON TABLE "Command" IS '@graphql({"totalCount": {"enabled": true}})';
+```
+
+2. Collection find query fields are not natively supported. There are multiple ways to implement this. The default schema for this data provider expects `[Resource]ById` query fields implemented by custom functions as shown in the [pg_graphql docs](https://supabase.github.io/pg_graphql/functions/#supported-return-types). Below is an example of creating one such custom function:
+
+```sql
+CREATE FUNCTION CommandById(id UUID)
+RETURNS Command
+STABLE
+LANGUAGE sql
+AS $$
+    SELECT *
+    FROM Command
+    WHERE Command.id = CommandById.id;
+$$;
+```
+
+This can be overridden via the dataprovider `introspection` option.
 
 ## Installation
 
@@ -31,7 +57,7 @@ import { Component } from 'react';
 import buildGraphQLProvider from 'ra-data-graphql-supabase';
 import { Admin, Resource } from 'react-admin';
 
-import { PostCreate, PostEdit, PostList } from './posts';
+import { PostCreate, PostEdit, PostList } from './Post';
 
 const dataProvider = buildGraphQLProvider({ buildQuery });
 
@@ -78,8 +104,8 @@ const myBuildQuery = introspection => (fetchType, resource, params) => {
             ...builtQuery,
             // Override the query
             query: gql`
-                query Command($id: ID!) {
-                    data: Command(id: $id) {
+                query CommandById($id: ID!) {
+                    data: CommandById(id: $id) {
                         id
                         reference
                         customer {
@@ -145,7 +171,7 @@ By default, for every API call this data provider returns all top level fields i
 
 ```js
 dataProvider.getOne(
-    'posts',
+    'Post',
     { 
         id, 
         meta: { 
@@ -153,7 +179,7 @@ dataProvider.getOne(
                 'id', 
                 'title', 
                 { 
-                    comments: [
+                    Comment: [
                         'description', 
                         { 
                             author : [
