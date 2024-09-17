@@ -1,4 +1,4 @@
-import { IntrospectionField, TypeKind, print } from 'graphql';
+import { print } from 'graphql';
 import { gql } from '@apollo/client';
 import {
     GET_LIST,
@@ -91,6 +91,7 @@ describe('buildFields', () => {
         expect(print(builtFields)).toEqual([
             'id',
             'address',
+            'features',
             'linkedType_id',
             `linkedTypes {
   totalCount
@@ -205,6 +206,7 @@ describe('buildFieldsWithCircularDependency', () => {
         }))).toEqual([
             'id',
             'address',
+            'features',
             'linkedType_id',
             `linkedTypes {
   totalCount
@@ -235,6 +237,7 @@ describe('buildFieldsWithSameType', () => {
         }))).toEqual([
             'id',
             'address',
+            'features',
             'linkedType_id',
             `linkedTypes {
   totalCount
@@ -289,6 +292,7 @@ describe('buildGqlQuery', () => {
                                 node {
                                     id
                                     address
+                                    features
                                     linkedType_id
                                     linkedTypes {
                                         totalCount
@@ -386,6 +390,7 @@ describe('buildGqlQuery', () => {
                                 node {
                                     id
                                     address
+                                    features
                                     linkedType_id
                                     linkedTypes {
                                         totalCount
@@ -483,6 +488,7 @@ describe('buildGqlQuery', () => {
                                 node {
                                     id
                                     address
+                                    features
                                     linkedType_id
                                     linkedTypes {
                                         totalCount
@@ -577,6 +583,7 @@ describe('buildGqlQuery', () => {
                         data: commandsById(id: $id) {
                             id
                             address
+                            features
                             linkedType_id
                             linkedTypes {
                               totalCount
@@ -666,6 +673,7 @@ describe('buildGqlQuery', () => {
                             records {
                                 id
                                 address
+                                features
                                 linkedType_id
                                 linkedTypes {
                                   totalCount
@@ -759,6 +767,7 @@ describe('buildGqlQuery', () => {
                             records {
                                 id
                                 address
+                                features
                                 linkedType_id
                                 linkedTypes {
                                   totalCount
@@ -852,6 +861,7 @@ describe('buildGqlQuery', () => {
                             records {
                                 id
                                 address
+                                features
                                 linkedType_id
                                 linkedTypes {
                                   totalCount
@@ -944,6 +954,7 @@ describe('buildGqlQuery', () => {
                         records {
                             id
                             address
+                            features
                             linkedType_id
                             linkedTypes {
                                 totalCount
@@ -989,6 +1000,7 @@ describe('buildGqlQuery', () => {
                         records {
                             id
                             address
+                            features
                             linkedType_id
                             linkedTypes {
                                 totalCount

@@ -1,4 +1,5 @@
 import { IntrospectionResult, BuildQuery } from 'ra-data-graphql';
+
 import buildVariables from './buildVariables';
 import buildGqlQuery from './buildGqlQuery';
 import getResponseParser from './getResponseParser';

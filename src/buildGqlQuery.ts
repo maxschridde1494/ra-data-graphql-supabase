@@ -356,9 +356,9 @@ export const buildFields = (introspectionResults: IntrospectionResult, paths: st
                 ];
             }
   
-  
             // NOTE: We might have to handle linked types which are not resources but will have to be careful about
             // ending with endless circular dependencies
+            
             return acc;
         }, []);
     };
@@ -398,13 +398,6 @@ export const buildArgs = (
     const validVariables = Object.keys(variables).filter(
       k => typeof variables[k] !== 'undefined'
     )
-  
-    // map RA arg fields to supabase gql query args TODO:
-    // 'first',
-    // 'last',
-    // 'before',
-    // 'after',
-    // 'offset',
 
     if (raFetchMethod === UPDATE || raFetchMethod === UPDATE_MANY) {
         validVariables.push('filter')
@@ -452,13 +445,6 @@ export const buildApolloArgs = (
     const validVariables = Object.keys(variables).filter(
         k => typeof variables[k] !== 'undefined'
     );
-  
-    // map RA arg fields to supabase gql query args TODO:
-    // 'first',
-    // 'last',
-    // 'before',
-    // 'after',
-    // 'offset',
 
     if (raFetchMethod === UPDATE || raFetchMethod === UPDATE_MANY) {
         validVariables.push('filter')

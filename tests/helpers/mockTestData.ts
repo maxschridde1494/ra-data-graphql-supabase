@@ -86,6 +86,19 @@ export const mockTestData = (): {
                             },
                         },
                         {
+                            name: 'features',
+                            type: {
+                                kind: "LIST",
+                                name: null,
+                                ofType: {
+                                    kind: "SCALAR",
+                                    name: "String",
+                                    __typename: "String"
+                                },
+                                __typename: null
+                            },
+                        },
+                        {
                             name: 'foo1',
                             type: { 
                                 kind: 'SCALAR', 
@@ -135,25 +148,25 @@ export const mockTestData = (): {
                             },
                         },
                         {
-                        // Foreign key field for resourceType
-                        name: 'resourceType_id',
-                        type: {
-                            kind: 'SCALAR',
-                            name: 'ID',
-                            ofType: null,
-                            __typename: 'ID'
+                            // Foreign key field for resourceType
+                            name: 'resourceType_id',
+                            type: {
+                                kind: 'SCALAR',
+                                name: 'ID',
+                                ofType: null,
+                                __typename: 'ID'
+                            },
                         },
-                    },
-                    {
-                        // Pluralized resource field
-                        name: 'resourceTypes',
-                        type: {
-                            kind: 'OBJECT',
+                        {
+                            // Pluralized resource field
                             name: 'resourceTypes',
-                            ofType: null,
-                            __typename: 'resourceTypes'
+                            type: {
+                                kind: 'OBJECT',
+                                name: 'resourceTypes',
+                                ofType: null,
+                                __typename: 'resourceTypes'
+                            },
                         },
-                    },
                     ],
                     __typename: 'commands',
                     enumValues: [],
@@ -534,6 +547,19 @@ export const mockTestData = (): {
                         description: null,
                         defaultValue: null
                     },
+                    {
+                        name: 'features',
+                        type: {
+                            kind: "LIST",
+                            name: null,
+                            ofType: {
+                                kind: "SCALAR",
+                                name: "String",
+                                __typename: "String"
+                            },
+                            __typename: null
+                        },
+                    },
                 ],
                 possibleTypes: null
             },
@@ -575,26 +601,19 @@ export const mockTestData = (): {
                         description: null,
                         defaultValue: null
                     },
-                    // {
-                    //     name: "created_at",
-                    //     type: {
-                    //         kind: "SCALAR",
-                    //         name: "Datetime",
-                    //         ofType: null
-                    //     },
-                    //     description: null,
-                    //     defaultValue: null
-                    // },
-                    // {
-                    //     name: "updated_at",
-                    //     type: {
-                    //         kind: "SCALAR",
-                    //         name: "Datetime",
-                    //         ofType: null
-                    //     },
-                    //     description: null,
-                    //     defaultValue: null
-                    // }
+                    {
+                        name: 'features',
+                        type: {
+                            kind: "LIST",
+                            name: null,
+                            ofType: {
+                                kind: "SCALAR",
+                                name: "String",
+                                __typename: "String"
+                            },
+                            __typename: null
+                        },
+                    },
                 ],
                 possibleTypes: null
             },
@@ -676,6 +695,19 @@ export const mockTestData = (): {
                         },
                     },
                     {
+                        name: 'features',
+                        type: {
+                            kind: "LIST",
+                            name: null,
+                            ofType: {
+                                kind: "SCALAR",
+                                name: "String",
+                                __typename: "String"
+                            },
+                            __typename: null
+                        },
+                    },
+                    {
                         // Foreign key field for the linked object
                         name: 'linkedType_id',
                         type: {
@@ -751,6 +783,19 @@ export const mockTestData = (): {
                             name: 'String',
                             ofType: null,
                             __typename: 'String'
+                        },
+                    },
+                    {
+                        name: 'features',
+                        type: {
+                            kind: "LIST",
+                            name: null,
+                            ofType: {
+                                kind: "SCALAR",
+                                name: "String",
+                                __typename: "String"
+                            },
+                            __typename: null
                         },
                     },
                     {
@@ -1378,6 +1423,49 @@ export const mockTestData = (): {
         } 
     },
     responses: {
+        GET_LIST: {
+            data: {
+                items: {
+                    totalCount: 2,
+                    edges: [
+                        { 
+                            node: {
+                                nodeId: 'command1NodeId',
+                                id: 'command1',
+                                address: 'address1',
+                                linkedTypes: { 
+                                    id: 'linkedType1', 
+                                    title: 'linkedType 1' ,
+                                    nestedLink_id: 'nestedLink1',
+                                    nestedLinks: {
+                                        id: 'nestedLink1',
+                                        bar: 'nestedLink 1'
+                                    }
+                                },
+                                resourceTypes: { id: 'resourceType1', name: 'resourceType 1', foo: 'resourceType foo 1' },
+                            }
+                        },
+                        {
+                            node: {
+                                nodeId: 'command2NodeId',
+                                id: 'command2',
+                                address: 'address2',
+                                linkedTypes: { 
+                                    id: 'linkedType2', 
+                                    title: 'linkedType 2' ,
+                                    nestedLink_id: 'nestedLink2',
+                                    nestedLinks: {
+                                        id: 'nestedLink2',
+                                        bar: 'nestedLink 2'
+                                    }
+                                },
+                                resourceTypes: { id: 'resourceType2', name: 'resourceType 2', foo: 'resourceType foo 2' },
+                            }
+                        },
+                    ]
+                },
+            },
+        },
         GET_ONE: {
             data: {
                 data: {
@@ -1394,6 +1482,11 @@ export const mockTestData = (): {
                         {
                             id: 'foo',
                             address: 'bar',
+                            features: ['feature1', 'feature2'],
+                            aliasAddress: 'aliasAddress',
+                            embeddedJson: {
+                                strictEqual: [{ var: 'k5PjloYXQhn' }, true],
+                            },
                         }
                     ]
                 }
@@ -1407,23 +1500,11 @@ export const mockTestData = (): {
                         {
                             id: 'foo',
                             address: 'bar',
-                        }
-                    ]
-                }
-            }
-        },
-        UPDATE_MANY: {
-            data: {
-                data: {
-                    affectedCount: 2,
-                    records: [
-                        {
-                            id: 'foo',
-                            address: 'bar',
-                        },
-                        {
-                            id: 'id',
-                            address: 'address',
+                            features: ['feature1', 'feature2'],
+                            aliasAddress: 'aliasAddress',
+                            embeddedJson: {
+                                strictEqual: [{ var: 'k5PjloYXQhn' }, true],
+                            },
                         }
                     ]
                 }
@@ -1437,6 +1518,30 @@ export const mockTestData = (): {
                         {
                             id: 'foo',
                             address: 'bar',
+                            features: ['feature1', 'feature2'],
+                            aliasAddress: 'aliasAddress',
+                            embeddedJson: {
+                                strictEqual: [{ var: 'k5PjloYXQhn' }, true],
+                            },
+                        }
+                    ]
+                }
+            }
+        },
+        UPDATE_MANY: {
+            data: {
+                data: {
+                    affectedCount: 2,
+                    records: [
+                        {
+                            id: 'foo',
+                            address: 'bar',
+                            features: ['feature1', 'feature2'],
+                        },
+                        {
+                            id: 'id',
+                            address: 'address',
+                            features: ['feature1', 'feature2'],
                         }
                     ]
                 }
@@ -1450,10 +1555,12 @@ export const mockTestData = (): {
                         {
                             id: 'foo',
                             address: 'bar',
+                            features: ['feature1', 'feature2'],
                         },
                         {
                             id: 'id',
                             address: 'address',
+                            features: ['feature1', 'feature2'],
                         }
                     ]
                 }

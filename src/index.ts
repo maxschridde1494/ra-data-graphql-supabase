@@ -5,7 +5,6 @@ import buildDataProvider, {
     defaultOptions as baseDefaultOptions,
 } from 'ra-data-graphql';
 import { DELETE_MANY, DataProvider, Identifier, UPDATE_MANY } from 'ra-core';
-import pluralize from 'pluralize';
 
 import defaultBuildQuery from './buildQuery';
 import { CREATE, GET_LIST, GET_MANY, GET_MANY_REFERENCE, GET_ONE, UPDATE, DELETE } from 'react-admin';
@@ -62,6 +61,7 @@ export default (
         );
 
     const defaultDataProvider = buildDataProvider(dPOptions);
+    
     return {
         ...defaultDataProvider,
         // This provider defaults to sending multiple DELETE requests for DELETE_MANY
