@@ -1,12 +1,20 @@
 {
     "name": "@groovestack/ra-data-graphql-supabase",
-    "version": "5.1.4",
+    "version": "5.1.7",
     "description": "A GraphQL data provider for react-admin and supabase pg_graphql",
-    "main": "dist/cjs/index.js",
-    "module": "dist/esm/index.js",
-    "types": "dist/cjs/index.d.ts",
+    "type": "module",
+    "files": [
+        "dist"
+    ],
     "exports": {
-        ".": "./dist/cjs/index.js"
+        ".": "./dist/index.js"
+    },
+    "typesVersions": {
+        "*": {
+            "*": [
+                "./dist/*"
+            ]
+        }
     },
     "sideEffects": false,
     "repository": {
@@ -33,10 +41,14 @@
     ],
     "license": "MIT",
     "scripts": {
-        "build": "yarn run build-cjs && yarn run build-esm",
-        "build-cjs": "rimraf ./dist/cjs && tsc --outDir dist/cjs",
-        "build-esm": "rimraf ./dist/esm && tsc --outDir dist/esm --module es2015",
+        "build": "yarn run build-esm",
+        "build-esm": "npx rimraf ./dist && tsc --outDir dist --module es2015",
         "lint": "eslint --ext .js,.ts,.tsx \"./src/**/*.{js,ts,tsx}\" \"./tests/**/*.{js,ts,tsx}\"",
+        "preversion": "yarn build",
+        "postversion": "yarn publish && echo \"Successfully released version $npm_package_version!\"",
+        "publish-patch": "yarn version --patch",
+        "publish-minor": "yarn version --minor",
+        "publish-major": "yarn version --major",
         "prettier": "prettier --config ./.prettierrc.js --write --list-different \"./src/**/*.{js,json,ts,tsx,css,md}\" \"./tests/**/*.{js,ts,tsx}\"",
         "test-unit": "cross-env NODE_ENV=test cross-env BABEL_ENV=cjs NODE_ICU_DATA=./node_modules/full-icu jest",
         "watch": "tsc --outDir dist/esm --module es2015 --watch"
